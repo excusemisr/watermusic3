@@ -206,8 +206,7 @@ function displayFeaturedZones(featuredZones) {
         };
         zoneItem.appendChild(button);
         const clicks = document.createElement("div");
-        clicks.style.fontSize = "12px";
-        clicks.style.opacity = "0.7";
+        clicks.className = "zone-clicks";
         clicks.textContent = `Clicks: ${popularityData[file.id] || 0}`;
         zoneItem.appendChild(clicks);
 
@@ -217,6 +216,12 @@ function displayFeaturedZones(featuredZones) {
         featuredContainer.innerHTML = "No featured zones found.";
     } else {
         document.getElementById("allZonesSummary").textContent = `Featured Games: (${featuredZones.length})`;
+    }
+    
+    // Update zone count in status bar
+    const zoneCountDisplay = document.getElementById('zoneCountDisplay');
+    if (zoneCountDisplay) {
+        zoneCountDisplay.textContent = `zones: ${zones.length}`;
     }
 
     const lazyImages = document.querySelectorAll('#featuredZones img.lazy-zone-img');
@@ -259,8 +264,7 @@ function displayZones(zones) {
         };
         zoneItem.appendChild(button);
         const clicks = document.createElement("div");
-        clicks.style.fontSize = "12px";
-        clicks.style.opacity = "0.7";
+        clicks.className = "zone-clicks";
         clicks.textContent = `Clicks: ${popularityData[file.id] || 0}`;
         zoneItem.appendChild(clicks);
 
@@ -270,6 +274,12 @@ function displayZones(zones) {
         container.innerHTML = "No zones found.";
     } else {
         document.getElementById("allSummary").textContent = `All Zones (${zones.length})`;
+    }
+    
+    // Update zone count in status bar
+    const zoneCountDisplay = document.getElementById('zoneCountDisplay');
+    if (zoneCountDisplay) {
+        zoneCountDisplay.textContent = `zones: ${zones.length}`;
     }
 
     const lazyImages = document.querySelectorAll('img.lazy-zone-img');
@@ -773,6 +783,25 @@ function closePopup() {
 }
 listZones();
 startAutoRefresh();
+
+// Terminal prompt effects
+const terminalPrompts = [
+    "watermusic@terminal:~$ system initialized successfully",
+    "watermusic@terminal:~$ loading game modules...",
+    "watermusic@terminal:~$ connection established",
+    "watermusic@terminal:~$ ready for input",
+    "watermusic@terminal:~$ monitoring active zones"
+];
+
+let currentPromptIndex = 0;
+const terminalPrompt = document.getElementById('terminalPrompt');
+
+if (terminalPrompt) {
+    setInterval(() => {
+        currentPromptIndex = (currentPromptIndex + 1) % terminalPrompts.length;
+        terminalPrompt.textContent = terminalPrompts[currentPromptIndex];
+    }, 4000);
+}
 
 const annTitle = document.getElementById("annTitle");
 const annDesc = document.getElementById("annDesc");
