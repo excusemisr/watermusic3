@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="midnight">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Proxy · watermusic</title>
+    <meta name="theme-color" content="#05060c">
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@200..800&family=JetBrains+Mono:wght@400..700&display=swap" rel="stylesheet">
+<style>
+:root{
+    --bg:#05060c;
+    --glow-1:#2a2f7a;
+    --glow-2:#0a6272;
+    --glow-3:#6f2555;
+    --text:#eef2ff;
+    --text-rgb:238,242,255;
+    --muted:#9aa4bd;
+    --muted-2:#6d7893;
+    --accent:#7c8cff;
+    --accent-rgb:124,140,255;
+    --glass:rgba(255,255,255,.055);
+    --glass-strong:rgba(255,255,255,.095);
+    --glass-solid:#0d1120;
+    --border:rgba(255,255,255,.11);
+    --border-strong:rgba(255,255,255,.2);
+    --blur:22px;
+    --font:'Outfit', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    --font-mono:'JetBrains Mono', ui-monospace, monospace;
+}
+html[data-theme="amoled"]{--bg:#000;--glass-solid:#070707}
+html[data-theme="ocean"]{--bg:#04121c;--glow-1:#0b4f6c;--glow-2:#0f766e;--glow-3:#1e3a8a}
+html[data-theme="light"]{
+    --bg:#e9edf6;--text:#0c1120;--text-rgb:12,17,32;--muted:#55607a;--muted-2:#77819a;
+    --glass:rgba(255,255,255,.55);--glass-strong:rgba(255,255,255,.78);--glass-solid:#f6f8ff;
+    --border:rgba(12,17,32,.1);--border-strong:rgba(12,17,32,.2);--glow-1:#b9c6ff;--glow-2:#a5e8e0;--glow-3:#ffc9e2;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+    margin:0;background:var(--bg);color:var(--text);
+    font-family:var(--font);display:flex;flex-direction:column;
+    overflow:hidden;-webkit-font-smoothing:antialiased;
+}
+::selection{background:rgba(var(--accent-rgb),.4)}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit;color:inherit}
+::-webkit-scrollbar{width:10px;height:10px}
+::-webkit-scrollbar-thumb{background:rgba(var(--text-rgb),.18);border-radius:99px}
+
+.bg{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none}
+.blob{position:absolute;border-radius:50%;filter:blur(90px);opacity:.45;animation:drift 26s ease-in-out infinite alternate}
+.b1{width:50vw;height:50vw;left:-12vw;top:-14vw;background:var(--glow-1)}
+.b2{width:44vw;height:44vw;right:-12vw;bottom:-8vw;background:var(--glow-2);animation-delay:-9s}
+.b3{width:34vw;height:34vw;left:30vw;bottom:-16vw;background:var(--glow-3);animation-delay:-17s}
+@keyframes drift{from{transform:translate3d(0,0,0) scale(1)}to{transform:translate3d(3vw,-4vh,0) scale(1.1)}}
+.grain{
+    position:absolute;inset:0;opacity:.4;mix-blend-mode:overlay;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='.2'/%3E%3C/svg%3E");
+}
+
+.glass{
+    background:linear-gradient(160deg, var(--glass-strong), var(--glass));
+    -webkit-backdrop-filter:blur(var(--blur)) saturate(170%);
+    backdrop-filter:blur(var(--blur)) saturate(170%);
+    border:1px solid var(--border);
+    box-shadow:0 18px 50px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.14);
+}
+
+.wrap{position:relative;z-index:2;display:flex;flex-direction:column;height:100%;padding:12px;gap:10px}
+
+/* ---------- top bar ---------- */
+.bar{
+    display:flex;align-items:center;gap:10px;
+    padding:9px 10px;border-radius:22px;flex:none;flex-wrap:wrap;
+}
+.brand{
+    display:flex;align-items:center;gap:10px;
+    padding:0 6px 0 2px;flex:none;
+}
+.brand .mark{
+    width:36px;height:36px;border-radius:12px;display:grid;place-items:center;
+    font-weight:800;font-size:16px;color:#fff;
+    background:linear-gradient(150deg, var(--accent), rgba(var(--accent-rgb),.45));
+    box-shadow:0 6px 18px rgba(var(--accent-rgb),.35);
+}
+.brand .name{font-weight:700;font-size:15px;letter-spacing:-.02em;white-space:nowrap}
+.brand .sub{font:600 10px/1 var(--font-mono);color:var(--muted-2);letter-spacing:.14em;text-transform:uppercase}
+
+.icon-btn{
+    width:40px;height:40px;flex:none;border-radius:13px;display:grid;place-items:center;
+    background:rgba(var(--text-rgb),.06);border:1px solid transparent;
+    color:var(--muted);cursor:pointer;transition:all .16s;
+}
+.icon-btn:hover{color:var(--text);background:rgba(var(--text-rgb),.12);border-color:var(--border)}
+.icon-btn svg{width:18px;height:18px}
+.spacer{flex:1}
+
+/* ---------- node dropdown ---------- */
+.node-wrap{position:relative;flex:none}
+.node-btn{
+    display:flex;align-items:center;gap:9px;
+    height:40px;padding:0 14px;border-radius:13px;
+    background:rgba(var(--text-rgb),.06);border:1px solid var(--border);
+    color:var(--text);font-size:13.5px;font-weight:600;cursor:pointer;
+    transition:all .16s;white-space:nowrap;
+}
+.node-btn:hover{background:rgba(var(--text-rgb),.12);border-color:var(--border-strong)}
+.status-dot{width:8px;height:8px;border-radius:50%;background:#3ddc97;box-shadow:0 0 0 3px rgba(61,220,151,.22);flex:none}
+.node-btn .arrow{font-size:9px;color:var(--muted-2)}
+.node-menu{
+    position:absolute;left:0;top:calc(100% + 8px);z-index:40;
+    min-width:260px;padding:6px;border-radius:18px;display:none;flex-direction:column;gap:2px;
+    background:var(--glass-solid);border:1px solid var(--border-strong);
+    box-shadow:0 24px 60px rgba(0,0,0,.5);
+}
+.node-menu.open{display:flex}
+.node-menu button{
+    display:flex;align-items:center;gap:10px;width:100%;
+    padding:10px 12px;border-radius:11px;border:none;background:none;
+    color:var(--muted);font-size:13.5px;font-weight:550;text-align:left;cursor:pointer;
+}
+.node-menu button:hover{background:rgba(var(--text-rgb),.07);color:var(--text)}
+.node-menu button.on{background:rgba(var(--accent-rgb),.18);color:var(--text)}
+.node-menu button .dot{width:7px;height:7px;border-radius:50%;background:var(--accent);flex:none;opacity:.5}
+.node-menu button.on .dot{opacity:1}
+.node-menu .url{font:500 10.5px/1 var(--font-mono);color:var(--muted-2);margin-left:auto}
+
+/* ---------- custom url ---------- */
+.field{display:flex;align-items:center;gap:8px;flex:1;min-width:180px}
+.field input{
+    flex:1;min-width:0;height:40px;padding:0 14px;border-radius:13px;
+    background:rgba(var(--text-rgb),.06);border:1px solid var(--border);
+    color:var(--text);font:500 13.5px var(--font);outline:none;transition:all .16s;
+}
+.field input::placeholder{color:var(--muted-2)}
+.field input:focus{border-color:rgba(var(--accent-rgb),.55);box-shadow:0 0 0 3px rgba(var(--accent-rgb),.16)}
+
+/* ---------- stage ---------- */
+.stage{
+    position:relative;flex:1;min-height:0;
+    border-radius:24px;overflow:hidden;
+    background:#04050b;border:1px solid var(--border);
+    box-shadow:0 24px 60px rgba(0,0,0,.45);
+}
+#frame{width:100%;height:100%;border:none;display:block;background:#04050b}
+.loader{
+    position:absolute;inset:0;z-index:3;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;
+    background:radial-gradient(circle at 50% 45%, rgba(20,26,50,.94), rgba(5,6,12,.98));
+    color:#e8ecff;text-align:center;padding:24px;transition:opacity .4s;
+}
+.loader.hide{opacity:0;pointer-events:none}
+.spinner{
+    width:48px;height:48px;border-radius:50%;
+    border:2.5px solid rgba(255,255,255,.14);border-top-color:var(--accent);
+    animation:spin .85s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loader-title{font-size:15.5px;font-weight:600}
+.loader-sub{font-size:12.5px;color:rgba(255,255,255,.55);max-width:42ch;line-height:1.55}
+.hint-row{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:4px}
+.hint-row button{
+    height:36px;padding:0 14px;border-radius:11px;
+    background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.16);
+    color:#eaf0ff;font-size:12.5px;font-weight:600;cursor:pointer;
+}
+.hint-row button:hover{background:rgba(255,255,255,.2)}
+
+.footbar{
+    display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+    padding:0 8px;font-size:11.5px;color:var(--muted-2);flex:none;
+}
+.footbar b{color:var(--muted);font-weight:600}
+.dot-sep{opacity:.4}
+
+@media (max-width:720px){
+    .wrap{padding:8px;gap:8px}
+    .brand .sub{display:none}
+    .node-btn span:not(.status-dot):not(.arrow){max-width:110px;overflow:hidden;text-overflow:ellipsis}
+    .footbar{display:none}
+    .stage{border-radius:18px}
+}
+</style>
+</head>
+<body>
+<div class="bg" aria-hidden="true">
+    <div class="blob b1"></div>
+    <div class="blob b2"></div>
+    <div class="blob b3"></div>
+    <div class="grain"></div>
+</div>
+
+<div class="wrap">
+    <div class="bar glass">
+        <a class="icon-btn" href="./index.html" title="Back to games" aria-label="Back to games">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 6l-6 6 6 6"/></svg>
+        </a>
+        <div class="brand">
+            <div class="mark">P</div>
+            <div>
+                <div class="name">Proxy hub</div>
+                <div class="sub">secure tunnel</div>
+            </div>
+        </div>
+
+        <div class="node-wrap">
+            <button class="node-btn" id="nodeBtn" type="button">
+                <span class="status-dot"></span>
+                <span id="nodeLabel">Select node</span>
+                <span class="arrow">▼</span>
+            </button>
+            <div class="node-menu" id="nodeMenu"></div>
+        </div>
+
+        <div class="field">
+            <input type="text" id="urlInput" placeholder="Paste a link to open through a node…" spellcheck="false" autocomplete="off" aria-label="Custom URL">
+            <button class="icon-btn" id="goBtn" type="button" title="Open link">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13"/><path d="M13 6l6 6-6 6"/></svg>
+            </button>
+        </div>
+
+        <button class="icon-btn" id="reloadBtn" type="button" title="Reload">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11a8 8 0 1 0-2.3 5.7"/><path d="M20 4v7h-7"/></svg>
+        </button>
+        <button class="icon-btn" id="fullBtn" type="button" title="Fullscreen">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9V4h5M20 15v5h-5M15 4h5v5M9 20H4v-5"/></svg>
+        </button>
+        <button class="icon-btn" id="popBtn" type="button" title="Open node in a new tab">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"/><path d="M20 4l-9 9"/><path d="M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg>
+        </button>
+    </div>
+
+    <div class="stage">
+        <iframe id="frame" title="Proxy view" sandbox="allow-forms allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox allow-modals" allowfullscreen></iframe>
+        <div class="loader" id="loader">
+            <div class="spinner"></div>
+            <div class="loader-title" id="loaderTitle">Waiting for a node…</div>
+            <div class="loader-sub" id="loaderSub">Pick a node above to open a tunnel, or paste a link.</div>
+            <div class="hint-row" id="hints">
+                <button type="button" data-quick="1">Open node 1</button>
+                <button type="button" data-quick="pop">Open in new tab</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="footbar">
+        <span><b>Tunnel</b> <span id="tunnelName">standby</span></span>
+        <span class="dot-sep">·</span>
+        <span id="loadTime">—</span>
+        <span class="dot-sep">·</span>
+        <span>some sites refuse to be framed — use “open in new tab” then</span>
+    </div>
+</div>
+
+<script>
+(function () {
+    'use strict';
+    var CONFIG_KEY = 'wm.config.v3';
+    var NODES = [
+        { id: 1, name: 'Achroma Link #1', url: 'https://frost-atlas-51214.surge.sh' },
+        { id: 2, name: 'Achroma Link #2', url: 'https://river-harbor-52881.surge.sh' },
+        { id: 3, name: 'Achroma Link #3', url: 'https://sage-reef-64729.surge.sh' },
+        { id: 4, name: 'Achroma Link #4', url: 'https://lark-flint-66405.surge.sh' },
+        { id: 5, name: 'Achroma Link #5', url: 'https://palm-arch-11546.surge.sh' }
+    ];
+
+    var $ = function (id) { return document.getElementById(id); };
+    var frame = $('frame');
+    var loader = $('loader');
+    var openedAt = 0;
+    var armed = false;
+    var slowTimer = null;
+
+    /* ---- shared settings from the main app ---- */
+    var config = {};
+    try { config = JSON.parse(localStorage.getItem(CONFIG_KEY) || '{}') || {}; } catch (e) { config = {}; }
+    function saveConfig() {
+        try { localStorage.setItem(CONFIG_KEY, JSON.stringify(config)); } catch (e) { }
+    }
+    function hexToRgb(hex) {
+        hex = String(hex || '').replace('#', '');
+        if (hex.length === 3) hex = hex.split('').map(function (c) { return c + c; }).join('');
+        if (!/^[0-9a-fA-F]{6}$/.test(hex)) return '124,140,255';
+        var n = parseInt(hex, 16);
+        return ((n >> 16) & 255) + ',' + ((n >> 8) & 255) + ',' + (n & 255);
+    }
+    var FONTS = {
+        outfit: "'Outfit', system-ui, sans-serif",
+        grotesk: "'Space Grotesk', system-ui, sans-serif",
+        sora: "'Sora', system-ui, sans-serif",
+        mono: "'JetBrains Mono', ui-monospace, monospace"
+    };
+    (function applyTheme() {
+        var html = document.documentElement;
+        var theme = config.theme || 'midnight';
+        html.dataset.theme = theme;
+        if (config.accent) {
+            html.style.setProperty('--accent', config.accent);
+            html.style.setProperty('--accent-rgb', hexToRgb(config.accent));
+        }
+        if (config.font && FONTS[config.font]) html.style.setProperty('--font', FONTS[config.font]);
+        if (config.blur != null) html.style.setProperty('--blur', (config.glass === false ? 0 : config.blur) + 'px');
+        if (config.blobs === false) {
+            var blobs = document.querySelectorAll('.blob');
+            for (var i = 0; i < blobs.length; i++) blobs[i].style.display = 'none';
+        }
+        if (config.grain === false) {
+            var g = document.querySelector('.grain');
+            if (g) g.style.display = 'none';
+        }
+        if (config.motion === false) {
+            document.body.style.setProperty('--blur', '0px');
+        }
+        document.title = (config.cloakPreset && config.cloakPreset !== 'none' && config.cloakTitle)
+            ? config.cloakTitle
+            : 'Proxy · watermusic';
+    })();
+
+    /* ---- node handling ---- */
+    var params = new URLSearchParams(location.search);
+    var startNode = Number(params.get('node') || config.proxyNode || 1);
+    var current = NODES.find(function (n) { return n.id === startNode; }) || NODES[0];
+
+    function renderMenu() {
+        $('nodeMenu').innerHTML = NODES.map(function (n) {
+            return '<button type="button" data-node="' + n.id + '" class="' + (n.id === current.id ? 'on' : '') + '">' +
+                '<span class="dot"></span>' + n.name +
+                '<span class="url">#' + n.id + '</span></button>';
+        }).join('');
+    }
+
+    function setNode(node, silent) {
+        current = node;
+        config.proxyNode = node.id;
+        saveConfig();
+        $('nodeLabel').textContent = node.name;
+        $('tunnelName').textContent = node.name.toLowerCase();
+        renderMenu();
+        if (!silent) load(node.url, node.name);
+    }
+
+    function showLoader(title, sub, hints) {
+        clearTimeout(slowTimer);
+        loader.classList.remove('hide');
+        $('loaderTitle').textContent = title;
+        $('loaderSub').textContent = sub;
+        var row = $('hints');
+        row.innerHTML = hints || '';
+        return row;
+    }
+
+    function load(url, label) {
+        armed = true;
+        openedAt = Date.now();
+        showLoader('Opening ' + (label || 'node') + '…', 'Establishing the tunnel. First paint can take a few seconds.',
+            '<button type="button" data-pop="1">Open in new tab</button><button type="button" data-stop="1">Stop</button>');
+        frame.src = url;
+        slowTimer = setTimeout(function () {
+            if (!armed) return;
+            $('loaderSub').textContent = 'Still waiting — the node may be slow. Try another node or open it in a new tab.';
+        }, 9000);
+    }
+
+    function hideLoader() {
+        clearTimeout(slowTimer);
+        loader.classList.add('hide');
+        var secs = ((Date.now() - openedAt) / 1000).toFixed(1);
+        $('loadTime').textContent = 'loaded in ' + secs + 's';
+    }
+
+    frame.addEventListener('load', function () {
+        if (!armed) return;
+        if (!frame.src || frame.src === 'about:blank') return;
+        hideLoader();
+    });
+
+    $('nodeBtn').addEventListener('click', function (e) {
+        e.stopPropagation();
+        $('nodeMenu').classList.toggle('open');
+    });
+    document.addEventListener('click', function (e) {
+        if (!e.target.closest('.node-wrap')) $('nodeMenu').classList.remove('open');
+    });
+    $('nodeMenu').addEventListener('click', function (e) {
+        var btn = e.target.closest('[data-node]');
+        if (!btn) return;
+        var node = NODES.find(function (n) { return n.id === Number(btn.getAttribute('data-node')); });
+        $('nodeMenu').classList.remove('open');
+        if (node) setNode(node);
+    });
+
+    $('reloadBtn').addEventListener('click', function () {
+        if (frame.src && frame.src !== 'about:blank') {
+            openedAt = Date.now();
+            armed = true;
+            showLoader('Reloading…', 'Refreshing the current tunnel.', '');
+            frame.src = frame.src;
+        } else {
+            load(current.url, current.name);
+        }
+    });
+    $('fullBtn').addEventListener('click', function () {
+        var target = document.querySelector('.stage');
+        if (target.requestFullscreen) target.requestFullscreen().catch(function () { });
+        else if (target.webkitRequestFullscreen) target.webkitRequestFullscreen();
+    });
+    $('popBtn').addEventListener('click', function () {
+        window.open(frame.src && frame.src !== 'about:blank' ? frame.src : current.url, '_blank', 'noopener');
+    });
+
+    function normalizeUrl(raw) {
+        var value = String(raw || '').trim();
+        if (!value) return '';
+        if (!/^https?:\/\//i.test(value)) value = 'https://' + value;
+        try { return new URL(value).href; } catch (e) { return ''; }
+    }
+
+    $('goBtn').addEventListener('click', function () {
+        var url = normalizeUrl($('urlInput').value);
+        if (!url) { $('urlInput').focus(); return; }
+        $('tunnelName').textContent = url.replace(/^https?:\/\//, '').split('/')[0];
+        load(url, 'link');
+    });
+    $('urlInput').addEventListener('keydown', function (e) {
+        if (e.key === 'Enter') $('goBtn').click();
+    });
+
+    $('hints').addEventListener('click', function (e) {
+        if (e.target.closest('[data-pop]')) {
+            window.open(current.url, '_blank', 'noopener');
+            return;
+        }
+        if (e.target.closest('[data-stop]')) {
+            frame.src = 'about:blank';
+            armed = false;
+            showLoader('Stopped', 'Pick a node to try again.',
+                '<button type="button" data-quick="1">Open node 1</button>');
+            return;
+        }
+        if (e.target.closest('[data-quick]')) load(current.url, current.name);
+    });
+
+    /* ---- boot ---- */
+    renderMenu();
+    setNode(current, true);
+    if (startNode) {
+        load(current.url, current.name);
+    } else {
+        showLoader('Pick a node', 'Choose a tunnel above, or paste any link to open it.',
+            '<button type="button" data-quick="1">Open ' + current.name + '</button>');
+    }
+})();
+</script>
+</body>
+</html>

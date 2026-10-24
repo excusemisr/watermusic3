@@ -1,0 +1,11 @@
+{
+  "games": [
+    {
+      "folder": "demo",
+      "title": "Neon Runner",
+      "author": "watermusic",
+      "thumbnail": "photo.png",
+      "tags": ["arcade", "action"]
+    }
+  ]
+}

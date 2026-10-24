@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Neon Runner</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="game">
+        <header class="hud">
+            <div class="hud-item"><span>SCORE</span><b id="score">0</b></div>
+            <div class="hud-item"><span>BEST</span><b id="best">0</b></div>
+            <div class="hud-item speed"><span>SPEED</span><b id="speed">1.0x</b></div>
+        </header>
+        <canvas id="game"></canvas>
+        <div class="overlay" id="overlay">
+            <div class="panel">
+                <h1>NEON<br>RUNNER</h1>
+                <p>Tap, click or press <kbd>Space</kbd> to jump. Double jump is allowed — clear the spikes and keep the streak alive.</p>
+                <button id="startBtn" type="button">Play</button>
+            </div>
+        </div>
+        <div class="hint" id="hint">space / tap to jump · double jump</div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
