@@ -25,36 +25,55 @@
     const GAME_CACHE = 'wm-games-v1';
     const PAGE_SIZE = 60;
 
-    /* ---------------- curated lists (owner's notes) ---------------- */
-    // broken / crashes the page — kept out of the catalog entirely
-    const HIDDEN_IDS = new Set(['4', '27', '33', '35', '58', '66', '117', '198', '211', '265', '285', '330', '375', '557', '560', '570']);
-    const HIDDEN_NAMES = ['retro bowl college'];
-    // slop sweep: mobile ad-farm filler — hyper-casual endless runners, idle /
-    // merge / tycoon clones, licence-tie-in shovelware and the endless "3D"
-    // one-tap games. Same treatment as the broken ones: never enters the catalog.
-    // The good mobile stuff stays (Gunspin, Ragdoll Archers, Jetpack Joyride,
-    // Crossy Road, Fruit Ninja, Doodle Jump, Papa's, Bloons, PvZ ...).
-    const SLOP_IDS = new Set([
-        '6', '9', '10', '13', '14', '15', '16', '17', '18', '19', '20',
-        '21', '22', '23', '25', '28', '29', '30', '31', '32', '36', '37', '57',
-        '70', '77', '86', '92', '93', '108', '115', '118', '121', '122', '127', '128',
-        '131', '132', '133', '134', '135', '136', '137', '138', '139', '140', '141', '142',
-        '143', '144', '145', '147', '148', '149', '150', '152', '153', '154', '155', '156',
-        '157', '158', '159', '160', '161', '162', '163', '164', '165', '166', '167', '168',
-        '171', '172', '202', '208', '209', '210', '255', '256', '294', '295', '307', '310',
-        '319', '320', '321', '322', '323', '325', '326', '327', '328', '331', '332', '343',
-        '349', '354', '362', '363', '364', '366', '367', '372', '373', '374', '376', '377',
-        '378', '379', '380', '381', '382', '383', '384', '385', '386', '387', '388', '389',
-        '390', '391', '392', '393', '394', '395', '396', '397', '398', '399', '400', '401',
-        '402', '403', '404', '405', '406', '407', '408', '409', '410', '411', '412', '413',
-        '414', '415', '416', '417', '418', '419', '420', '421', '422', '431', '473', '479',
-        '511', '526', '527', '528', '529', '530', '531', '532', '533', '534', '535', '537',
-        '545', '546', '552', '553', '575', '576', '580', '581', '583', '586'
+    /* ---------------- the shelf is a short list ----------------
+       Only the ids below are let into the catalog. Everything else in the
+       manifest is dropped, so this stays a hand-picked set of games people
+       actually know instead of 500 random uploads. Add an id here to bring a
+       game back (the number in a ?id=NN link); remove it to drop one. A game
+       that is not listed is invisible everywhere — grid, search, palette,
+       recents, featured.
+       ---------------------------------------------------------------- */
+    const CATALOG_IDS = new Set([
+        '1', '2', '3', '5', '7', '8', '11', '12', '24', '26', '38', '39',
+        '40', '41', '44', '45', '46', '47', '48', '49', '50', '51', '52', '53',
+        '54', '55', '56', '59', '60', '61', '62', '63', '64', '65', '67', '68',
+        '69', '71', '72', '73', '74', '75', '76', '78', '79', '80', '81', '82',
+        '83', '84', '85', '88', '89', '90', '91', '95', '96', '97', '98', '99',
+        '100', '102', '103', '104', '105', '106', '107', '109', '110', '111', '112', '114',
+        '119', '120', '124', '125', '126', '129', '130', '146', '151', '169', '170', '173',
+        '174', '175', '176', '177', '178', '179', '180', '181', '182', '183', '297', '298',
+        '299', '300', '301', '185', '186', '187', '190', '191', '192', '194', '195', '196',
+        '197', '199', '200', '201', '203', '205', '206', '212', '213', '214', '215', '216',
+        '217', '218', '219', '220', '221', '222', '223', '224', '225', '226', '227', '228',
+        '229', '230', '231', '232', '233', '234', '235', '236', '237', '238', '239', '240',
+        '241', '242', '243', '244', '245', '246', '247', '248', '249', '250', '251', '252',
+        '257', '259', '261', '262', '263', '264', '266', '267', '269', '270', '271', '272',
+        '273', '276', '278', '279', '283', '287', '288', '289', '290', '291', '292', '293',
+        '303', '304', '305', '309', '312', '313', '314', '316', '333', '334', '335', '336',
+        '337', '338', '339', '340', '341', '342', '344', '345', '346', '350', '360', '361',
+        '368', '369', '370', '427', '428', '430', '433', '435', '436', '438', '440', '444',
+        '445', '446', '448', '449', '450', '451', '456', '457', '460', '461', '465', '466',
+        '467', '468', '470', '471', '474', '481', '489', '490', '501', '505', '506', '507',
+        '508', '512', '515', '520', '524', '542', '543', '544', '547', '548', '549', '550',
+        '554', '559', '569', '571', '572', '573', '574', '577', '585'
     ]);
-    // favourites, pinned above everything else
-    const PINNED_IDS = new Set(['91', '569']);
     // work, but only when they get their own tab
     const FORCE_TAB_IDS = new Set(['264', '26', '44', '448']);
+    // what to show if recommended.html cannot be read (file:// or offline)
+    const RECOMMENDED_FALLBACK = [
+        { id: '91', name: 'Gunspin' },
+        { id: '569', name: 'Happy Wheels' },
+        { id: '186', name: 'Ragdoll Archers' },
+        { id: '44', name: 'Ragdoll Hit' },
+        { id: '96', name: 'Moto X3M' },
+        { id: '75', name: 'Bloons TD 5' },
+        { id: '370', name: 'Smash Karts' },
+        { id: '223', name: "Papa's Freezeria" },
+        { id: '7', name: 'Jetpack Joyride' },
+        { id: '12', name: 'Subway Surfers: San Francisco' },
+        { id: '544', name: 'Plinko' },
+        { id: '173', name: 'Drift Hunters' }
+    ];
 
     const FONTS = {
         outfit: { label: 'Outfit', stack: "'Outfit', system-ui, -apple-system, 'Segoe UI', sans-serif" },
@@ -194,6 +213,32 @@
     /* ---------------- catalog ---------------- */
     let games = [];
     let popularity = {};
+    // the list from recommended.html — [{ id, name, why }], in display order
+    let recommended = [];
+
+    function recIndex(idStr) {
+        return recommended.findIndex((r) => r.id === String(idStr));
+    }
+
+    /* recommended.html is the one place the list lives: the page shows it and
+       this reads the same JSON out of it, so the strip, the pin order and the
+       page can never drift apart. */
+    async function loadRecommended() {
+        try {
+            const res = await fetch(ROOT + 'recommended.html', { cache: 'no-cache' });
+            if (res.ok) {
+                const doc = new DOMParser().parseFromString(await res.text(), 'text/html');
+                const node = doc.getElementById('recommended-data');
+                const list = node ? JSON.parse(node.textContent) : null;
+                if (Array.isArray(list) && list.length) {
+                    return list
+                        .filter((e) => e && /^\d+$/.test(String(e.id)))
+                        .map((e) => ({ id: String(e.id), name: e.name || '', why: e.why || '' }));
+                }
+            }
+        } catch (e) { /* file:// or offline — fall through to the built-in list */ }
+        return RECOMMENDED_FALLBACK.map((e) => ({ id: e.id, name: e.name, why: '' }));
+    }
     let favs = new Set(read(FAV_KEY, []));
     let recent = read(RECENT_KEY, []);
     const state = { query: '', category: 'all', starred: false, sort: config.sort || 'name' };
@@ -233,13 +278,16 @@
         const resolved = raw.replace('{COVER_URL}', COVER_URL).replace('{HTML_URL}', HTML_URL);
         const idStr = String(z.id);
         const name = z.name || ('Game ' + z.id);
-        const hidden = HIDDEN_IDS.has(idStr) || SLOP_IDS.has(idStr) || HIDDEN_NAMES.some((n) => name.toLowerCase().includes(n));
+        const hidden = !CATALOG_IDS.has(idStr);
+        const rec = recIndex(idStr);
         return {
             key: 'cdn:' + z.id,
             id: z.id,
             name: name,
             hidden: hidden,
-            pinned: PINNED_IDS.has(idStr),
+            // recommended games float to the top of the grid, in list order
+            pinned: rec >= 0,
+            recRank: rec,
             forceTab: FORCE_TAB_IDS.has(idStr),
             cover: String(z.cover || '').replace('{COVER_URL}', COVER_URL).replace('{HTML_URL}', HTML_URL),
             // the soundboard ships with the site, so play our own copy instead of the CDN one
@@ -390,8 +438,12 @@
             if (q && !g.name.toLowerCase().includes(q)) return false;
             return true;
         }).sort((a, b) => {
-            // pinned favourites stay on top whatever the sort is
-            if (!!a.pinned !== !!b.pinned) return a.pinned ? -1 : 1;
+            // recommended games stay on top, in the order recommended.html lists them
+            if (a.recRank !== b.recRank) {
+                if (a.recRank < 0) return 1;
+                if (b.recRank < 0) return -1;
+                return a.recRank - b.recRank;
+            }
             switch (state.sort) {
                 case 'popular': return (popularity[b.id] || 0) - (popularity[a.id] || 0) || a.name.localeCompare(b.name);
                 case 'id': return String(a.id).localeCompare(String(b.id), undefined, { numeric: true });
@@ -421,7 +473,7 @@
             '<article class="card' + (game.pinned ? ' pinned' : '') + '" data-key="' + escapeHtml(game.key) + '" tabindex="0" role="button" aria-label="Play ' + escapeHtml(game.name) + '">' +
                 '<div class="thumb-wrap">' +
                     '<img class="thumb" src="' + escapeHtml(game.cover) + '" alt="" ' + (eager ? 'loading="eager" fetchpriority="high"' : 'loading="lazy"') + ' decoding="async">' +
-                    (game.pinned ? '<span class="pin"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 4h6l-1 6 3 3H7l3-3z"/><path d="M12 13v7"/></svg>Pinned</span>' : '') +
+                    (game.pinned ? '<span class="pin"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 3.6l2.6 5.3 5.9.9-4.3 4.1 1 5.8-5.2-2.8-5.2 2.8 1-5.8-4.3-4.1 5.9-.9z"/></svg>Recommended</span>' : '') +
                     '<span class="idx">' + ordinal(index || 0) + '</span>' +
                     '<button class="fav' + (fav ? ' on' : '') + '" data-fav="' + escapeHtml(game.key) + '" type="button" aria-label="Star game" title="Star game">' +
                         '<svg viewBox="0 0 24 24" fill="' + (fav ? 'currentColor' : 'none') + '" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"><path d="M12 3.6l2.6 5.3 5.9.9-4.3 4.1 1 5.8-5.2-2.8-5.2 2.8 1-5.8-4.3-4.1 5.9-.9z"/></svg>' +
@@ -500,6 +552,18 @@
         });
     }
 
+    function renderRecommended() {
+        const section = $('recSection');
+        const row = $('recRow');
+        if (!section || !row) return;
+        const items = recommended
+            .map((r) => games.find((g) => String(g.id) === r.id))
+            .filter(Boolean);
+        if (!items.length) { section.hidden = true; row.innerHTML = ''; return; }
+        section.hidden = false;
+        row.innerHTML = items.map((g, i) => cardHTML(g, '', i < 6, i)).join('');
+    }
+
     function renderRecent() {
         const section = $('recentSection');
         const row = $('recentRow');
@@ -510,7 +574,7 @@
     }
 
     function renderSpotlight() {
-        const game = games.find((g) => g.featured) || games[0];
+        const game = games.find((g) => g.recRank === 0) || games.find((g) => g.featured) || games[0];
         if (!game) return;
         $('spTitle').textContent = game.name;
         $('spSub').textContent = game.author ? 'by ' + game.author : 'straight from the shelf';
@@ -1689,12 +1753,15 @@
             : null;
 
         const cached = readZonesCache();
-        if (cached) {
-            games = dedupeKeys(cached.map(normalizeCdn).filter((g) => !g.hidden));
-            renderAll();
-        }
+        const recReady = loadRecommended();
 
         (async () => {
+            recommended = await recReady;
+            if (cached) {
+                games = dedupeKeys(cached.map(normalizeCdn).filter((g) => !g.hidden));
+                renderAll();
+            }
+
             const [zones, localGames] = await Promise.all([fetchZones(), fetchLocalGames()]);
             if (zones) store(ZONES_CACHE_KEY, { at: Date.now(), data: zones });
             const cdnGames = dedupeKeys((zones || cached || []).map(normalizeCdn).filter((g) => !g.hidden));
@@ -1708,6 +1775,7 @@
         function renderAll() {
             render();
             renderSpotlight();
+            renderRecommended();
             renderRecent();
             updateStats();
         }

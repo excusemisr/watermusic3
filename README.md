@@ -1,14 +1,9 @@
-# watermusic · concept
+# watermusic
 
-A design concept for the watermusic games portal. It is a **standalone copy** of
-the site — the original `watermusic3/` folder is untouched and this folder sits
-outside that git repo, so nothing here can be auto-committed or pushed.
-
-Open `concept/index.html` (or serve the folder — see below) to look around.
+A static games portal: a hand-picked catalog, an in-page game viewer, a proxy
+hub and a drop-in `gamehosting/` folder for your own games. No build step.
 
 ```bash
-# from the workspace root
-cd concept
 python -m http.server 8123
 # then open http://127.0.0.1:8123/
 ```
@@ -49,31 +44,38 @@ python -m http.server 8123
 - The top bar search, shortcuts (`R`, `/`, Esc), starring, recents, sorting,
   filters, caching, prefetching and deep links all still work as before.
 
-**Catalog curation (from your four notes files)**
+**Catalog curation — a short list**
 
-- **Broken / crashing games are gone.** The 16 flagged ids (4, 27, 33, 35, 58,
-  66, 117, 198, 211, 265, 285, 330, 375, 557, 560, 570) plus **Retro Bowl
-  College** (matched by name) are filtered out before the catalog is built, so
-  they can't show up in the grid, search, the palette, recents or the featured
-  row.
-- **Slop sweep.** 177 mobile ad-farm games are gone too: the endless runners,
-  the idle / merge / tycoon clones, the licensed SpongeBob / Teen Titans
-  shovelware, the "3D" one-tap games and the dress-up / makeover / telekinesis
-  filler. Kept on purpose: Gunspin, Ragdoll Archers & Hit, Jetpack Joyride,
-  Crossy Road, Fruit Ninja, Doodle Jump, Snow Rider 3D, Papa's series, Bloons,
-  PvZ, Smash Karts, Moto X3M, plus **Plinko** and **Subway Surfers: San
-  Francisco** (asked for by name). Catalog is now **382** (381 from the CDN +
-  the sample local game).
-- **Gunspin (91) and Happy Wheels (569) are pinned** — they sort above everything
-  else whatever the sort order, with a small pinned tag on the card.
+- The shelf is now an **allowlist**: only ids listed in `CATALOG_IDS` (top of
+  `app.js`) are let in, so the manifest can grow to 500+ uploads and the site
+  still shows a hand-picked set people actually recognise. Everything not on
+  the list is dropped before the catalog is built — no card, no search hit, no
+  palette row, no recent entry, no featured slot. **Catalog is 262**
+  (261 curated CDN ids + the sample local game).
+- Carried over from the notes files: the 16 flagged / broken ids and the slop
+  sweep (endless runners, idle / merge / tycoon clones, licensed shovelware,
+  the "3D" one-tap wave) are all simply not in the allowlist. Kept on purpose:
+  Gunspin, Happy Wheels, Ragdoll Archers & Hit, Jetpack Joyride, Crossy Road,
+  Fruit Ninja, Doodle Jump, Snow Rider 3D, Papa's series, Bloons, PvZ, Smash
+  Karts, Moto X3M, Plinko and Subway Surfers: San Francisco.
 - **Amaze (26), Ragdoll Hit (44), Escape Road (264) and Aquapark.io (448) open in
   their own tab** instead of the in-page viewer, because they only behave there.
   They get a small "new tab" tag on the card.
-- The "nothing needed, just works" list needed no change — those launch normally.
+- To change the shelf, add or remove an id in `CATALOG_IDS`; to change what opens
+  in its own tab, edit `FORCE_TAB_IDS`.
 
-The lists live in one place at the top of `app.js` (`HIDDEN_IDS`, `SLOP_IDS`,
-`HIDDEN_NAMES`, `PINNED_IDS`, `FORCE_TAB_IDS`) — add an id to remove a game, to
-`PINNED_IDS` to pin it, or to `FORCE_TAB_IDS` to make it open in its own tab.
+**Recommended — `recommended.html`**
+
+- The list lives in **one place**: a JSON block inside `recommended.html`
+  (`id` is the number in a `?id=NN` link, plus an optional one-line `why`). Edit
+  those entries and both places update — no second copy to keep in sync.
+- That page is a real page (`/recommended.html`) with a cover, the name, the
+  reason and a Play link per game, linked from the section head and the footer.
+- On the main page the same list renders as a **Recommended strip above the
+  games list**, and those games **sort to the top of the grid in list order**
+  whatever sort is picked — the pin tag on the card reads "Recommended".
+- If `recommended.html` can't be fetched (`file://`, offline), `app.js` falls
+  back to the built-in `RECOMMENDED_FALLBACK` list, so the strip never vanishes.
 
 **Bonus fix found while curating:** the manifest ships two games with `id: 1`
 (Bowmasters and OvO), so they shared one catalog key — starring or opening one
@@ -100,22 +102,31 @@ hit the other. Duplicate keys are now suffixed (`cdn:1`, `cdn:1-2`).
 ## How it is built
 
 ```
-index.html      new shell (same IDs/classes app.js expects, plus the palette)
-concept.css     the concept skin, loaded after app.css — app.css is unchanged
-concept.js      card entrance, featured carousel, ⌘K palette
-app.js          the original app + curated lists (hidden / pinned / new-tab),
-                the 3s warning cooldown, and a small additive window.wm hook
-                (games / open / isFav / toggleFav) for concept.js
-proxy.html      original proxy, restyled flat, with the config-key fix
+index.html       the shell (palette, recommended strip, viewer, settings)
+recommended.html the recommended picks page + the JSON list that drives it
+concept.css      the skin, loaded after app.css
+concept.js       card entrance, featured carousel, ⌘K palette
+app.js           catalog (CATALOG_IDS allowlist), recommended list reader,
+                 viewer, caching, the 3s warning cooldown, window.wm hook
+proxy.html       proxy hub, restyled flat, with the config-key fix
 ```
 
-`gamehosting/` and `soundboard/` are copied from the original. `soundboard/media`
-is a directory junction back to `watermusic3/soundboard/media` so the 600MB of
-audio is not duplicated — replace it with a real folder if you move this concept
-somewhere else.
+`gamehosting/` holds your own games (`games.json` lists them) and
+`soundboard/` is the bundled soundboard game with its 600MB of audio under
+`soundboard/media/`.
 
-## If you want to ship it
+## Soundboard (`soundboard/`)
 
-Delete `concept.css` / `concept.js`, copy the new `index.html` over the real one,
-then work the skin back into `app.css` properly, or keep the layered approach —
-either way `app.css` and `app.js` are the only files with real changes.
+1,801 entries collapse to **1,670 unique files** (the list had duplicates), rendered
+a page at a time instead of all at once: 120 tiles per page, a few hundred nodes
+instead of roughly 7,000, and about 2 ms per filter change. Search is debounced and multi-word (`vine boom`),
+the All / Favorites / Recent chips keep their state in `localStorage`, playing a
+sound with overlap off reuses one `<audio>` element, and tiles are real buttons so
+Tab + Enter work. Right-click or long-press a tile for favorite, download and copy
+name. A sound whose mp3 is not on the server marks itself as missing and says so
+instead of failing silently. The TTS panel is the same behaviour with the new skin.
+
+## If you want to fold the skin into `app.css`
+
+Delete `concept.css` / `concept.js` and work the rules back into `app.css`, or
+keep the layered approach — the layer is loaded last, so either works.

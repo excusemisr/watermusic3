@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="midnight">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Recommended — watermusic</title>
+    <meta name="description" content="The short list: the games worth your first five minutes.">
+    <meta name="theme-color" content="#08080b">
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="apple-touch-icon" href="favicon.png">
+
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&family=JetBrains+Mono:wght@400..700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="./app.css?v=6">
+    <link rel="stylesheet" href="./concept.css?v=8">
+
+    <style>
+        /* this page is a single column of cards, so it only needs the tokens
+           from app.css / concept.css plus the bits below */
+        body.recpage { font-size: 15px; }
+
+        .rec-bar {
+            position: sticky; top: 0; z-index: 5;
+            display: flex; align-items: center; gap: 18px;
+            height: 62px; padding: 0 32px;
+            background: var(--bar);
+            border-bottom: 1px solid var(--line);
+            backdrop-filter: blur(var(--blur));
+        }
+        .rec-brand {
+            font: 600 15px/1 var(--font); letter-spacing: -.02em;
+            margin-right: auto;
+        }
+        .rec-brand em { font-style: normal; color: var(--accent); }
+        .rec-links { display: flex; align-items: center; gap: 4px; }
+        .rec-links a {
+            height: 32px; padding: 0 11px; border-radius: 8px;
+            display: inline-flex; align-items: center;
+            font: 500 13px/1 var(--font); color: var(--dim);
+            border: 1px solid transparent;
+        }
+        .rec-links a:hover { color: var(--ink); background: var(--panel-2); }
+        .rec-links a.current { color: var(--ink); border-color: var(--line-2); }
+
+        .rec-main {
+            max-width: 1080px; margin: 0 auto;
+            padding: 46px 32px 96px;
+        }
+        .rec-kicker {
+            font: 400 12px/1 var(--font-mono); color: var(--dim);
+            margin: 0 0 14px;
+        }
+        .rec-title {
+            font: 600 clamp(30px, 4vw, 44px)/1.02 var(--font);
+            letter-spacing: -.035em; margin: 0 0 12px;
+        }
+        .rec-lede {
+            max-width: 56ch; margin: 0 0 34px;
+            font: 400 15px/1.55 var(--font); color: var(--dim);
+        }
+
+        .rec-grid {
+            display: grid; gap: 12px;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+        @media (max-width: 720px) { .rec-grid { grid-template-columns: 1fr; } }
+
+        .rec-card {
+            display: grid; grid-template-columns: 84px minmax(0, 1fr);
+            gap: 14px; align-items: center;
+            padding: 10px; border-radius: 10px;
+            border: 1px solid var(--line);
+            background: var(--panel);
+            transition: border-color .14s, background .14s;
+        }
+        .rec-card:hover, .rec-card:focus-visible {
+            border-color: var(--line-2); background: var(--panel-2);
+        }
+        .rec-thumb {
+            position: relative; aspect-ratio: 1/1; border-radius: 7px;
+            overflow: hidden; background: var(--panel-3);
+            display: grid; place-items: center;
+            font: 600 20px/1 var(--font-mono); color: var(--dimmer);
+        }
+        .rec-thumb img { width: 100%; height: 100%; object-fit: cover; }
+        .rec-thumb img + span { display: none; }
+
+        .rec-body { min-width: 0; }
+        .rec-name {
+            display: block; font: 600 15px/1.2 var(--font);
+            letter-spacing: -.01em; color: var(--ink);
+            overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+        }
+        .rec-why {
+            margin: 5px 0 8px;
+            font: 400 12.5px/1.45 var(--font); color: var(--dim);
+        }
+        .rec-meta {
+            display: flex; align-items: center; gap: 8px;
+            font: 400 11.5px/1 var(--font-mono); color: var(--dimmer);
+        }
+        .rec-play {
+            display: inline-flex; align-items: center; gap: 5px;
+            height: 24px; padding: 0 9px; border-radius: 6px;
+            border: 1px solid var(--line-2); color: var(--ink);
+            font: 500 11.5px/1 var(--font);
+        }
+        .rec-card:hover .rec-play {
+            background: var(--accent); border-color: var(--accent); color: var(--accent-ink);
+        }
+        .rec-play svg { width: 10px; height: 10px; }
+
+        .rec-foot {
+            margin-top: 42px; padding-top: 18px;
+            border-top: 1px solid var(--line);
+            display: flex; flex-wrap: wrap; gap: 14px;
+            font: 400 12.5px/1.5 var(--font); color: var(--dimmer);
+        }
+        .rec-foot a { color: var(--dim); text-decoration: underline; text-underline-offset: 3px; }
+        .rec-foot a:hover { color: var(--ink); }
+
+        @media (max-width: 560px) {
+            .rec-bar { padding: 0 16px; height: 56px; }
+            .rec-main { padding: 30px 16px 72px; }
+            .rec-lede { margin-bottom: 24px; }
+            .rec-card { grid-template-columns: 64px minmax(0, 1fr); gap: 12px; }
+        }
+    </style>
+</head>
+<body class="recpage">
+<header class="rec-bar">
+    <a class="rec-brand" href="./index.html">watermusic<em>.</em></a>
+    <nav class="rec-links" aria-label="Site">
+        <a href="./index.html">All games</a>
+        <a class="current" href="./recommended.html" aria-current="page">Recommended</a>
+        <a href="./proxy.html">Proxy</a>
+    </nav>
+</header>
+
+<main class="rec-main">
+    <p class="rec-kicker" id="recCount">— picks</p>
+    <h1 class="rec-title">Recommended</h1>
+    <p class="rec-lede">The short list. Every game here is one I would actually open
+        again — no algorithm, no rank farming, just the ones worth your first five
+        minutes.</p>
+
+    <div class="rec-grid" id="recGrid"></div>
+
+    <footer class="rec-foot">
+        <span>Picked by hand and kept short on purpose.</span>
+        <span><a href="./index.html">Browse all games</a> · <a href="./proxy.html">Proxy hub</a></span>
+    </footer>
+</main>
+
+<!-- ============================================================
+     THE LIST. This is the only place it lives: the strip at the top of
+     index.html reads this same block, so edit here and both update.
+
+       { "id": 91, "name": "Gunspin", "why": "one line about it" }
+
+     "id" is the number in a ?id=NN link on the main page. Keep the JSON
+     valid (double quotes, commas between entries) and reload.
+     ============================================================ -->
+<script type="application/json" id="recommended-data">
+[
+    { "id": 91,  "name": "Gunspin", "why": "Tap to fire, ricochet off the walls, buy a bigger gun. A run lasts a minute; you will play ten." },
+    { "id": 569, "name": "Happy Wheels", "why": "The original ragdoll stunt game. Every level is a physics trick and a trap." },
+    { "id": 186, "name": "Ragdoll Archers", "why": "Two archers, one stick of dynamite, endless slow-motion ragdoll shots." },
+    { "id": 44,  "name": "Ragdoll Hit", "why": "Ragdoll fighting with real weight behind it. Opens in its own tab." },
+    { "id": 96,  "name": "Moto X3M", "why": "Time-trial dirt bikes with a body count. The whole series is on the shelf." },
+    { "id": 75,  "name": "Bloons TD 5", "why": "Tower defence done right — the one people still argue is the best." },
+    { "id": 370, "name": "Smash Karts", "why": "Kart deathmatch in a browser tab. Loads in seconds, no account." },
+    { "id": 223, "name": "Papa's Freezeria", "why": "Ice cream shop rhythm game. Calm, endless, absurdly moreish." },
+    { "id": 7,   "name": "Jetpack Joyride", "why": "The one-button runner everything else copied. Still the best of them." },
+    { "id": 12,  "name": "Subway Surfers: San Francisco", "why": "The one that started the genre, and still the cleanest version of it." },
+    { "id": 544, "name": "Plinko", "why": "Drop the ball, watch it bounce, cash out or lose it. Pure risk." },
+    { "id": 173, "name": "Drift Hunters", "why": "Free drifting with real steering. No timer, no rules, no pressure." }
+]
+</script>
+
+<script>
+(function () {
+    'use strict';
+    var COVER_URL = 'https://cdn.jsdelivr.net/gh/gnmathcopy/covers@main';
+    var ZONES_URLS = [
+        'https://cdn.jsdelivr.net/gh/gnmathcopy/assets@main/zones.json',
+        'https://raw.githubusercontent.com/gnmathcopy/assets/main/zones.json'
+    ];
+
+    var grid = document.getElementById('recGrid');
+    var count = document.getElementById('recCount');
+    var list = [];
+
+    try { list = JSON.parse(document.getElementById('recommended-data').textContent); }
+    catch (e) { list = []; }
+
+    list = list.filter(function (e) { return e && /^\d+$/.test(String(e.id)); });
+    if (count) count.textContent = list.length + (list.length === 1 ? ' pick' : ' picks');
+
+    function esc(s) {
+        return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+            return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+        });
+    }
+
+    function markup(entry) {
+        return '' +
+            '<a class="rec-card" href="./index.html?id=' + esc(entry.id) + '">' +
+                '<span class="rec-thumb" data-thumb="' + esc(entry.id) + '">' +
+                    '<img alt="" loading="lazy" decoding="async" hidden>' +
+                    '<span>' + esc(String(entry.name || '?').trim().charAt(0).toUpperCase()) + '</span>' +
+                '</span>' +
+                '<span class="rec-body">' +
+                    '<span class="rec-name">' + esc(entry.name || 'Game ' + entry.id) + '</span>' +
+                    '<span class="rec-why">' + esc(entry.why || '') + '</span>' +
+                    '<span class="rec-meta">' +
+                        '<span class="rec-play"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>Play</span>' +
+                    '</span>' +
+                '</span>' +
+            '</a>';
+    }
+
+    grid.innerHTML = list.map(markup).join('');
+
+    // covers come from the same manifest the main page uses; until they land the
+    // tile shows the game's initial, so the page never sits blank
+    (async function covers() {
+        for (var i = 0; i < ZONES_URLS.length; i++) {
+            try {
+                var res = await fetch(ZONES_URLS[i]);
+                if (!res.ok) continue;
+                var zones = await res.json();
+                if (!Array.isArray(zones) || !zones.length) continue;
+                var byId = {};
+                zones.forEach(function (z) {
+                    var id = String(z.id);
+                    if (!byId[id] && z.cover) byId[id] = String(z.cover).replace('{COVER_URL}', COVER_URL);
+                });
+                list.forEach(function (entry) {
+                    var cover = byId[String(entry.id)];
+                    var box = grid.querySelector('[data-thumb="' + entry.id + '"]');
+                    if (!cover || !box) return;
+                    var img = box.querySelector('img');
+                    if (!img) return;
+                    img.addEventListener('load', function () { img.hidden = false; });
+                    img.src = cover;
+                });
+                return;
+            } catch (e) { /* try the next mirror */ }
+        }
+    })();
+})();
+</script>
+</body>
+</html>
