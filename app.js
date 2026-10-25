@@ -25,6 +25,37 @@
     const GAME_CACHE = 'wm-games-v1';
     const PAGE_SIZE = 60;
 
+    /* ---------------- curated lists (owner's notes) ---------------- */
+    // broken / crashes the page — kept out of the catalog entirely
+    const HIDDEN_IDS = new Set(['4', '27', '33', '35', '58', '66', '117', '198', '211', '265', '285', '330', '375', '557', '560', '570']);
+    const HIDDEN_NAMES = ['retro bowl college'];
+    // slop sweep: mobile ad-farm filler — hyper-casual endless runners, idle /
+    // merge / tycoon clones, licence-tie-in shovelware and the endless "3D"
+    // one-tap games. Same treatment as the broken ones: never enters the catalog.
+    // The good mobile stuff stays (Gunspin, Ragdoll Archers, Jetpack Joyride,
+    // Crossy Road, Fruit Ninja, Doodle Jump, Papa's, Bloons, PvZ ...).
+    const SLOP_IDS = new Set([
+        '6', '9', '10', '13', '14', '15', '16', '17', '18', '19', '20',
+        '21', '22', '23', '25', '28', '29', '30', '31', '32', '36', '37', '57',
+        '70', '77', '86', '92', '93', '108', '115', '118', '121', '122', '127', '128',
+        '131', '132', '133', '134', '135', '136', '137', '138', '139', '140', '141', '142',
+        '143', '144', '145', '147', '148', '149', '150', '152', '153', '154', '155', '156',
+        '157', '158', '159', '160', '161', '162', '163', '164', '165', '166', '167', '168',
+        '171', '172', '202', '208', '209', '210', '255', '256', '294', '295', '307', '310',
+        '319', '320', '321', '322', '323', '325', '326', '327', '328', '331', '332', '343',
+        '349', '354', '362', '363', '364', '366', '367', '372', '373', '374', '376', '377',
+        '378', '379', '380', '381', '382', '383', '384', '385', '386', '387', '388', '389',
+        '390', '391', '392', '393', '394', '395', '396', '397', '398', '399', '400', '401',
+        '402', '403', '404', '405', '406', '407', '408', '409', '410', '411', '412', '413',
+        '414', '415', '416', '417', '418', '419', '420', '421', '422', '431', '473', '479',
+        '511', '526', '527', '528', '529', '530', '531', '532', '533', '534', '535', '537',
+        '545', '546', '552', '553', '575', '576', '580', '581', '583', '586'
+    ]);
+    // favourites, pinned above everything else
+    const PINNED_IDS = new Set(['91', '569']);
+    // work, but only when they get their own tab
+    const FORCE_TAB_IDS = new Set(['264', '26', '44', '448']);
+
     const FONTS = {
         outfit: { label: 'Outfit', stack: "'Outfit', system-ui, -apple-system, 'Segoe UI', sans-serif" },
         grotesk: { label: 'Grotesk', stack: "'Space Grotesk', system-ui, -apple-system, sans-serif" },
@@ -200,10 +231,16 @@
         // {HTML_URL}/x.html entries are single-file games served by the CDN
         const external = /^https?:/i.test(raw);
         const resolved = raw.replace('{COVER_URL}', COVER_URL).replace('{HTML_URL}', HTML_URL);
+        const idStr = String(z.id);
+        const name = z.name || ('Game ' + z.id);
+        const hidden = HIDDEN_IDS.has(idStr) || SLOP_IDS.has(idStr) || HIDDEN_NAMES.some((n) => name.toLowerCase().includes(n));
         return {
             key: 'cdn:' + z.id,
             id: z.id,
-            name: z.name || ('Game ' + z.id),
+            name: name,
+            hidden: hidden,
+            pinned: PINNED_IDS.has(idStr),
+            forceTab: FORCE_TAB_IDS.has(idStr),
             cover: String(z.cover || '').replace('{COVER_URL}', COVER_URL).replace('{HTML_URL}', HTML_URL),
             // the soundboard ships with the site, so play our own copy instead of the CDN one
             url: soundboard ? SOUNDBOARD_URL : resolved,
@@ -245,6 +282,18 @@
             tags: tags
         };
         return game;
+    }
+
+    // the manifest ships two entries with id 1 (Bowmasters + OvO); without this
+    // they share one key and starring/opening one hits the other
+    function dedupeKeys(list) {
+        const seen = new Map();
+        list.forEach((g) => {
+            const n = seen.get(g.key) || 0;
+            seen.set(g.key, n + 1);
+            if (n) g.key = g.key + '-' + (n + 1);
+        });
+        return list;
     }
 
     function readZonesCache() {
@@ -341,6 +390,8 @@
             if (q && !g.name.toLowerCase().includes(q)) return false;
             return true;
         }).sort((a, b) => {
+            // pinned favourites stay on top whatever the sort is
+            if (!!a.pinned !== !!b.pinned) return a.pinned ? -1 : 1;
             switch (state.sort) {
                 case 'popular': return (popularity[b.id] || 0) - (popularity[a.id] || 0) || a.name.localeCompare(b.name);
                 case 'id': return String(a.id).localeCompare(String(b.id), undefined, { numeric: true });
@@ -367,13 +418,15 @@
         const fav = favs.has(game.key);
         const meta = game.author ? escapeHtml(game.author) : '';
         return '' +
-            '<article class="card" data-key="' + escapeHtml(game.key) + '" tabindex="0" role="button" aria-label="Play ' + escapeHtml(game.name) + '">' +
+            '<article class="card' + (game.pinned ? ' pinned' : '') + '" data-key="' + escapeHtml(game.key) + '" tabindex="0" role="button" aria-label="Play ' + escapeHtml(game.name) + '">' +
                 '<div class="thumb-wrap">' +
                     '<img class="thumb" src="' + escapeHtml(game.cover) + '" alt="" ' + (eager ? 'loading="eager" fetchpriority="high"' : 'loading="lazy"') + ' decoding="async">' +
+                    (game.pinned ? '<span class="pin"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 4h6l-1 6 3 3H7l3-3z"/><path d="M12 13v7"/></svg>Pinned</span>' : '') +
                     '<span class="idx">' + ordinal(index || 0) + '</span>' +
                     '<button class="fav' + (fav ? ' on' : '') + '" data-fav="' + escapeHtml(game.key) + '" type="button" aria-label="Star game" title="Star game">' +
                         '<svg viewBox="0 0 24 24" fill="' + (fav ? 'currentColor' : 'none') + '" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"><path d="M12 3.6l2.6 5.3 5.9.9-4.3 4.1 1 5.8-5.2-2.8-5.2 2.8 1-5.8-4.3-4.1 5.9-.9z"/></svg>' +
                     '</button>' +
+                    (game.forceTab ? '<span class="newtab" title="Opens in its own tab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"/><path d="M20 4l-8 8"/><path d="M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg>New tab</span>' : '') +
                     '<span class="play-pop">Play</span>' +
                 '</div>' +
                 '<div class="info">' +
@@ -698,6 +751,8 @@
         return !riskAccepted;
     }
 
+    let riskCooldown = null;
+
     function showRisk(game, preloaded) {
         pendingRisk = game;
         pendingPreload = preloaded || null;
@@ -712,18 +767,50 @@
         const dontAsk = $('riskDontAsk');
         if (dontAsk) dontAsk.checked = false;
         $('riskGate').classList.add('open');
+
+        // 3 second lock-out so the notice can't be clicked straight past
         const accept = $('riskAccept');
-        if (accept) setTimeout(() => accept.focus(), 30);
+        clearInterval(riskCooldown);
+        riskCooldown = null;
+        if (accept) {
+            let left = 3;
+            accept.disabled = true;
+            accept.classList.add('cooling');
+            accept.textContent = 'Let me play (' + left + ')';
+            riskCooldown = setInterval(() => {
+                left -= 1;
+                if (left <= 0) {
+                    clearInterval(riskCooldown);
+                    riskCooldown = null;
+                    accept.disabled = false;
+                    accept.classList.remove('cooling');
+                    accept.textContent = 'Let me play';
+                    accept.focus();
+                } else {
+                    accept.textContent = 'Let me play (' + left + ')';
+                }
+            }, 1000);
+        }
     }
 
     function closeRisk() {
         pendingRisk = null;
         pendingPreload = null;
+        clearInterval(riskCooldown);
+        riskCooldown = null;
+        const accept = $('riskAccept');
+        if (accept) {
+            accept.disabled = false;
+            accept.classList.remove('cooling');
+            accept.textContent = 'Let me play';
+        }
         $('riskGate').classList.remove('open');
         if (!currentGame) clearUrlHash();
     }
 
     function acceptRisk() {
+        const accept = $('riskAccept');
+        if (accept && accept.disabled) return;
         const game = pendingRisk;
         const preloaded = pendingPreload;
         riskAccepted = true;
@@ -737,6 +824,30 @@
     async function openGame(game, preloaded, skipRisk) {
         if (!game) return;
         if (!skipRisk && needsRisk(game)) { showRisk(game, preloaded); return; }
+        // owner-flagged: these only behave inside their own tab
+        if (game.forceTab) {
+            pushRecent(game);
+            const win = window.open(game.url, '_blank');
+            if (win) { try { win.opener = null; } catch (e) {} return; }
+            // popup blocker: offer a real link instead of a dead click
+            const wrap = $('toastWrap');
+            if (wrap) {
+                const t = document.createElement('div');
+                t.className = 'toast';
+                const label = document.createElement('span');
+                label.textContent = 'your browser blocked the tab \u00b7 ';
+                const link = document.createElement('a');
+                link.href = game.url;
+                link.target = '_blank';
+                link.rel = 'noopener';
+                link.textContent = 'open ' + game.name;
+                t.appendChild(label);
+                t.appendChild(link);
+                wrap.appendChild(t);
+                setTimeout(() => { t.classList.add('out'); setTimeout(() => t.remove(), 260); }, 9000);
+            }
+            return;
+        }
         currentGame = game;
         const token = ++openToken;
         viewer.classList.add('open');
@@ -1579,14 +1690,14 @@
 
         const cached = readZonesCache();
         if (cached) {
-            games = cached.map(normalizeCdn);
+            games = dedupeKeys(cached.map(normalizeCdn).filter((g) => !g.hidden));
             renderAll();
         }
 
         (async () => {
             const [zones, localGames] = await Promise.all([fetchZones(), fetchLocalGames()]);
             if (zones) store(ZONES_CACHE_KEY, { at: Date.now(), data: zones });
-            const cdnGames = (zones || cached || []).map(normalizeCdn);
+            const cdnGames = dedupeKeys((zones || cached || []).map(normalizeCdn).filter((g) => !g.hidden));
             games = cdnGames.concat(localGames);
             renderAll();
             await applyDeepLink(early);
@@ -1630,6 +1741,20 @@
     XMLHttpRequest.prototype.open = function (method, url) {
         if (url && isBlocked(url)) return;
         return nativeOpen.apply(this, arguments);
+    };
+
+    /* ---------------- concept hooks ----------------
+       additive only: concept.js needs to read the catalog, open a game and
+       toggle a star. Nothing here changes the app's existing behaviour.
+       ---------------------------------------------------------------- */
+    window.wm = {
+        games: () => games,
+        isFav: (key) => favs.has(key),
+        toggleFav: (key) => toggleFav(key),
+        open: (key) => { const game = findGame(key); if (game) openGame(game); },
+        current: () => currentGame,
+        random: () => randomGame(),
+        reduced: () => !config.motion || window.matchMedia('(prefers-reduced-motion: reduce)').matches
     };
 
     boot();

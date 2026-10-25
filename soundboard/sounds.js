@@ -27,6 +27,11 @@ const sounds =
     "color": "rgb(0, 0, 0)",
     "mp3": "/media/sounds/faaah.mp3"
   },
+ {
+    "name": "fire alarm",
+    "color": "rgb(0, 0, 0)",
+    "mp3": "/media/sounds/fire.mp3"
+  },
   {
     "name": "Fart",
     "color": "rgb(102, 51, 0)",
