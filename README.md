@@ -1,7 +1,7 @@
 # watermusic
 
-A static games portal: a hand-picked catalog, an in-page game viewer, a proxy
-hub and a drop-in `gamehosting/` folder for your own games. No build step.
+A static games portal: a hand-picked catalog, an in-page game viewer and a
+drop-in `gamehosting/` folder for your own games. No build step.
 
 ```bash
 python -m http.server 8123
@@ -17,9 +17,8 @@ python -m http.server 8123
   panels are hairline-bordered, and the accent is used only where it means
   something (active nav, primary action, current filter, starred).
 - **Labels instead of guesswork.** The top bar buttons now read **Random**,
-  **Sort**, **Proxy** and **Find** next to their icons (icons only under 780px so
-  the bar stays usable on a phone). The proxy's buttons are labelled the same
-  way: Open, Reload, Full, New tab.
+  **Sort** and **Find** next to their icons (icons only under 780px so the bar
+  stays usable on a phone).
 - **Sentence case, no fake-terminal type.** Section headings, buttons, card
   metadata, toasts, the palette and the settings sheet all use the body font in
   sentence case; the monospace face is kept only for numbers, counts and key
@@ -88,14 +87,69 @@ hit the other. Duplicate keys are now suffixed (`cdn:1`, `cdn:1-2`).
   the click is ignored until it unlocks, so it can't be tapped straight past.
   "Go back" stays available the whole time.
 
+**Games open in their own tab by default**
+
+- Clicking a card launches the game's own page in a new tab, so the library
+  stays where it is and nothing loads inside a frame. Every game type gets the
+  same treatment — CDN titles open their real CDN page, local games and the
+  soundboard open their own file.
+- **Settings → Playback → Launch → "Open games in a new tab"** turns it off.
+  Switching it off opens a warning first — *"Turning this off WILL break some
+  games"* — and nothing is saved until you press **Turn it off anyway**. With it
+  off, games play in the in-page viewer as before.
+- Shared links (`?id=NN`, `?local=…`), browser back/forward and the loader's
+  retry button always use the in-page viewer: they aren't a click on a card, so
+  a popup would be blocked anyway.
+- If the browser blocks the tab, the game opens in the page instead and a toast
+  says so.
+
+**The locked page**
+
+- Nothing on the site links to it: no rail button, no top-bar button, no hero
+  button, no settings panel, no footer or palette entry.
+- **The code is needed twice.** On the main page the arrow-key combination opens
+  the box and the code hands you one of the random addresses. That address shows
+  nothing but a plain 404 — the same combination and the same code have to be
+  entered again on it before it decrypts. A screenshot of the address bar, a
+  photo of the screen or a URL someone read over your shoulder is therefore worth
+  nothing on its own: it opens to a 404.
+- The page itself is **not stored in plain text**. `_vault/build.js` encrypts
+  `_vault/proxy-src.html` with a key derived from the passphrase (PBKDF2-SHA256,
+  310k iterations, AES-256-GCM) and writes a shell: without the key it is a plain
+  "404 — page could not be found", and the shell is what answers the URL.
+  Reading the source, the repo or the dev console gives you ciphertext, and the
+  folder name is not referenced anywhere in the site's HTML or JS.
+- The page is published at a **pool of eight random addresses**, and every
+  unlock sends you to a different one than last time, so the URL in the address
+  bar is never the same twice in a row and there is nothing worth memorising.
+  Every build throws the old pool away and makes a new one, which kills any URL
+  that leaked.
+- The key from the second unlock lives in `sessionStorage` for 6 hours, so a
+  reload of that tab reopens the page, but the same URL in another tab, browser
+  or profile is back to a 404.
+- Three wrong codes in a row start a cooldown (30s, then 2m, then 10m); the
+  counter lives in `localStorage`, so closing the tab does not reset it.
+
+Rebuild after changing the page or the code:
+
+```bash
+node _vault/build.js "new passphrase"
+```
+
+`_vault/` is git-ignored, so the plain-text source is never published with the
+site. Edit `_vault/proxy-src.html`, run the command, then commit `player.js` and
+the address folders it printed — and delete the folders from the previous build
+(the script removes the ones it recorded in `_vault/pool.json`, so a rebuild on
+the same machine cleans up after itself). Change `POOL` in the script to publish
+more or fewer addresses.
+
 **Fixes carried in the concept**
 
 - Theme preset swatches were collapsing to 2px wide (Chrome gives `<button>`
   `align-items:flex-start`); they now render.
-- `proxy.html` read `wm.config.v3` while the app saved `wm.config.v5`, so the
-  proxy never picked up your theme/accent/font. It now reads v5 (old key still
-  used as a fallback).
-- The proxy's node dropdown drew **behind** the game iframe: the bar's
+- The locked page reads `wm.config.v5` (with `wm.config.v3` as a fallback), so
+  theme, accent and font carry over from the main app.
+- Its node dropdown used to draw **behind** the game iframe: the bar's
   `backdrop-filter` makes it a stacking context, so the menu couldn't escape it
   and the stage painted over it. The bar now carries its own `z-index`.
 
@@ -108,7 +162,9 @@ concept.css      the skin, loaded after app.css
 concept.js       card entrance, featured carousel, ⌘K palette
 app.js           catalog (CATALOG_IDS allowlist), recommended list reader,
                  viewer, caching, the 3s warning cooldown, window.wm hook
-proxy.html       proxy hub, restyled flat, with the config-key fix
+player.js        the hidden combo + access-code gate (generated by _vault/build.js)
+<random>/        eight random folders, each a decoy 404 that decrypts to the
+                 hub when the right code was entered in this tab
 ```
 
 `gamehosting/` holds your own games (`games.json` lists them) and

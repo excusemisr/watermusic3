@@ -94,14 +94,6 @@
         { key: 'grape', label: 'Grape', theme: 'midnight', accent: '#b388ff' },
         { key: 'paper', label: 'Daylight', theme: 'light', accent: '#ffcc00' }
     ];
-    const PROXY_NODES = [
-        { id: 1, label: 'Achroma Link #1', url: 'https://frost-atlas-51214.surge.sh' },
-        { id: 2, label: 'Achroma Link #2', url: 'https://river-harbor-52881.surge.sh' },
-        { id: 3, label: 'Achroma Link #3', url: 'https://sage-reef-64729.surge.sh' },
-        { id: 4, label: 'Achroma Link #4', url: 'https://lark-flint-66405.surge.sh' },
-        { id: 5, label: 'Achroma Link #5', url: 'https://palm-arch-11546.surge.sh' }
-    ];
-
     const DEFAULTS = {
         // appearance
         theme: 'midnight', accent: '#d7ff3e', font: 'grotesk',
@@ -109,9 +101,7 @@
         // layout
         columns: 4, thumb: 'square', labels: 'below', spacing: 'normal',
         // playback
-        prefetch: true, cacheGames: true, external: 'tab', sort: 'name', riskEvery: true,
-        // proxy
-        proxyNode: 1, proxyNewTab: false,
+        prefetch: true, cacheGames: true, external: 'tab', sort: 'name', riskEvery: true, openInTab: true,
         // privacy
         cloakPreset: 'none', cloakTitle: 'watermusic', cloakIcon: '',
         panicKey: '', panicUrl: 'about:blank', autoBlank: false
@@ -245,6 +235,7 @@
     let riskAccepted = read(RISK_KEY, false);
     let pendingRisk = null;
     let pendingPreload = null;
+    let pendingInline = false;
 
     const CATEGORY_RULES = [
         { key: 'horror', label: 'Horror', words: ['five nights', 'fnaf', 'freddy', 'granny', 'baldi', 'backrooms', 'bendy', 'ink machine', 'buckshot', 'cat home', 'neighbor', 'r.e.p.o', 'repo', 'slender', 'scary'] },
@@ -817,9 +808,10 @@
 
     let riskCooldown = null;
 
-    function showRisk(game, preloaded) {
+    function showRisk(game, preloaded, inline) {
         pendingRisk = game;
         pendingPreload = preloaded || null;
+        pendingInline = !!inline;
         const nameNode = $('riskGameName');
         if (nameNode) nameNode.textContent = game.name;
         const foot = $('riskFoot');
@@ -860,6 +852,7 @@
     function closeRisk() {
         pendingRisk = null;
         pendingPreload = null;
+        pendingInline = false;
         clearInterval(riskCooldown);
         riskCooldown = null;
         const accept = $('riskAccept');
@@ -877,17 +870,32 @@
         if (accept && accept.disabled) return;
         const game = pendingRisk;
         const preloaded = pendingPreload;
+        const inline = pendingInline;
         riskAccepted = true;
         store(RISK_KEY, true);
         const dontAsk = $('riskDontAsk');
         if (dontAsk && dontAsk.checked) setConfig('riskEvery', false);
         closeRisk();
-        if (game) openGame(game, preloaded, true);
+        if (game) openGame(game, preloaded, true, inline);
     }
 
-    async function openGame(game, preloaded, skipRisk) {
+    // every game opens in its own tab by default; the in-page viewer is opt-in
+    // because a lot of these titles refuse to run inside a frame
+    function launchInTab(game) {
+        if (!game || !game.url) return false;
+        pushRecent(game);
+        // the manifest url is already the game's own page, so it can be loaded
+        // straight into a tab — no fetch, no blank tab, nothing for the blocker
+        // to mistake for a background open
+        const win = window.open(game.url, '_blank');
+        if (!win) return false;
+        try { win.opener = null; } catch (e) { }
+        return true;
+    }
+
+    async function openGame(game, preloaded, skipRisk, inline) {
         if (!game) return;
-        if (!skipRisk && needsRisk(game)) { showRisk(game, preloaded); return; }
+        if (!skipRisk && needsRisk(game)) { showRisk(game, preloaded, inline); return; }
         // owner-flagged: these only behave inside their own tab
         if (game.forceTab) {
             pushRecent(game);
@@ -911,6 +919,10 @@
                 setTimeout(() => { t.classList.add('out'); setTimeout(() => t.remove(), 260); }, 9000);
             }
             return;
+        }
+        if (config.openInTab !== false && !inline) {
+            if (launchInTab(game)) return;
+            toast('Your browser blocked the new tab — showing it here instead.');
         }
         currentGame = game;
         const token = ++openToken;
@@ -982,7 +994,7 @@
     function restartGame() {
         if (!currentGame) return;
         const g = currentGame;
-        openGame(g, null, true);
+        openGame(g, null, true, true);
     }
 
     async function popOut() {
@@ -1089,7 +1101,6 @@
         { key: 'appearance', label: 'Appearance', icon: '<circle cx="12" cy="12" r="8.5"/><path d="M12 3.5v17"/>' },
         { key: 'layout', label: 'Layout', icon: '<rect x="3.5" y="3.5" width="7" height="7" rx="1.6"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.6"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.6"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.6"/>' },
         { key: 'playback', label: 'Playback', icon: '<path d="M8 5v14l11-7z"/>' },
-        { key: 'proxy', label: 'Proxy', icon: '<circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17"/>' },
         { key: 'privacy', label: 'Hide tab', icon: '<path d="M2.5 12s3.6-6.5 9.5-6.5S21.5 12 21.5 12 17.9 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="2.6"/>' },
         { key: 'data', label: 'Data', icon: '<ellipse cx="12" cy="6" rx="7" ry="2.6"/><path d="M5 6v12c0 1.4 3.1 2.6 7 2.6s7-1.2 7-2.6V6"/>' },
         { key: 'about', label: 'About', icon: '<circle cx="12" cy="12" r="8.5"/><path d="M12 11v5.5M12 7.6v.2"/>' }
@@ -1173,6 +1184,7 @@
                     '</select>') +
             '</section>' +
             '<section><h4>Launch</h4>' +
+                row('Open games in a new tab', 'On by default. Turning it off plays games inside this page instead.', toggle('openInTab', config.openInTab !== false)) +
                 row('Stubborn games', 'Some refuse the in-page viewer — open them in a tab instead.', seg('external', [['tab', 'New tab'], ['frame', 'In page']], config.external)) +
                 row('Warn me every time', 'Show the “not hosted by me” notice before every launch.', toggle('riskEvery', config.riskEvery)) +
                 '<div class="field" style="margin-top:12px"><button class="btn" type="button" data-action="risk-reset">Show the warning again</button></div>' +
@@ -1180,19 +1192,6 @@
             '<section><h4>Game cache</h4>' +
                 '<div class="preview-tile"><div><div class="pv-name" id="cacheTitle">Checking…</div><div class="pv-meta" id="cacheMeta">Games stored in your browser</div></div>' +
                 '<button class="btn danger" type="button" data-action="clear-cache">Clear cache</button></div>' +
-            '</section>';
-    }
-
-    function panelProxy() {
-        return '' +
-            '<section><h4>Default node</h4><span class="hint">The proxy page opens on this node.</span>' +
-                row('Node', 'Five mirrors are available.', '<select data-select="proxyNode">' +
-                    PROXY_NODES.map((n) => '<option value="' + n.id + '"' + (String(config.proxyNode) === String(n.id) ? ' selected' : '') + '>' + n.label + '</option>').join('') +
-                    '</select>') +
-                row('Open proxy in a new tab', 'Keeps the games library loaded behind it.', toggle('proxyNewTab', config.proxyNewTab)) +
-            '</section>' +
-            '<section><h4>Launch</h4><div class="field"><button class="btn primary" type="button" data-action="open-proxy">Open proxy</button></div>' +
-                '<div class="note">The proxy is a separate page (proxy.html). If a node is down, switch to another one in the dropdown there.</div>' +
             '</section>';
     }
 
@@ -1242,8 +1241,7 @@
                 row('Index', 'Everything playable in this build.', '<span class="pill">' + games.length + ' games</span>') +
             '</section>' +
             '<section><h4>Links</h4>' +
-                '<div class="field"><a class="btn" href="./proxy.html">Proxy</a>' +
-                '<a class="btn" href="https://moonlight-hub.pages.dev/" target="_blank" rel="noopener">Moonlight Hub</a></div>' +
+                '<div class="field"><a class="btn" href="https://moonlight-hub.pages.dev/" target="_blank" rel="noopener">Moonlight Hub</a></div>' +
             '</section>';
     }
 
@@ -1251,7 +1249,6 @@
         appearance: panelAppearance,
         layout: panelLayout,
         playback: panelPlayback,
-        proxy: panelProxy,
         privacy: panelPrivacy,
         data: panelData,
         about: panelAbout
@@ -1443,10 +1440,6 @@
                     store(CONFIG_KEY, config);
                     applyConfig(); renderSheet(); render();
                     toast('Settings reset');
-                } else if (kind === 'open-proxy') {
-                    const url = './proxy.html?node=' + config.proxyNode;
-                    if (config.proxyNewTab) window.open(url, '_blank', 'noopener');
-                    else location.href = url;
                 } else if (kind === 'risk-reset') {
                     riskAccepted = false;
                     store(RISK_KEY, false);
@@ -1466,6 +1459,11 @@
             if (check) {
                 const key = check.getAttribute('data-check');
                 if (key === 'motion') setConfig('motion', !check.checked);
+                else if (key === 'openInTab') {
+                    // turning the safe default off needs an explicit warning
+                    if (check.checked) setConfig('openInTab', true);
+                    else { check.checked = true; showTabGate(); }
+                }
                 else setConfig(key, check.checked);
                 return;
             }
@@ -1473,7 +1471,6 @@
             if (select) {
                 const key = select.getAttribute('data-select');
                 let value = select.value;
-                if (key === 'proxyNode') value = Number(value);
                 if (key === 'cloakPreset') {
                     config.cloakPreset = value;
                     const preset = CLOAK_PRESETS[value];
@@ -1635,12 +1632,31 @@
     $('vFav').addEventListener('click', () => { if (currentGame) toggleFav(currentGame.key); });
     $('riskAccept').addEventListener('click', acceptRisk);
     $('riskCancel').addEventListener('click', closeRisk);
+
+    function showTabGate() {
+        const gate = $('tabGate');
+        if (!gate) return;
+        gate.classList.add('open');
+        setTimeout(() => { const keep = $('tabGateKeep'); if (keep) keep.focus(); }, 60);
+    }
+    function closeTabGate() {
+        const gate = $('tabGate');
+        if (gate) gate.classList.remove('open');
+    }
+    if ($('tabGateKeep')) $('tabGateKeep').addEventListener('click', closeTabGate);
+    if ($('tabGateOff')) $('tabGateOff').addEventListener('click', () => {
+        closeTabGate();
+        setConfig('openInTab', false);
+        renderSheet();
+        toast('Games now open inside this page');
+    });
+    if ($('tabGate')) $('tabGate').addEventListener('click', (e) => { if (e.target === e.currentTarget) closeTabGate(); });
     $('riskGate').addEventListener('click', (e) => { if (e.target === e.currentTarget) closeRisk(); });
     $('vLoader').addEventListener('click', (e) => {
         const btn = e.target.closest('[data-loader]');
         if (!btn) return;
         const kind = btn.getAttribute('data-loader');
-        if (kind === 'retry' && currentGame) openGame(currentGame);
+        if (kind === 'retry' && currentGame) openGame(currentGame, null, true, true);
         else if (kind === 'pop') popOut();
         else if (kind === 'cancel') closeGame();
     });
@@ -1672,6 +1688,7 @@
             return;
         }
         if (e.key === 'Escape') {
+            if ($('tabGate').classList.contains('open')) { closeTabGate(); return; }
             if ($('riskGate').classList.contains('open')) { closeRisk(); return; }
             if ($('settingsSheet').classList.contains('open')) { closeSettings(); return; }
             if (viewer.classList.contains('open')) { closeGame(); return; }
@@ -1697,7 +1714,7 @@
         const game = local
             ? games.find((g) => g.source === 'local' && g.id === local)
             : games.find((g) => String(g.id) === String(id));
-        if (game && (!currentGame || currentGame.key !== game.key)) openGame(game);
+        if (game && (!currentGame || currentGame.key !== game.key)) openGame(game, null, false, true);
     });
 
     window.addEventListener('resize', debounce(layoutColumns, 120));
@@ -1734,7 +1751,8 @@
             document.close();
             return true;
         }
-        openGame(game, preloaded);
+        // arriving on a shared link is not a click on a card, so stay in the page
+        openGame(game, preloaded, false, true);
         return true;
     }
 

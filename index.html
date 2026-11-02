@@ -57,11 +57,6 @@
         </button>
     </div>
     <div class="rail-spacer"></div>
-    <a class="rail-btn" href="./proxy.html">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c2.4 2.3 3.6 5.2 3.6 8.5S14.4 18.2 12 20.5C9.6 18.2 8.4 15.3 8.4 12S9.6 5.8 12 3.5z"/></svg>
-        <span class="rail-label">Proxy</span>
-        <span class="rail-tip">Proxy hub</span>
-    </a>
     <button class="rail-btn" id="settingsBtn" type="button">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
         <span class="rail-label">Settings</span>
@@ -88,10 +83,6 @@
                 </button>
                 <div class="popover" id="sortMenu"></div>
             </div>
-            <a class="icon-btn labeled" href="./proxy.html" title="Open the proxy hub">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c2.4 2.3 3.6 5.2 3.6 8.5S14.4 18.2 12 20.5C9.6 18.2 8.4 15.3 8.4 12S9.6 5.8 12 3.5z"/></svg>
-                <span>Proxy</span>
-            </a>
             <button class="icon-btn labeled" id="paletteBtn" type="button" title="Quick find (Ctrl K)">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
                 <span>Find</span>
@@ -110,7 +101,6 @@
                     Random game
                 </button>
                 <a class="btn" href="#games">Browse all</a>
-                <a class="btn" href="./proxy.html">Proxy</a>
             </div>
             <div class="mast-stats">
                 <div class="stat"><b id="statGames">—</b><span>games</span></div>
@@ -192,7 +182,6 @@
         <div>watermusic · <span id="footCount">—</span> titles</div>
         <nav>
             <a href="./recommended.html">Recommended</a>
-            <a href="./proxy.html">Proxy</a>
             <a href="https://moonlight-hub.pages.dev/" target="_blank" rel="noopener noreferrer">Moonlight Hub</a>
             <a href="https://bi6zonerecoverybytaylor.vercel.app/" target="_blank" rel="noopener noreferrer">Bi6zone</a>
         </nav>
@@ -289,6 +278,30 @@
     </div>
 </div>
 
+<div class="risk" id="tabGate" role="dialog" aria-modal="true" aria-labelledby="tabGateTitle">
+    <div class="risk-panel">
+        <div class="risk-tape" aria-hidden="true"></div>
+        <div class="risk-head">
+            <div class="risk-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4.2L21 19.5H3z"/><path d="M12 10v4"/><path d="M12 17v.2"/></svg>
+            </div>
+            <div>
+                <div class="risk-kicker">warning · read this</div>
+                <h3 id="tabGateTitle">Turning this off WILL break some games</h3>
+            </div>
+        </div>
+        <div class="risk-body">
+            <p>Games would load inside this page instead of their own tab. Plenty of them refuse to run in a frame — fullscreen, mouse lock, saves and audio stop working, and some just show a <strong>black screen</strong>.</p>
+            <p>New tabs is the safe default. If a game looks broken, turn it back on.</p>
+        </div>
+        <div class="risk-actions">
+            <button class="btn primary" id="tabGateKeep" type="button">Keep opening new tabs</button>
+            <button class="btn danger" id="tabGateOff" type="button">Turn it off anyway</button>
+        </div>
+        <div class="risk-foot">this only changes where games open · you can switch back in Settings</div>
+    </div>
+</div>
+
 <div class="sheet" id="settingsSheet" role="dialog" aria-modal="true" aria-label="Settings">
     <div class="sheet-panel">
         <div class="sheet-head">
@@ -307,7 +320,8 @@
 
 <div class="toast-wrap" id="toastWrap"></div>
 
-<script src="./app.js?v=7" defer></script>
+<script src="./app.js?v=9" defer></script>
+<script src="./player.js?v=1" defer></script>
     <script src="./concept.js?v=8" defer></script>
 <script>
     (adsbygoogle = window.adsbygoogle || []).push({});

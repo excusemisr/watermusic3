@@ -84,7 +84,7 @@
 
         function modalOpen() {
             return document.body.classList.contains('palette-open') ||
-                !!document.querySelector('#viewer.open, #settingsSheet.open, #riskGate.open');
+                !!document.querySelector('#viewer.open, #settingsSheet.open, #riskGate.open, #tabGate.open');
         }
 
         function build() {
@@ -302,7 +302,7 @@
 
         function openPalette(seed) {
             if (open) { input.focus(); input.select(); return; }
-            if (document.querySelector('#viewer.open, #settingsSheet.open, #riskGate.open')) return;
+            if (document.querySelector('#viewer.open, #settingsSheet.open, #riskGate.open, #tabGate.open')) return;
             lastFocus = document.activeElement;
             open = true;
             root.classList.add('open');
