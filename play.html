@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="midnight">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Starting game…</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <style>
+        html, body { height: 100%; }
+        body {
+            margin: 0; display: grid; place-items: center; text-align: center;
+            background: #08080b; color: #f2f3f5; padding: 24px;
+            font: 400 14px/1.6 'Outfit', system-ui, -apple-system, 'Segoe UI', sans-serif;
+        }
+        .spin {
+            width: 26px; height: 26px; margin: 0 auto 14px; border-radius: 50%;
+            border: 2px solid rgba(255,255,255,.14); border-top-color: #d7ff3e;
+            animation: turn .7s linear infinite;
+        }
+        @keyframes turn { to { transform: rotate(360deg); } }
+        p { margin: 0 0 10px; color: #9a9aa5; }
+        .err { display: none; max-width: 44ch; color: #ff9a9a; }
+        a { color: #d7ff3e; text-decoration: none; border-bottom: 1px solid rgba(215,255,62,.4); }
+    </style>
+</head>
+<body>
+    <div>
+        <div class="spin" id="spin"></div>
+        <p id="msg">Starting the game…</p>
+        <p class="err" id="err"></p>
+        <p><a href="./index.html" id="back">Back to watermusic</a></p>
+    </div>
+<script>
+/* jsDelivr hands these game files back as text/plain, so a tab pointed at the
+   CDN shows the source instead of the game. This page fetches the game and
+   writes it into a real document, which the browser then runs normally. */
+(function () {
+    'use strict';
+    var HTML_URL = 'https://cdn.jsdelivr.net/gh/gnmathcopy/html@main';
+    var msg = document.getElementById('msg');
+    var spin = document.getElementById('spin');
+    var err = document.getElementById('err');
+    var id = new URLSearchParams(location.search).get('id') || '';
+
+    function fail(text) {
+        spin.style.display = 'none';
+        msg.style.display = 'none';
+        err.textContent = text;
+        err.style.display = 'block';
+    }
+
+    /* a game that uses relative paths resolves them from the CDN, not from here;
+       the ones that ship their own <base> already take care of themselves */
+    function withBase(html) {
+        if (/<base[\s>]/i.test(html)) return html;
+        var tag = '<base href="' + HTML_URL + '/">';
+        if (/<head[^>]*>/i.test(html)) return html.replace(/<head[^>]*>/i, function (m) { return m + tag; });
+        if (/<html[^>]*>/i.test(html)) return html.replace(/<html[^>]*>/i, function (m) { return m + '<head>' + tag + '</head>'; });
+        return tag + html;
+    }
+
+    if (!/^\d+$/.test(id)) { fail('That link is missing its game id.'); return; }
+
+    msg.textContent = 'Downloading game files…';
+    fetch(HTML_URL + '/' + id + '.html', { cache: 'default' })
+        .then(function (res) {
+            if (!res.ok) throw new Error('HTTP ' + res.status);
+            return res.text();
+        })
+        .then(function (html) {
+            msg.textContent = 'Starting the game…';
+            var game = withBase(html);
+            document.open();
+            document.write(game);
+            document.close();
+        })
+        .catch(function (e) {
+            fail('That game could not be downloaded (' + (e && e.message ? e.message : 'network error') + ').');
+        });
+})();
+</script>
+</body>
+</html>

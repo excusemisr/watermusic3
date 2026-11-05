@@ -16,6 +16,7 @@
         'https://cdn.jsdelivr.net/gh/gnmathcopy/assets/zones.json'
     ];
     const LOCAL_BASE = ROOT + 'gamehosting/';
+    const PLAY_URL = ROOT + 'play.html?id=';
     const SOUNDBOARD_URL = ROOT + 'soundboard/index.html';
     const CONFIG_KEY = 'wm.config.v5';
     const RISK_KEY = 'wm.risk.ok';
@@ -634,6 +635,16 @@
     }
 
     const inflight = new Map();
+    // relative paths inside a game page have to resolve from the CDN, not from
+    // this site; pages that ship their own <base> already do
+    function withBase(html) {
+        if (!html || /<base[\s>]/i.test(html)) return html;
+        const tag = '<base href="' + HTML_URL + '/">';
+        if (/<head[^>]*>/i.test(html)) return html.replace(/<head[^>]*>/i, (m) => m + tag);
+        if (/<html[^>]*>/i.test(html)) return html.replace(/<html[^>]*>/i, (m) => m + '<head>' + tag + '</head>');
+        return tag + html;
+    }
+
     async function fetchGameHTML(game, onProgress) {
         if (memCache.has(game.key)) { onProgress(1); return memCache.get(game.key); }
         // a hover-prefetch may already be downloading this game — share that request
@@ -849,6 +860,30 @@
         }
     }
 
+    /* ---------------- update log ---------------- */
+    const UPDATE_KEY = 'wm.updates.seen';
+    const UPDATE_ID = '2026-11-05-games-fixed';
+
+    function closeUpdateLog() {
+        const gate = $('updateLog');
+        if (!gate) return;
+        gate.classList.remove('open');
+        store(UPDATE_KEY, UPDATE_ID);
+    }
+
+    function showUpdateLog() {
+        const gate = $('updateLog');
+        if (!gate) return;
+        const ok = $('updateClose');
+        if (ok && !ok.dataset.wired) {
+            ok.dataset.wired = '1';
+            ok.addEventListener('click', closeUpdateLog);
+            gate.addEventListener('click', (e) => { if (e.target === gate) closeUpdateLog(); });
+        }
+        if (read(UPDATE_KEY, '') === UPDATE_ID) return;
+        gate.classList.add('open');
+    }
+
     function closeRisk() {
         pendingRisk = null;
         pendingPreload = null;
@@ -881,13 +916,21 @@
 
     // every game opens in its own tab by default; the in-page viewer is opt-in
     // because a lot of these titles refuse to run inside a frame
+    // the CDN serves the game pages as text/plain, so a tab pointed straight at
+    // the manifest URL prints the source. cdn games go through play.html, which
+    // downloads the page and writes it into a real document.
+    function launchUrl(game) {
+        return game && game.type === 'cdn' && /^\d+$/.test(String(game.id))
+            ? PLAY_URL + encodeURIComponent(String(game.id))
+            : game.url;
+    }
+
     function launchInTab(game) {
         if (!game || !game.url) return false;
         pushRecent(game);
-        // the manifest url is already the game's own page, so it can be loaded
-        // straight into a tab — no fetch, no blank tab, nothing for the blocker
-        // to mistake for a background open
-        const win = window.open(game.url, '_blank');
+        // the tab is opened straight from the click, so the blocker never sees a
+        // background open
+        const win = window.open(launchUrl(game), '_blank');
         if (!win) return false;
         try { win.opener = null; } catch (e) { }
         return true;
@@ -899,7 +942,7 @@
         // owner-flagged: these only behave inside their own tab
         if (game.forceTab) {
             pushRecent(game);
-            const win = window.open(game.url, '_blank');
+            const win = window.open(launchUrl(game), '_blank');
             if (win) { try { win.opener = null; } catch (e) {} return; }
             // popup blocker: offer a real link instead of a dead click
             const wrap = $('toastWrap');
@@ -909,7 +952,7 @@
                 const label = document.createElement('span');
                 label.textContent = 'your browser blocked the tab \u00b7 ';
                 const link = document.createElement('a');
-                link.href = game.url;
+                link.href = launchUrl(game);
                 link.target = '_blank';
                 link.rel = 'noopener';
                 link.textContent = 'open ' + game.name;
@@ -968,7 +1011,7 @@
             });
             if (token !== openToken) return;
             frameArmed = true;
-            frame.srcdoc = html;
+            frame.srcdoc = withBase(html);
             stallTimer = setTimeout(() => {
                 if (frameArmed) $('loaderSub').textContent = 'Game is starting slowly — you can pop it out in a new tab.';
             }, 9000);
@@ -1000,6 +1043,12 @@
     async function popOut() {
         if (!currentGame) return;
         const g = currentGame;
+        if (g.type === 'cdn') {
+            const tab = window.open(launchUrl(g), '_blank');
+            if (!tab) { toast('Popup blocked — allow popups to open games in a tab.'); return; }
+            try { tab.opener = null; } catch (e) { }
+            return;
+        }
         if (g.type === 'local' || g.type === 'soundboard') {
             window.open(g.url, '_blank', 'noopener');
             return;
@@ -1237,7 +1286,7 @@
     function panelAbout() {
         return '' +
             '<section><h4>watermusic</h4><span class="hint">A free games portal that runs entirely in your browser. No account, no tracking.</span>' +
-                row('Version', 'Catalogue release', '<span class="pill">3.1</span>') +
+                row('Version', 'Catalogue release', '<span class="pill">3.2</span>') +
                 row('Index', 'Everything playable in this build.', '<span class="pill">' + games.length + ' games</span>') +
             '</section>' +
             '<section><h4>Links</h4>' +
@@ -1688,6 +1737,7 @@
             return;
         }
         if (e.key === 'Escape') {
+            if ($('updateLog') && $('updateLog').classList.contains('open')) { closeUpdateLog(); return; }
             if ($('tabGate').classList.contains('open')) { closeTabGate(); return; }
             if ($('riskGate').classList.contains('open')) { closeRisk(); return; }
             if ($('settingsSheet').classList.contains('open')) { closeSettings(); return; }
@@ -1747,7 +1797,7 @@
         }
         if (location.hash.indexOf('embed') !== -1 && preloaded) {
             document.open();
-            document.write(preloaded);
+            document.write(withBase(preloaded));
             document.close();
             return true;
         }
@@ -1762,6 +1812,8 @@
         renderSortMenu();
         attachHoverPrefetch();
         startSyncObserver();
+        // the update log opens once per release, after the shelf has painted
+        setTimeout(showUpdateLog, 700);
 
         // kick off the ?id= fetch immediately — the biggest win for shared links
         const params = new URLSearchParams(location.search);

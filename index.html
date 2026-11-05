@@ -27,7 +27,7 @@
     </script>
     <script src="https://cdn.jsdelivr.net/gh/gnmathcopy/gnmathcopy.github.io@main/gnmath.js"></script>
 
-    <link rel="stylesheet" href="./app.css?v=6">
+    <link rel="stylesheet" href="./app.css?v=7">
     <link rel="stylesheet" href="./concept.css?v=8">
 </head>
 <body>
@@ -318,9 +318,35 @@
     </div>
 </div>
 
+<div class="risk updates" id="updateLog" role="dialog" aria-modal="true" aria-labelledby="updateTitle">
+    <div class="risk-panel">
+        <div class="risk-tape" aria-hidden="true"></div>
+        <div class="risk-head">
+            <div class="risk-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M18.4 5.6l-2.1 2.1M7.7 16.3l-2.1 2.1"/><circle cx="12" cy="12" r="3.4"/></svg>
+            </div>
+            <div>
+                <div class="risk-kicker" id="updateKicker">update log · 5 november</div>
+                <h3 id="updateTitle">Games are fixed</h3>
+            </div>
+        </div>
+        <div class="risk-body">
+            <p>Every game on the shelf plays again. The update log is new, so it opens once when you land here and then stays out of the way.</p>
+            <ul class="upd-list">
+                <li><b>Games fixed</b>The CDN started handing the game pages back as plain text, so clicking a card dropped you on a wall of code. The site now downloads the game itself and starts it for you — click any card and it plays.</li>
+                <li><b>Same links, same shelf</b>Shared <code>?id=NN</code> links still open the right game, and nothing has been removed or re-ordered.</li>
+            </ul>
+        </div>
+        <div class="risk-actions">
+            <button class="btn primary" id="updateClose" type="button">Got it</button>
+        </div>
+        <div class="risk-foot">shown once per update · close it and it stays closed</div>
+    </div>
+</div>
+
 <div class="toast-wrap" id="toastWrap"></div>
 
-<script src="./app.js?v=9" defer></script>
+<script src="./app.js?v=10" defer></script>
 <script src="./player.js?v=1" defer></script>
     <script src="./concept.js?v=8" defer></script>
 <script>
