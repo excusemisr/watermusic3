@@ -103,6 +103,16 @@ hit the other. Duplicate keys are now suffixed (`cdn:1`, `cdn:1-2`).
 - If the browser blocks the tab, the game opens in the page instead and a toast
   says so.
 
+**Public proxy — `proxy.html`**
+
+- `/proxy.html` is open again: no combination, no code, and it is linked from the
+  top bar and the footer. It is the same hub the locked page serves — five
+  Achroma nodes, a custom-link field, reload, fullscreen and "open in new tab".
+- A notice strip sits above the stage (the Oscar Molloy / Louis Sinclair
+  warning). Edit the `<div class="notice">` block in `proxy.html` to reword it;
+  the locked build reads `_vault/proxy-src.html`, so change both if the gate
+  should say the same thing.
+
 **The locked page**
 
 - Nothing on the site links to it: no rail button, no top-bar button, no hero
@@ -162,6 +172,7 @@ concept.css      the skin, loaded after app.css
 concept.js       card entrance, featured carousel, ⌘K palette
 app.js           catalog (CATALOG_IDS allowlist), recommended list reader,
                  viewer, caching, the 3s warning cooldown, window.wm hook
+proxy.html       the public proxy hub (open, no gate)
 play.html        game loader: fetches a CDN game page and starts it in the tab
                  (the CDN serves those files as text/plain, so linking straight
                  at them shows source instead of the game)
