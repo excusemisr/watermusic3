@@ -56,6 +56,11 @@
             <span class="rail-tip">Recently played</span>
         </button>
     </div>
+    <a class="rail-btn" href="./proxy.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17"/><path d="M12 3.5c2.2 2.4 3.3 5.3 3.3 8.5s-1.1 6.1-3.3 8.5c-2.2-2.4-3.3-5.3-3.3-8.5S9.8 5.9 12 3.5z"/></svg>
+        <span class="rail-label">Proxy</span>
+        <span class="rail-tip">Proxy hub</span>
+    </a>
     <div class="rail-spacer"></div>
     <button class="rail-btn" id="settingsBtn" type="button">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
@@ -105,6 +110,7 @@
                     Random game
                 </button>
                 <a class="btn" href="#games">Browse all</a>
+                <a class="btn" href="./proxy.html">Proxy</a>
             </div>
             <div class="mast-stats">
                 <div class="stat"><b id="statGames">—</b><span>games</span></div>
@@ -331,15 +337,15 @@
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M18.4 5.6l-2.1 2.1M7.7 16.3l-2.1 2.1"/><circle cx="12" cy="12" r="3.4"/></svg>
             </div>
             <div>
-                <div class="risk-kicker" id="updateKicker">update log · 5 november</div>
-                <h3 id="updateTitle">Games are fixed</h3>
+                <div class="risk-kicker" id="updateKicker">update log · 6 november</div>
+                <h3 id="updateTitle">Proxy is back</h3>
             </div>
         </div>
         <div class="risk-body">
-            <p>Every game on the shelf plays again. The update log is new, so it opens once when you land here and then stays out of the way.</p>
+            <p>The proxy hub is public again — sidebar, top bar, hero and footer all open it, no combination and no code. Yes, I know. I'm the goat.</p>
             <ul class="upd-list">
-                <li><b>Games fixed</b>The CDN started handing the game pages back as plain text, so clicking a card dropped you on a wall of code. The site now downloads the game itself and starts it for you — click any card and it plays.</li>
-                <li><b>Same links, same shelf</b>Shared <code>?id=NN</code> links still open the right game, and nothing has been removed or re-ordered.</li>
+                <li><b>Proxy is back</b>It's open at <code>proxy.html</code> for anyone: five nodes, a link field, reload, fullscreen and "open in new tab". Same hub as before, minus the puzzle — click Proxy in the sidebar, the top bar or the hero.</li>
+                <li><b>Soundboard and frequency generator</b>The soundboard is on the Recommended list now, and there's a new single-file frequency generator in <code>downloads/</code> — recommended too, and it works offline.</li>
             </ul>
         </div>
         <div class="risk-actions">
@@ -351,7 +357,7 @@
 
 <div class="toast-wrap" id="toastWrap"></div>
 
-<script src="./app.js?v=10" defer></script>
+<script src="./app.js?v=11" defer></script>
 <script src="./player.js?v=1" defer></script>
     <script src="./concept.js?v=8" defer></script>
 <script>

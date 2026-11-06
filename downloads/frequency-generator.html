@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Frequency generator</title>
+<meta name="description" content="A single-file tone generator: pick a frequency, a waveform and a volume.">
+<meta name="theme-color" content="#08080b">
+<link rel="icon" type="image/png" href="../favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@200..800&family=JetBrains+Mono:wght@400..700&display=swap" rel="stylesheet">
+<style>
+:root{
+    --bg:#08080b; --panel:#0d0d11; --panel-2:#141419;
+    --ink:#f2f3f5; --dim:#9a9aa5; --dimmer:#71717d;
+    --line:rgba(255,255,255,.1); --line-2:rgba(255,255,255,.2);
+    --accent:#d7ff3e; --accent-rgb:215,255,62; --accent-ink:#0a0c02;
+    --font:'Outfit', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    --mono:'JetBrains Mono', ui-monospace, monospace;
+}
+*{box-sizing:border-box}
+html,body{min-height:100%}
+body{
+    margin:0; padding:26px 20px 40px;
+    background:var(--bg); color:var(--ink);
+    font:400 15px/1.5 var(--font);
+    display:flex; flex-direction:column; align-items:center;
+    -webkit-font-smoothing:antialiased;
+}
+::selection{background:rgba(var(--accent-rgb),.4)}
+a{color:inherit}
+.wrap{width:100%; max-width:520px}
+
+header{display:flex; align-items:center; gap:10px; margin-bottom:22px}
+.back{
+    width:34px; height:34px; flex:none; border-radius:9px; display:grid; place-items:center;
+    border:1px solid var(--line); color:var(--dim);
+}
+.back:hover{color:var(--ink); border-color:var(--line-2)}
+.back svg{width:16px; height:16px}
+.brand{font:600 15px/1.2 var(--font); letter-spacing:-.02em}
+.brand span{display:block; font:400 12px/1.4 var(--font); color:var(--dimmer)}
+
+.card{
+    padding:20px; border-radius:14px;
+    background:var(--panel); border:1px solid var(--line);
+}
+.readout{
+    display:flex; align-items:baseline; gap:8px;
+    font:600 clamp(38px, 11vw, 56px)/1 var(--mono);
+    letter-spacing:-.03em; color:var(--ink);
+}
+.readout small{font-size:15px; font-weight:500; color:var(--dim); letter-spacing:0}
+.note{margin:6px 0 20px; font:400 12.5px/1.4 var(--font); color:var(--dimmer)}
+
+input[type=range]{
+    -webkit-appearance:none; appearance:none; width:100%; height:26px;
+    background:transparent; cursor:pointer; margin:0;
+}
+input[type=range]::-webkit-slider-runnable-track{
+    height:4px; border-radius:99px; background:rgba(255,255,255,.14);
+}
+input[type=range]::-moz-range-track{height:4px; border-radius:99px; background:rgba(255,255,255,.14)}
+input[type=range]::-webkit-slider-thumb{
+    -webkit-appearance:none; appearance:none; width:18px; height:18px; margin-top:-7px;
+    border-radius:50%; background:var(--accent); border:none;
+}
+input[type=range]::-moz-range-thumb{width:18px; height:18px; border:none; border-radius:50%; background:var(--accent)}
+
+.row{display:flex; align-items:center; gap:10px; margin-top:16px; flex-wrap:wrap}
+.label{font:400 12px/1 var(--font); color:var(--dimmer); margin:0 0 7px}
+.field{
+    height:40px; padding:0 12px; border-radius:9px; width:100%;
+    background:var(--panel-2); border:1px solid var(--line);
+    color:var(--ink); font:500 14px/1 var(--mono); outline:none;
+}
+.field:focus{border-color:rgba(var(--accent-rgb),.55)}
+input[type=number].field{-moz-appearance:textfield}
+input[type=number].field::-webkit-outer-spin-button,
+input[type=number].field::-webkit-inner-spin-button{-webkit-appearance:none; margin:0}
+
+.labeled{font:400 12.5px/1 var(--font); color:var(--dim)}
+.vol-wrap{display:flex; align-items:center; gap:12px; margin-top:16px}
+.vol-wrap input[type=range]{flex:1}
+.vol-val{font:500 12px/1 var(--mono); color:var(--dim); min-width:44px; text-align:right}
+
+.waves{display:grid; grid-template-columns:repeat(4, minmax(0,1fr)); gap:6px; margin-top:16px}
+.waves button{
+    height:36px; border-radius:8px; cursor:pointer;
+    background:var(--panel-2); border:1px solid var(--line);
+    color:var(--dim); font:500 12.5px/1 var(--font);
+}
+.waves button:hover{color:var(--ink); border-color:var(--line-2)}
+.waves button.on{background:rgba(var(--accent-rgb),.14); border-color:rgba(var(--accent-rgb),.55); color:var(--ink)}
+
+.chips{display:flex; flex-wrap:wrap; gap:6px; margin-top:16px}
+.chips button{
+    height:30px; padding:0 11px; border-radius:99px; cursor:pointer;
+    background:transparent; border:1px solid var(--line);
+    color:var(--dim); font:500 12px/1 var(--mono);
+}
+.chips button:hover{color:var(--ink); border-color:var(--line-2)}
+
+.play{
+    display:flex; align-items:center; justify-content:center; gap:9px;
+    width:100%; height:48px; margin-top:20px; border-radius:10px; cursor:pointer;
+    background:var(--accent); border:1px solid var(--accent);
+    color:var(--accent-ink); font:600 14px/1 var(--font);
+}
+.play:hover{filter:brightness(1.05)}
+.play.playing{background:transparent; border-color:var(--line-2); color:var(--ink)}
+.play svg{width:15px; height:15px}
+
+.foot{margin-top:20px; font:400 12.5px/1.6 var(--font); color:var(--dimmer); text-align:center}
+.foot a{color:var(--dim); text-decoration:underline; text-underline-offset:3px}
+.foot a:hover{color:var(--ink)}
+</style>
+</head>
+<body>
+<div class="wrap">
+    <header>
+        <a class="back" href="../index.html" title="Back to watermusic" aria-label="Back to watermusic">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 6l-6 6 6 6"/></svg>
+        </a>
+        <div class="brand">Frequency generator <span>one oscillator, no installs</span></div>
+    </header>
+
+    <div class="card">
+        <div class="readout"><span id="readout">440</span><small>Hz</small></div>
+        <p class="note" id="note">A4 · concert pitch</p>
+
+        <input type="range" id="slider" min="0" max="1000" value="612" step="1" aria-label="Frequency">
+
+        <div class="row">
+            <div style="flex:1; min-width:130px">
+                <p class="label">Exact frequency</p>
+                <input type="number" class="field" id="number" min="20" max="20000" step="1" value="440" aria-label="Frequency in hertz">
+            </div>
+            <div style="flex:1; min-width:130px">
+                <p class="label">Waveform</p>
+                <div class="waves" style="margin-top:0" id="waves">
+                    <button type="button" data-wave="sine" class="on">Sine</button>
+                    <button type="button" data-wave="square">Square</button>
+                    <button type="button" data-wave="triangle">Tri</button>
+                    <button type="button" data-wave="sawtooth">Saw</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="vol-wrap">
+            <span class="labeled">Volume</span>
+            <input type="range" id="volume" min="0" max="100" value="35" step="1" aria-label="Volume">
+            <span class="vol-val" id="volVal">35%</span>
+        </div>
+
+        <div class="chips" id="chips">
+            <button type="button" data-freq="40">40</button>
+            <button type="button" data-freq="100">100</button>
+            <button type="button" data-freq="440">440</button>
+            <button type="button" data-freq="528">528</button>
+            <button type="button" data-freq="1000">1k</button>
+            <button type="button" data-freq="4000">4k</button>
+            <button type="button" data-freq="10000">10k</button>
+        </div>
+
+        <button class="play" id="play" type="button">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+            <span id="playLabel">Play tone</span>
+        </button>
+    </div>
+
+    <p class="foot">
+        Space plays and stops · this is one file, so save it and open it anywhere.<br>
+        <a href="../index.html">Back to the games</a>
+    </p>
+</div>
+
+<script>
+(function () {
+    'use strict';
+    var MIN = 20, MAX = 20000;
+    var KEY = 'wm.freq.v1';
+    var readout = document.getElementById('readout');
+    var note = document.getElementById('note');
+    var slider = document.getElementById('slider');
+    var number = document.getElementById('number');
+    var volume = document.getElementById('volume');
+    var volVal = document.getElementById('volVal');
+    var playBtn = document.getElementById('play');
+    var playLabel = document.getElementById('playLabel');
+
+    var state = { freq: 440, wave: 'sine', vol: 0.35 };
+    try {
+        var saved = JSON.parse(localStorage.getItem(KEY) || 'null');
+        if (saved && isFinite(saved.freq)) {
+            state.freq = clamp(saved.freq, MIN, MAX);
+            if (typeof saved.wave === 'string') state.wave = saved.wave;
+            if (isFinite(saved.vol)) state.vol = clamp(saved.vol, 0, 1);
+        }
+    } catch (e) { }
+
+    var ctx = null, osc = null, gain = null, playing = false;
+
+    function clamp(v, lo, hi) { return Math.min(hi, Math.max(lo, Number(v) || lo)); }
+    // the slider is logarithmic so the low end is not squeezed into two pixels
+    function toSlider(freq) { return 1000 * Math.log(freq / MIN) / Math.log(MAX / MIN); }
+    function fromSlider(pos) { return MIN * Math.pow(MAX / MIN, pos / 1000); }
+
+    var NOTES = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+    function noteName(freq) {
+        if (freq < 20 || freq > 20000) return '';
+        var midi = Math.round(69 + 12 * Math.log(freq / 440) / Math.LN2);
+        var cents = Math.round(1200 * Math.log(freq / (440 * Math.pow(2, (midi - 69) / 12))) / Math.LN2);
+        var name = NOTES[((midi % 12) + 12) % 12] + (Math.floor(midi / 12) - 1);
+        if (Math.abs(cents) < 4) return name + ' · spot on';
+        return name + ' ' + (cents > 0 ? '+' : '') + cents + ' cents';
+    }
+
+    function paint() {
+        readout.textContent = state.freq >= 1000 ? (state.freq / 1000).toFixed(2).replace(/\.?0+$/, '') + 'k' : String(Math.round(state.freq));
+        number.value = Math.round(state.freq);
+        slider.value = toSlider(state.freq);
+        volVal.textContent = Math.round(state.vol * 100) + '%';
+        volume.value = Math.round(state.vol * 100);
+        note.textContent = noteName(state.freq) || 'very low — more felt than heard';
+        document.querySelectorAll('#waves button').forEach(function (b) {
+            b.classList.toggle('on', b.getAttribute('data-wave') === state.wave);
+        });
+        try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) { }
+    }
+
+    function audio() {
+        if (!ctx) {
+            var AC = window.AudioContext || window.webkitAudioContext;
+            if (!AC) return null;
+            ctx = new AC();
+        }
+        if (ctx.state === 'suspended') ctx.resume();
+        return ctx;
+    }
+
+    function start() {
+        var c = audio();
+        if (!c) { note.textContent = 'this browser has no audio engine'; return; }
+        osc = c.createOscillator();
+        gain = c.createGain();
+        osc.type = state.wave;
+        osc.frequency.value = state.freq;
+        // ramp instead of jumping, so starting and stopping never clicks
+        gain.gain.setValueAtTime(0.0001, c.currentTime);
+        gain.gain.exponentialRampToValueAtTime(Math.max(0.0001, state.vol), c.currentTime + 0.03);
+        osc.connect(gain).connect(c.destination);
+        osc.start();
+        playing = true;
+        playBtn.classList.add('playing');
+        playLabel.textContent = 'Stop';
+    }
+
+    function stop() {
+        if (!osc || !ctx) return;
+        var o = osc, g = gain, c = ctx;
+        osc = null; gain = null;
+        try {
+            g.gain.cancelScheduledValues(c.currentTime);
+            g.gain.setValueAtTime(Math.max(0.0001, g.gain.value), c.currentTime);
+            g.gain.exponentialRampToValueAtTime(0.0001, c.currentTime + 0.05);
+            o.stop(c.currentTime + 0.07);
+        } catch (e) { }
+        playing = false;
+        playBtn.classList.remove('playing');
+        playLabel.textContent = 'Play tone';
+    }
+
+    function setFreq(value) {
+        state.freq = clamp(Math.round(value), MIN, MAX);
+        if (osc && ctx) osc.frequency.setTargetAtTime(state.freq, ctx.currentTime, 0.01);
+        paint();
+    }
+
+    function setVol(value) {
+        state.vol = clamp(value, 0, 1);
+        if (gain && ctx) gain.gain.setTargetAtTime(Math.max(0.0001, state.vol), ctx.currentTime, 0.02);
+        paint();
+    }
+
+    slider.addEventListener('input', function () { setFreq(fromSlider(Number(slider.value))); });
+    number.addEventListener('change', function () { setFreq(number.value); paint(); });
+    number.addEventListener('keydown', function (e) { if (e.key === 'Enter') { setFreq(number.value); e.preventDefault(); } });
+    volume.addEventListener('input', function () { setVol(Number(volume.value) / 100); });
+
+    document.getElementById('waves').addEventListener('click', function (e) {
+        var b = e.target.closest('[data-wave]');
+        if (!b) return;
+        state.wave = b.getAttribute('data-wave');
+        if (osc) osc.type = state.wave;
+        paint();
+    });
+
+    document.getElementById('chips').addEventListener('click', function (e) {
+        var b = e.target.closest('[data-freq]');
+        if (!b) return;
+        setFreq(Number(b.getAttribute('data-freq')));
+    });
+
+    playBtn.addEventListener('click', function () { playing ? stop() : start(); });
+
+    document.addEventListener('keydown', function (e) {
+        if (e.code !== 'Space' && e.key !== ' ') return;
+        var t = e.target;
+        if (t && (t.tagName === 'INPUT' || t.tagName === 'BUTTON' || t.isContentEditable)) return;
+        e.preventDefault();
+        playing ? stop() : start();
+    });
+
+    window.addEventListener('pagehide', stop);
+    paint();
+})();
+</script>
+</body>
+</html>

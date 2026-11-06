@@ -62,6 +62,7 @@
     const FORCE_TAB_IDS = new Set(['264', '26', '44', '448']);
     // what to show if recommended.html cannot be read (file:// or offline)
     const RECOMMENDED_FALLBACK = [
+        { id: '179', name: 'Soundboard' },
         { id: '91', name: 'Gunspin' },
         { id: '569', name: 'Happy Wheels' },
         { id: '186', name: 'Ragdoll Archers' },
@@ -862,7 +863,7 @@
 
     /* ---------------- update log ---------------- */
     const UPDATE_KEY = 'wm.updates.seen';
-    const UPDATE_ID = '2026-11-05-games-fixed';
+    const UPDATE_ID = '2026-11-06-proxy-back';
 
     function closeUpdateLog() {
         const gate = $('updateLog');
@@ -1286,7 +1287,7 @@
     function panelAbout() {
         return '' +
             '<section><h4>watermusic</h4><span class="hint">A free games portal that runs entirely in your browser. No account, no tracking.</span>' +
-                row('Version', 'Catalogue release', '<span class="pill">3.2</span>') +
+                row('Version', 'Catalogue release', '<span class="pill">3.3</span>') +
                 row('Index', 'Everything playable in this build.', '<span class="pill">' + games.length + ' games</span>') +
             '</section>' +
             '<section><h4>Links</h4>' +
