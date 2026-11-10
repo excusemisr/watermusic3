@@ -241,8 +241,8 @@
                 const list = node ? JSON.parse(node.textContent) : null;
                 if (Array.isArray(list) && list.length) {
                     return list
-                        .filter((e) => e && /^\d+$/.test(String(e.id)))
-                        .map((e) => ({ id: String(e.id), name: e.name || '', why: e.why || '' }));
+                        .filter((e) => e && (e.id || e.local))
+                        .map((e) => ({ id: String(e.local || e.id), name: e.name || '', why: e.why || '' }));
                 }
             }
         } catch (e) { /* file:// or offline — fall through to the built-in list */ }
@@ -257,6 +257,7 @@
     let pendingInline = false;
 
     const CATEGORY_RULES = [
+        { key: 'trolling', label: 'Trolling', words: ['troll', 'cat mario', 'rage game', 'rage quit', 'get trolled', 'prank', 'syobon', 'joke game'] },
         { key: 'horror', label: 'Horror', words: ['five nights', 'fnaf', 'freddy', 'granny', 'baldi', 'backrooms', 'bendy', 'ink machine', 'buckshot', 'cat home', 'neighbor', 'r.e.p.o', 'repo', 'slender', 'scary'] },
         { key: 'shooter', label: 'Shooter', words: ['shooter', 'shoot', 'gun', 'bazooka', 'doom', '1v1', 'superhot', 'hotline', 'snowbattle', 'blade ball', 'gunspin', 'johnny trigger', 'sniper', 'war'] },
         { key: 'racing', label: 'Racing', words: ['race', 'racing', 'drift', 'moto', 'hill climb', 'highway', 'turbo', 'drive', 'driven', 'offroad', 'snow rider', 'bike', 'truck'] },
@@ -312,7 +313,7 @@
     }
 
     function normalizeLocal(entry) {
-        let folder, name, thumb, tags = [], author = '';
+        let folder, name, thumb, tags = [], author = '', file = '';
         if (typeof entry === 'string') {
             folder = entry.trim();
         } else if (entry && typeof entry === 'object') {
@@ -321,16 +322,19 @@
             thumb = entry.thumbnail || entry.thumb || entry.image || entry.photo;
             tags = Array.isArray(entry.tags) ? entry.tags : (entry.category ? [entry.category] : []);
             author = entry.author || '';
+            file = entry.file || entry.entry || entry.page || '';
         }
         folder = String(folder || '').replace(/^\/+|\/+$/g, '');
         if (!folder || folder.indexOf('..') !== -1) return null;
         const base = LOCAL_BASE + folder + '/';
+        // the page is index.html unless games.json names another file
+        const page = String(file || 'index.html').replace(/^\.?\/+/, '');
         const game = {
             key: 'local:' + folder,
             id: folder,
             name: name || titleFromFolder(folder),
             cover: thumb ? (thumb.match(/^https?:/i) ? thumb : base + thumb.replace(/^\.?\//, '')) : base + 'photo.png',
-            url: base + 'index.html',
+            url: base + page,
             type: 'local',
             source: 'local',
             author: author,
@@ -507,7 +511,10 @@
         return games.filter((g) => {
             if (state.starred && !favs.has(g.key)) return false;
             if (state.category !== 'all' && g.category !== state.category) return false;
-            if (q && !g.name.toLowerCase().includes(q)) return false;
+            if (q) {
+                const hay = (g.name + ' ' + (g.tags || []).join(' ') + ' ' + (g.author || '')).toLowerCase();
+                if (!hay.includes(q)) return false;
+            }
             return true;
         }).sort((a, b) => {
             // recommended games stay on top, in the order recommended.html lists them

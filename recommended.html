@@ -160,15 +160,15 @@
 
        { "id": 91, "name": "Gunspin", "why": "one line about it" }
 
-     "id" is the number in a ?id=NN link on the main page. An entry with
-     "href" instead opens that page directly — that is how the frequency
-     generator in downloads/ is listed without being a CDN game. Keep the JSON
-     valid (double quotes, commas between entries) and reload.
+     "id" is the number in a ?id=NN link on the main page; "local" is a folder
+     from gamehosting/ (that is how the frequency generator is listed). An entry
+     with "href" instead opens any page directly. Keep the JSON valid (double
+     quotes, commas between entries) and reload.
      ============================================================ -->
 <script type="application/json" id="recommended-data">
 [
     { "id": 179, "name": "Soundboard", "why": "1,670 sounds — vine booms, airhorns, the lot. It ships with the site, so it never leans on the CDN." },
-    { "name": "Frequency generator", "href": "./downloads/frequency-generator.html", "why": "One page, one oscillator: pick a frequency and a wave at full volume. Saves as a single HTML file and works offline." },
+    { "name": "Frequency generator", "local": "freqgen", "cover": "./gamehosting/freqgen/photo.png", "why": "One page, one oscillator: pick a frequency and a wave at full volume. It ships with the site now, so it works offline." },
     { "id": 91,  "name": "Gunspin", "why": "Tap to fire, ricochet off the walls, buy a bigger gun. A run lasts a minute; you will play ten." },
     { "id": 569, "name": "Happy Wheels", "why": "The original ragdoll stunt game. Every level is a physics trick and a trap." },
     { "id": 186, "name": "Ragdoll Archers", "why": "Two archers, one stick of dynamite, endless slow-motion ragdoll shots." },
@@ -200,7 +200,7 @@
     try { list = JSON.parse(document.getElementById('recommended-data').textContent); }
     catch (e) { list = []; }
 
-    list = list.filter(function (e) { return e && (/^\d+$/.test(String(e.id)) || e.href); });
+    list = list.filter(function (e) { return e && (e.id || e.local || e.href); });
     if (count) count.textContent = list.length + (list.length === 1 ? ' pick' : ' picks');
 
     function esc(s) {
@@ -211,9 +211,9 @@
 
     function markup(entry) {
         return '' +
-            '<a class="rec-card" href="' + (entry.href ? esc(entry.href) : './index.html?id=' + esc(entry.id)) + '"' + (entry.href ? ' target="_blank" rel="noopener"' : '') + '>' +
+            '<a class="rec-card" href="' + (entry.href ? esc(entry.href) : entry.local ? './index.html?local=' + esc(entry.local) : './index.html?id=' + esc(entry.id)) + '"' + (entry.href ? ' target="_blank" rel="noopener"' : '') + '>' +
                 '<span class="rec-thumb" data-thumb="' + esc(entry.id) + '">' +
-                    '<img alt="" loading="lazy" decoding="async" hidden>' +
+                    '<img alt="" loading="lazy" decoding="async"' + (entry.cover ? ' src="' + esc(entry.cover) + '"' : ' hidden') + '>' +
                     '<span>' + esc(String(entry.name || '?').trim().charAt(0).toUpperCase()) + '</span>' +
                 '</span>' +
                 '<span class="rec-body">' +
@@ -227,6 +227,13 @@
     }
 
     grid.innerHTML = list.map(markup).join('');
+
+    // an entry that brings its own cover (local games) shows it straight away
+    Array.prototype.forEach.call(grid.querySelectorAll('img[src]'), function (img) {
+        var show = function () { img.hidden = false; };
+        if (img.complete && img.naturalWidth) show();
+        img.addEventListener('load', show);
+    });
 
     // covers come from the same manifest the main page uses; until they land the
     // tile shows the game's initial, so the page never sits blank

@@ -243,7 +243,7 @@
             }
             var scored = [];
             for (var i = 0; i < games.length; i++) {
-                var s = q ? score(games[i].name, q) : 1;
+                var s = q ? (score(games[i].name, q) || score((games[i].tags || []).join(' '), q)) : 1;
                 if (s > 0) scored.push({ g: games[i], s: s, i: i });
             }
             scored.sort(function (a, b) { return b.s - a.s || a.i - b.i; });
@@ -413,6 +413,19 @@
                 closePalette();
             }
         }, true);
+    })();
+
+    /* ------------------------------------------------------------
+       5 · low-power mode: chromeOS and small machines skip the expensive
+       paint work (blur, lifts, entrance animations) via html[data-perf=lite]
+       ------------------------------------------------------------ */
+    (function lowPower() {
+        var root = document.documentElement;
+        var cores = navigator.hardwareConcurrency || 8;
+        var mem = navigator.deviceMemory || 8;
+        var chromeOS = /CrOS/i.test(navigator.userAgent || '');
+        var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (chromeOS || cores <= 4 || mem <= 4 || reduced) root.setAttribute('data-perf', 'lite');
     })();
 
     /* ------------------------------------------------------------

@@ -5,7 +5,20 @@
       "title": "Neon Runner",
       "author": "watermusic",
       "thumbnail": "photo.png",
-      "tags": ["arcade", "action"]
+      "tags": [
+        "arcade",
+        "action"
+      ]
+    },
+    {
+      "folder": "freqgen",
+      "title": "Frequency generator",
+      "author": "taylor",
+      "thumbnail": "photo.png",
+      "file": "frequency-generator.html",
+      "tags": [
+        "troll"
+      ]
     }
   ]
 }

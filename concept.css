@@ -878,3 +878,89 @@ footer a:hover{color:var(--ink);text-decoration:underline;text-underline-offset:
 .preview-tile .pv-meta{
     font:400 11.5px/1 var(--font);letter-spacing:0;text-transform:none;
 }
+
+/* ------------------------------------------------------------
+   15 · modern pass — rounder surfaces, softer depth
+   ------------------------------------------------------------ */
+:root{
+    --card-r:14px;
+    --lift:0 20px 44px -34px rgba(0,0,0,.95);
+}
+.topbar{
+    border-radius:999px;height:58px;padding:0 8px 0 16px;
+}
+.search{
+    height:40px;padding:0 14px;
+    border-radius:999px;border-color:transparent;background:var(--panel-2);
+}
+.search:focus-within{
+    border-color:transparent;background:var(--panel-3);
+    box-shadow:0 0 0 2px rgba(var(--accent-rgb),.45);
+}
+.icon-btn{border-radius:999px;border-color:transparent;background:var(--panel-2)}
+.icon-btn:hover{background:var(--panel-3);border-color:transparent}
+.icon-btn.primary{border-radius:999px}
+.kbd{border-color:transparent;border-radius:999px}
+.chip{
+    padding:8px 14px;border-radius:999px;
+    border-color:transparent;background:var(--panel-2);
+}
+.chip:hover{border-color:transparent}
+.chip.active{box-shadow:0 10px 24px -16px rgba(var(--accent-rgb),.95)}
+.rail{border-radius:18px}
+.rail-btn{border-radius:12px}
+.rail-logo{border-radius:11px}
+.rail-tip{border-radius:999px}
+.card{
+    border-radius:var(--card-r);overflow:hidden;
+    transition:border-color .16s, background .16s, transform .18s var(--ease), box-shadow .18s var(--ease);
+}
+.card:hover{transform:translateY(-3px);box-shadow:var(--lift);border-color:transparent}
+.card .thumb-wrap{border-radius:0}
+.card .info{padding:11px 12px 13px;gap:4px}
+.card .name{font-size:13.5px;font-weight:600}
+.card .meta{font-size:11.5px}
+.card .pin,.card .newtab,.card .play-pop,.card .idx{border-radius:999px}
+.card .fav{border-radius:999px}
+.btn{border-radius:999px;padding:0 17px}
+.btn.primary{box-shadow:0 12px 28px -18px rgba(var(--accent-rgb),.9)}
+.stat{border-radius:14px;border-color:transparent;background:var(--panel)}
+.spotlight{border-radius:20px}
+.sp-play{border-radius:999px}
+.sp-dots button{border-radius:999px}
+.section-head h2{font-size:14px}
+.toast{border-radius:12px}
+.popover,.palette-panel{border-radius:16px}
+.p-row,.p-row .p-cover,.p-row .p-star{border-radius:10px}
+.risk-panel,.sheet-panel{border-radius:18px}
+.preset,.preset-swatch{border-radius:10px}
+footer{margin-top:64px}
+@media (hover:none){
+    .card:hover{transform:none;box-shadow:none;border-color:var(--line)}
+}
+
+/* ------------------------------------------------------------
+   16 · low-power mode (chromeOS / 4 cores / reduced motion)
+   the effects that cost a compositor frame go; layout is identical
+   ------------------------------------------------------------ */
+html[data-perf="lite"] .rail,
+html[data-perf="lite"] .topbar,
+html[data-perf="lite"] .palette-panel,
+html[data-perf="lite"] .popover,
+html[data-perf="lite"] .risk-panel{
+    -webkit-backdrop-filter:none !important;
+    backdrop-filter:none !important;
+    background:var(--solid);
+}
+html[data-perf="lite"] .card{transition:border-color .12s, background .12s}
+html[data-perf="lite"] .card:hover{transform:none;box-shadow:none;border-color:var(--line-2)}
+html[data-perf="lite"] .card.reveal{animation:none}
+html[data-perf="lite"] .spotlight .sp-bg,
+html[data-perf="lite"] .spotlight:hover .sp-bg{
+    filter:none;transition:opacity .2s linear;
+}
+html[data-perf="lite"] .thumb-wrap::after{box-shadow:none}
+html[data-perf="lite"] .card .play-pop{transition:opacity .1s}
+html[data-perf="lite"] .sp-timer i.run{animation-duration:9s}
+html[data-perf="lite"] .viewer .frame-wrap{animation:none}
+html[data-perf="lite"] ::-webkit-scrollbar{width:8px}
