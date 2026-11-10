@@ -87,13 +87,24 @@ python -m http.server 8123
 - Most of the shelf came from one CDN of single-file uploads and a lot of those
   files were dead, so any game 3kh0 also hosts now opens **their** copy from
   `lite.3kh0.net`: same card, name, cover, star and Recommended slot, a build
-  that runs. Those are `type: 'kh0'` in the catalog — plain pages on their
+  that runs. Those are `type: 'hosted'` in the catalog — plain pages on their
   own host, so they skip `play.html` entirely.
 - `data/3kh0.json` drives it: `slug`, `title`, `cover`, `replaces` (our CDN ids
   the entry takes over) and `add` (true = a card of its own). Currently 45 ids
   replaced and **62 new games** added; clicker/idle clones, 2048 re-skins and
   joke pages were left out.
 - Shared links use `?g=<slug>` for these, alongside `?id=NN` and `?local=…`.
+
+**FNAF comes from `irv77/hd_fnaf`**
+
+- FNAF 1, 2, 3, 4, World, Sister Location, Pizzeria Simulator and UCN point at
+  [irv77/hd_fnaf](https://github.com/irv77/hd_fnaf) on GitHub Pages (folders
+  `1 2 3 4 w sl ps ucn`) — the Clickteam games ported to HTML5, which is the
+  only version of them that actually runs. The map is `HD_FNAF` at the top of
+  `app.js`; the cdn entries for those ids (38–41, 185, 190–192) keep their
+  cards and just load here instead.
+- FNAF 4: Halloween Edition (`428`) has no build in that repo, so it still
+  points at the cdn.
 
 **Bonus fix found while curating:** the manifest ships two games with `id: 1`
 (Bowmasters and OvO), so they shared one catalog key — starring or opening one

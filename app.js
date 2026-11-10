@@ -13,6 +13,18 @@
     // 3kh0's own copies of the same games: plain pages on their host that actually
     // run, so they win over our cdn version. The list lives in data/3kh0.json.
     const KH0_INDEX = ROOT + 'data/3kh0.json';
+    // the Clickteam FNAF builds, hosted by irv77 on GitHub Pages: these replace the
+    // cdn copies, which never got past their loader
+    const HD_FNAF = {
+        '38': 'https://irv77.github.io/hd_fnaf/1/',
+        '39': 'https://irv77.github.io/hd_fnaf/2/',
+        '40': 'https://irv77.github.io/hd_fnaf/3/',
+        '41': 'https://irv77.github.io/hd_fnaf/4/',
+        '185': 'https://irv77.github.io/hd_fnaf/sl/',
+        '190': 'https://irv77.github.io/hd_fnaf/w/',
+        '191': 'https://irv77.github.io/hd_fnaf/ps/',
+        '192': 'https://irv77.github.io/hd_fnaf/ucn/'
+    };
     const ZONES_URLS = [
         'https://cdn.jsdelivr.net/gh/gnmathcopy/assets@main/zones.json',
         'https://raw.githubusercontent.com/gnmathcopy/assets/main/zones.json',
@@ -433,7 +445,8 @@
                     name: entry.title || slug,
                     cover: entry.cover || '',
                     url: url,
-                    type: 'kh0',
+                    type: 'hosted',
+                    hostedBy: '3kh0',
                     source: '3kh0',
                     author: '3kh0',
                     authorLink: '',
@@ -453,7 +466,18 @@
             const hit = kh0Slugs.get(String(game.id));
             if (!hit) return;
             game.url = hit.url;
-            game.type = 'kh0';
+            game.type = 'hosted';
+            game.hostedBy = '3kh0';
+            return;
+        });
+        // FNAF comes from irv77's HTML5 builds, one folder per game
+        list.forEach((game) => {
+            if (game.source !== 'cdn') return;
+            const fnaf = HD_FNAF[String(game.id)];
+            if (!fnaf) return;
+            game.url = fnaf;
+            game.type = 'hosted';
+            game.hostedBy = 'irv77';
         });
         return list.concat(kh0Extras);
     }
@@ -1051,12 +1075,12 @@
             return;
         }
 
-        if (game.type === 'local' || game.type === 'soundboard' || game.type === 'kh0') {
+        if (game.type === 'local' || game.type === 'soundboard' || game.type === 'hosted') {
             frameArmed = true;
             frame.src = game.url;
             $('loaderBar').style.width = '55%';
-            $('loaderSub').textContent = game.type === 'kh0'
-                ? 'Opening 3kh0\u2019s copy of the game…'
+            $('loaderSub').textContent = game.hostedBy
+                ? 'Opening ' + game.hostedBy + '\u2019s copy of the game…'
                 : 'Starting the local game…';
             stallTimer = setTimeout(() => {
                 if (frameArmed) $('loaderSub').textContent = 'Taking a while. If nothing shows, the file may be missing.';
@@ -1110,7 +1134,7 @@
             try { tab.opener = null; } catch (e) { }
             return;
         }
-        if (g.type === 'local' || g.type === 'soundboard' || g.type === 'kh0') {
+        if (g.type === 'local' || g.type === 'soundboard' || g.type === 'hosted') {
             window.open(g.url, '_blank', 'noopener');
             return;
         }
