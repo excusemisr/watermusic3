@@ -10,6 +10,9 @@
     const ROOT = new URL('./', location.href).href;
     const COVER_URL = 'https://cdn.jsdelivr.net/gh/gnmathcopy/covers@main';
     const HTML_URL = 'https://cdn.jsdelivr.net/gh/gnmathcopy/html@main';
+    // 3kh0's own copies of the same games: plain pages on their host that actually
+    // run, so they win over our cdn version. The list lives in data/3kh0.json.
+    const KH0_INDEX = ROOT + 'data/3kh0.json';
     const ZONES_URLS = [
         'https://cdn.jsdelivr.net/gh/gnmathcopy/assets@main/zones.json',
         'https://raw.githubusercontent.com/gnmathcopy/assets/main/zones.json',
@@ -204,6 +207,8 @@
 
     /* ---------------- catalog ---------------- */
     let games = [];
+    let kh0Slugs = new Map();   // our cdn id -> { slug, url }
+    let kh0Extras = [];         // cards for games only 3kh0 hosts
     let popularity = {};
     // the list from recommended.html — [{ id, name, why }], in display order
     let recommended = [];
@@ -401,6 +406,56 @@
             if (game) out.push(game);
         });
         return out;
+    }
+
+    /* ---------------- 3kh0's copies ---------------- */
+    // Their files are ordinary pages served from their own host, so these games
+    // open straight at lite.3kh0.net instead of going through play.html.
+    async function fetchKh0() {
+        try {
+            const res = await fetch(KH0_INDEX + '?v=' + Date.now(), { cache: 'no-store' });
+            if (!res.ok) return null;
+            const json = await res.json();
+            const base = json.base || 'https://lite.3kh0.net/projects/';
+            const list = Array.isArray(json.games) ? json.games : [];
+            const extras = [];
+            kh0Slugs = new Map();
+            list.forEach((entry) => {
+                const slug = String(entry.slug || '').replace(/[^\w.-]/g, '');
+                if (!slug) return;
+                const url = base + slug + '/index.html';
+                (entry.replaces || []).forEach((id) => kh0Slugs.set(String(id), { slug: slug, url: url }));
+                if (!entry.add) return;
+                extras.push({
+                    key: '3kh0:' + slug,
+                    id: '3kh0:' + slug,
+                    slug: slug,
+                    name: entry.title || slug,
+                    cover: entry.cover || '',
+                    url: url,
+                    type: 'kh0',
+                    source: '3kh0',
+                    author: '3kh0',
+                    authorLink: '',
+                    category: categorize(entry.title || slug),
+                    featured: false
+                });
+            });
+            return extras;
+        } catch (e) { return null; }
+    }
+
+    // a card whose game 3kh0 also hosts keeps everything about itself — name,
+    // cover, star, recommended slot — and only swaps where it loads from
+    function withKh0(list) {
+        list.forEach((game) => {
+            if (game.source !== 'cdn') return;
+            const hit = kh0Slugs.get(String(game.id));
+            if (!hit) return;
+            game.url = hit.url;
+            game.type = 'kh0';
+        });
+        return list.concat(kh0Extras);
     }
 
     async function fetchPopularity() {
@@ -798,7 +853,9 @@
         const url = new URL(location.href);
         url.searchParams.delete('id');
         url.searchParams.delete('local');
+        url.searchParams.delete('g');
         if (currentGame.source === 'local') url.searchParams.set('local', currentGame.id);
+        else if (currentGame.source === '3kh0') url.searchParams.set('g', currentGame.slug);
         else if (/^\d+$/.test(String(currentGame.id))) url.searchParams.set('id', currentGame.id);
         if (url.toString() === before) return;
         history.pushState({ game: currentGame.key }, '', url.toString());
@@ -808,6 +865,7 @@
         const url = new URL(location.href);
         url.searchParams.delete('id');
         url.searchParams.delete('local');
+        url.searchParams.delete('g');
         history.replaceState({}, '', url.toString());
     }
 
@@ -863,7 +921,7 @@
 
     /* ---------------- update log ---------------- */
     const UPDATE_KEY = 'wm.updates.seen';
-    const UPDATE_ID = '2026-11-06-proxy-back';
+    const UPDATE_ID = '2026-11-10-games-from-3kh0';
 
     function closeUpdateLog() {
         const gate = $('updateLog');
@@ -993,11 +1051,13 @@
             return;
         }
 
-        if (game.type === 'local' || game.type === 'soundboard') {
+        if (game.type === 'local' || game.type === 'soundboard' || game.type === 'kh0') {
             frameArmed = true;
             frame.src = game.url;
             $('loaderBar').style.width = '55%';
-            $('loaderSub').textContent = 'Starting the local game…';
+            $('loaderSub').textContent = game.type === 'kh0'
+                ? 'Opening 3kh0\u2019s copy of the game…'
+                : 'Starting the local game…';
             stallTimer = setTimeout(() => {
                 if (frameArmed) $('loaderSub').textContent = 'Taking a while. If nothing shows, the file may be missing.';
             }, 8000);
@@ -1050,7 +1110,7 @@
             try { tab.opener = null; } catch (e) { }
             return;
         }
-        if (g.type === 'local' || g.type === 'soundboard') {
+        if (g.type === 'local' || g.type === 'soundboard' || g.type === 'kh0') {
             window.open(g.url, '_blank', 'noopener');
             return;
         }
@@ -1758,13 +1818,16 @@
         const params = new URLSearchParams(location.search);
         const id = params.get('id');
         const local = params.get('local');
-        if (!id && !local) {
+        const slug = params.get('g');
+        if (!id && !local && !slug) {
             if (currentGame) closeGame();
             return;
         }
         const game = local
             ? games.find((g) => g.source === 'local' && g.id === local)
-            : games.find((g) => String(g.id) === String(id));
+            : slug
+                ? games.find((g) => g.source === '3kh0' && g.slug === slug)
+                : games.find((g) => String(g.id) === String(id));
         if (game && (!currentGame || currentGame.key !== game.key)) openGame(game, null, false, true);
     });
 
@@ -1786,9 +1849,11 @@
         const params = new URLSearchParams(location.search);
         const id = params.get('id');
         const local = params.get('local');
-        if (!id && !local) return false;
+        const slug = params.get('g');
+        if (!id && !local && !slug) return false;
         let game = null;
         if (local) game = games.find((g) => g.source === 'local' && g.id === local);
+        if (!game && slug) game = games.find((g) => g.source === '3kh0' && g.slug === slug);
         if (!game && id) game = games.find((g) => String(g.id) === String(id));
         if (!game) return false;
         let preloaded = null;
@@ -1825,18 +1890,21 @@
 
         const cached = readZonesCache();
         const recReady = loadRecommended();
+        const kh0Ready = fetchKh0();
 
         (async () => {
             recommended = await recReady;
+            const extras = await kh0Ready;
+            if (extras) kh0Extras = extras;
             if (cached) {
-                games = dedupeKeys(cached.map(normalizeCdn).filter((g) => !g.hidden));
+                games = withKh0(dedupeKeys(cached.map(normalizeCdn).filter((g) => !g.hidden)));
                 renderAll();
             }
 
             const [zones, localGames] = await Promise.all([fetchZones(), fetchLocalGames()]);
             if (zones) store(ZONES_CACHE_KEY, { at: Date.now(), data: zones });
             const cdnGames = dedupeKeys((zones || cached || []).map(normalizeCdn).filter((g) => !g.hidden));
-            games = cdnGames.concat(localGames);
+            games = withKh0(cdnGames).concat(localGames);
             renderAll();
             await applyDeepLink(early);
             fetchPopularity();

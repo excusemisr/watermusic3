@@ -49,8 +49,9 @@ python -m http.server 8123
   `app.js`) are let in, so the manifest can grow to 500+ uploads and the site
   still shows a hand-picked set people actually recognise. Everything not on
   the list is dropped before the catalog is built — no card, no search hit, no
-  palette row, no recent entry, no featured slot. **Catalog is 262**
-  (261 curated CDN ids + the sample local game).
+  palette row, no recent entry, no featured slot. **Catalog is 325**
+  (261 curated CDN ids + 62 3kh0 games + the sample local game, plus the duplicate
+  id 1 pair counted twice).
 - Carried over from the notes files: the 16 flagged / broken ids and the slop
   sweep (endless runners, idle / merge / tycoon clones, licensed shovelware,
   the "3D" one-tap wave) are all simply not in the allowlist. Kept on purpose:
@@ -80,6 +81,19 @@ python -m http.server 8123
   `downloads/frequency-generator.html` gets a Recommended card without being a
   CDN game. Those entries show on the Recommended page; the strip on the main
   page only pins real catalog games.
+
+**Games load from 3kh0's copies**
+
+- Most of the shelf came from one CDN of single-file uploads and a lot of those
+  files were dead, so any game 3kh0 also hosts now opens **their** copy from
+  `lite.3kh0.net`: same card, name, cover, star and Recommended slot, a build
+  that runs. Those are `type: 'kh0'` in the catalog — plain pages on their
+  own host, so they skip `play.html` entirely.
+- `data/3kh0.json` drives it: `slug`, `title`, `cover`, `replaces` (our CDN ids
+  the entry takes over) and `add` (true = a card of its own). Currently 45 ids
+  replaced and **62 new games** added; clicker/idle clones, 2048 re-skins and
+  joke pages were left out.
+- Shared links use `?g=<slug>` for these, alongside `?id=NN` and `?local=…`.
 
 **Bonus fix found while curating:** the manifest ships two games with `id: 1`
 (Bowmasters and OvO), so they shared one catalog key — starring or opening one

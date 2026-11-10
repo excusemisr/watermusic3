@@ -1,0 +1,837 @@
+{
+ "note": "3kh0's copies of these games, served from lite.3kh0.net. 'add' cards are new; 'replaces' lists our cdn ids that now point here.",
+ "base": "https://lite.3kh0.net/projects/",
+ "games": [
+  {
+   "slug": "2048",
+   "title": "2048",
+   "cover": "https://lite.3kh0.net/projects/2048/thumb.png",
+   "replaces": [
+    "114"
+   ],
+   "add": false
+  },
+  {
+   "slug": "achievementunlocked",
+   "title": "Achievement Unlocked",
+   "cover": "https://lite.3kh0.net/projects/achievementunlocked/achievementunlocked.png",
+   "replaces": [
+    "60"
+   ],
+   "add": false
+  },
+  {
+   "slug": "adrenalinechallenge",
+   "title": "Adrenaline Challenge",
+   "cover": "https://lite.3kh0.net/projects/adrenalinechallenge/adrenalinechallenge.jpg",
+   "replaces": [],
+   "add": true
+  },
+  {
+   "slug": "among-us",
+   "title": "Among Us",
+   "cover": "https://lite.3kh0.net/projects/among-us/red.png",
+   "replaces": [],
+   "add": true
+  },
+  {
+   "slug": "backrooms",
+   "title": "Backrooms",
+   "cover": "https://lite.3kh0.net/projects/backrooms/img/splash.jpg",
+   "replaces": [
+    "64"
+   ],
+   "add": false
+  },
+  {
+   "slug": "basketball-stars",
+   "title": "Basketball Stars",
+   "cover": "https://lite.3kh0.net/projects/basketball-stars/assets/images/basketball-stars.png",
+   "replaces": [
+    "272"
+   ],
+   "add": false
+  },
+  {
+   "slug": "battleforgondor",
+   "title": "Battle for Gondor",
+   "cover": "https://lite.3kh0.net/projects/battleforgondor/3557.jpg",
+   "replaces": [],
+   "add": true
+  },
+  {
+   "slug": "btts",
+   "title": "Big Tower Tiny Square",
+   "cover": "https://lite.3kh0.net/projects/btts/images.png",
+   "replaces": [
+    "67"
+   ],
+   "add": false
+  },
+  {
+   "slug": "blackknight",
+   "title": "Black Knight",
+   "cover": "https://lite.3kh0.net/projects/blackknight/blackknight.png",
+   "replaces": [],
+   "add": true
+  },
+  {
+   "slug": "bloonstd",
+   "title": "Bloons TD",
+   "cover": "https://lite.3kh0.net/projects/bloonstd/bloonstd.jpg",
+   "replaces": [
+    "71"
+   ],
+   "add": false
+  },
+  {
+   "slug": "bloonstd2",
+   "title": "Bloons TD 2",
+   "cover": "https://lite.3kh0.net/projects/bloonstd2/bloonstd2.png",
+   "replaces": [
+    "72"
+   ],
+   "add": false
+  },
+  {
+   "slug": "bloxors",
+   "title": "Bloxors",
+   "cover": "https://lite.3kh0.net/projects/bloxors/block.png",
+   "replaces": [
+    "169"
+   ],
+   "add": false
+  },
+  {
+   "slug": "boxhead2play",
+   "title": "Box Head",
+   "cover": "https://lite.3kh0.net/projects/boxhead2play/boxhead2play.jpg",
+   "replaces": [],
+   "add": true
+  },
+  {
+   "slug": "cannon-basketball-4",
+   "title": "Cannon Basketball 4",
+   "cover": "https://lite.3kh0.net/projects/cannon-basketball-4/img/splash.png",
+   "replaces": [],
+   "add": true
+  },
+  {
+   "slug": "canyondefense",
+   "title": "Canyon Defense",
+   "cover": "https://lite.3kh0.net/projects/canyondefense/canyondefense.png",
+   "replaces": [],
+   "add": true
+  },
+  {
+   "slug": "cell-machine",
+   "title": "Cell Machine",
+   "cover": "https://lite.3kh0.net/projects/cell-machine/img/te9nDu.png",
+   "replaces": [],
+   "add": true
+  },
+  {
+   "slug": "championarcher",
+   "title": "Champion Archer",
+   "cover": "https://lite.3kh0.net/projects/championarcher/championarcher.png",
+   "replaces": [],
+   "add": true
+  },
+  {
+   "slug": "chrome-dino",
+   "title": "Chrome Dino",
+   "cover": "https://lite.3kh0.net/projects/chrome-dino/icons/icon-256.png",
+   "replaces": [],
+   "add": true
+  },
+  {
+   "slug": "circlo",
+   "title": "circlO",
+   "cover": "https://lite.3kh0.net/projects/circlo/img/download.png",
+   "replaces": [],
+   "add": true
+  },
+  {
+   "slug": "cookie-clicker",
+   "title": "Cookie Clicker",
+   "cover": "https://lite.3kh0.net/projects/cookie-clicker/cookie1.jpeg",
+   "replaces": [
+    "82"
+   ],
+   "add": false
+  },
+  {
+   "slug": "creativekillchamber",
+   "title": "Creative Kill Chamber",
+   "cover": "https://lite.3kh0.net/projects/creativekillchamber/creativekillchamber.jpg",
+   "replaces": [],
+   "add": true
+  },
+  {
+   "slug": "cubefield",
+   "title": "Cubefield",
+   "cover": "https://lite.3kh0.net/projects/cubefield/cubefield.jpg",
+   "replaces": [
+    "84"
+   ],
+   "add": false
+  },
+  {
+   "slug": "ctr",
+   "title": "Cut the Rope",
+   "cover": "https://lite.3kh0.net/projects/ctr/logo.png",
+   "replaces": [
+    "85",
+    "212"
+   ],
+   "add": false
+  },
+  {
+   "slug": "ctr-tr",
+   "title": "Cut the Rope Time Travel",
+   "cover": "https://lite.3kh0.net/projects/ctr-tr/logo.png",
+   "replaces": [
+    "213"
+   ],
+   "add": false
+  },
+  {
+   "slug": "death-run-3d",
+   "title": "Death Run 3D",
+   "cover": "https://lite.3kh0.net/projects/death-run-3d/img/death.png",
+   "replaces": [],
+   "add": true
+  },
+  {
+   "slug": "doodle-jump",
+   "title": "Doodle Jump",
+   "cover": "https://lite.3kh0.net/projects/doodle-jump/doodle.png",
+   "replaces": [
+    "470"
+   ],
+   "add": false
+  },
+  {
+   "slug": "doublewires",
+   "title": "Double Wires",
+   "cover": "https://lite.3kh0.net/projects/doublewires/doublewires.png",
+   "replaces": [],
+   "add": true
+  },
+  {
+   "slug": "draw-the-hill",
+   "title": "Draw the Hill",
+   "cover": "https://lite.3kh0.net/projects/draw-the-hill/icons/icon-512.png",
+   "replaces": [],
+   "add": true
+  },
+  {
+   "slug": "ducklife1",
+   "title": "Duck Life",
+   "cover": "https://lite.3kh0.net/projects/ducklife1/ducklife.png",
+   "replaces": [
+    "234"
+   ],
+   "add": false
+  },
+  {
+   "slug": "ducklife2",
+   "title": "Duck Life 2",
+   "cover": "https://lite.3kh0.net/projects/ducklife2/ducklife2.png",
+   "replaces": [
+    "235"
+   ],
+   "add": false
+  },
+  {
+   "slug": "ducklife3",
+   "title": "Duck Life 3",
+   "cover": "https://lite.3kh0.net/projects/ducklife3/duck.png",
+   "replaces": [
+    "236"
+   ],
+   "add": false
+  },
+  {
+   "slug": "elasticman",
+   "title": "Elastic Man",
+   "cover": "https://lite.3kh0.net/projects/elasticman/elasticman.jpg",
+   "replaces": [
+    "197"
+   ],
+   "add": false
+  },
+  {
+   "slug": "endlesswar3",
+   "title": "Endless War 3",
+   "cover": "https://lite.3kh0.net/projects/endlesswar3/endlesswar3.png",
+   "replaces": [],
+   "add": true
+  },
+  {
+   "slug": "evil-glitch",
+   "title": "Evil Glitch",
+   "cover": "https://lite.3kh0.net/projects/evil-glitch/evil.png",
+   "replaces": [],
+   "add": true
+  },
+  {
+   "slug": "exo",
+   "title": "Exo",
+   "cover": "https://lite.3kh0.net/projects/exo/img/small.jpg",
+   "replaces": [],
+   "add": true
+  },
+  {
+   "slug": "factoryballs",
+   "title": "Factory Balls Forever",
+   "cover": "https://lite.3kh0.net/projects/factoryballs/images/splash.png",
+   "replaces": [],
+   "add": true
+  },
+  {
+   "slug": "flappy-bird",
+   "title": "Flappy Bird",
+   "cover": "https://lite.3kh0.net/projects/flappy-bird/assets/thumb.png",
+   "replaces": [
+    "129"
+   ],
+   "add": false
+  },
+  {
+   "slug": "flashtetris",
+   "title": "Flash Tetris",
+   "cover": "https://lite.3kh0.net/projects/flashtetris/flashtetris.png",
+   "replaces": [],
+   "add": true
+  },
+  {
+   "slug": "geodash",
+   "title": "Geometry Dash (Scratch)",
+   "cover": "https://lite.3kh0.net/projects/geodash/geoscratchicon.png",
+   "replaces": [],
+   "add": true
+  },
+  {
+   "slug": "getaway-shootout",
+   "title": "Getaway Shootout",
+   "cover": "https://lite.3kh0.net/projects/getaway-shootout/img/images.jpg",
+   "replaces": [
+    "338"
+   ],
+   "add": false
+  },
+  {
+   "slug": "google-snake",
+   "title": "Google Snake",
+   "cover": "https://lite.3kh0.net/projects/google-snake/img/snake.png",
+   "replaces": [],
+   "add": true
+  },
+  {
+   "slug": "helicopter",
+   "title": "Helicopter",
+   "cover": "https://lite.3kh0.net/projects/helicopter/helicopter.png",
+   "replaces": [],
+   "add": true
+  },
+  {
+   "slug": "hexempire",
+   "title": "Hex Empire",
+   "cover": "https://lite.3kh0.net/projects/hexempire/hexempire.jpg",
+   "replaces": [],
+   "add": true
+  },
+  {
+   "slug": "HexGL",
+   "title": "HexGL",
+   "cover": "https://lite.3kh0.net/projects/HexGL/icon_256.png",
+   "replaces": [],
+   "add": true
+  },
+  {
+   "slug": "hextris",
+   "title": "Hextris",
+   "cover": "https://lite.3kh0.net/projects/hextris/images/hextris-logo.png",
+   "replaces": [],
+   "add": true
+  },
+  {
+   "slug": "hba",
+   "title": "Hover Bot Arena",
+   "cover": "https://lite.3kh0.net/projects/hba/hoverbotarena.jpg",
+   "replaces": [],
+   "add": true
+  },
+  {
+   "slug": "impossiblequiz",
+   "title": "Impossible Quiz",
+   "cover": "https://lite.3kh0.net/projects/impossiblequiz/impossiblequiz.png",
+   "replaces": [
+    "507"
+   ],
+   "add": false
+  },
+  {
+   "slug": "interactivebuddy",
+   "title": "Interactive Buddy",
+   "cover": "https://lite.3kh0.net/projects/interactivebuddy/interactivebuddy.jpg",
+   "replaces": [],
+   "add": true
+  },
+  {
+   "slug": "just-one-boss",
+   "title": "Just One Boss",
+   "cover": "https://lite.3kh0.net/projects/just-one-boss/pv1Gr5.png",
+   "replaces": [],
+   "add": true
+  },
+  {
+   "slug": "kittencannon",
+   "title": "Kitten Cannon",
+   "cover": "https://lite.3kh0.net/projects/kittencannon/kittencannon.png",
+   "replaces": [],
+   "add": true
+  },
+  {
+   "slug": "krunker",
+   "title": "Krunker",
+   "cover": "https://lite.3kh0.net/projects/krunker/img/krunker-io.jpg",
+   "replaces": [],
+   "add": true
+  },
+  {
+   "slug": "learntofly",
+   "title": "Learn To Fly",
+   "cover": "https://lite.3kh0.net/projects/learntofly/learntofly.png",
+   "replaces": [
+    "340"
+   ],
+   "add": false
+  },
+  {
+   "slug": "matrixrampage",
+   "title": "Matrix Rampage",
+   "cover": "https://lite.3kh0.net/projects/matrixrampage/matrixrampage.jpg",
+   "replaces": [],
+   "add": true
+  },
+  {
+   "slug": "minecraft-classic",
+   "title": "Minecraft Classic",
+   "cover": "https://lite.3kh0.net/projects/minecraft-classic/pack.png",
+   "replaces": [],
+   "add": true
+  },
+  {
+   "slug": "minesweeper",
+   "title": "Minesweeper",
+   "cover": "https://lite.3kh0.net/projects/minesweeper/img/minesweeper.png",
+   "replaces": [],
+   "add": true
+  },
+  {
+   "slug": "miniputt",
+   "title": "Mini-putt",
+   "cover": "https://lite.3kh0.net/projects/miniputt/miniputt.png",
+   "replaces": [],
+   "add": true
+  },
+  {
+   "slug": "motox3m",
+   "title": "MotoX3M",
+   "cover": "https://lite.3kh0.net/projects/motox3m/splash.jpg",
+   "replaces": [
+    "96"
+   ],
+   "add": false
+  },
+  {
+   "slug": "motox3m-pool",
+   "title": "MotoX3M Pool",
+   "cover": "https://lite.3kh0.net/projects/motox3m-pool/splash.jpg",
+   "replaces": [
+    "124"
+   ],
+   "add": false
+  },
+  {
+   "slug": "motox3m-spooky",
+   "title": "MotoX3M Spooky",
+   "cover": "https://lite.3kh0.net/projects/motox3m-spooky/splash.jpeg",
+   "replaces": [
+    "99"
+   ],
+   "add": false
+  },
+  {
+   "slug": "motox3m-winter",
+   "title": "MotoX3M Winter",
+   "cover": "https://lite.3kh0.net/projects/motox3m-winter/download.jpeg",
+   "replaces": [
+    "100"
+   ],
+   "add": false
+  },
+  {
+   "slug": "n-gon",
+   "title": "n-gon",
+   "cover": "https://lite.3kh0.net/projects/n-gon/bot.png",
+   "replaces": [
+    "180"
+   ],
+   "add": false
+  },
+  {
+   "slug": "ns-shaft",
+   "title": "NS-Shaft",
+   "cover": "https://lite.3kh0.net/projects/ns-shaft/favicon.png",
+   "replaces": [],
+   "add": true
+  },
+  {
+   "slug": "om-bounce",
+   "title": "Om Nom Bounce",
+   "cover": "https://lite.3kh0.net/projects/om-bounce/assets/icon.jpeg",
+   "replaces": [],
+   "add": true
+  },
+  {
+   "slug": "pandemic2",
+   "title": "Pandemic 2",
+   "cover": "https://lite.3kh0.net/projects/pandemic2/pandemic2.png",
+   "replaces": [],
+   "add": true
+  },
+  {
+   "slug": "papaspizzaria",
+   "title": "Papa's Pizzaria",
+   "cover": "https://lite.3kh0.net/projects/papaspizzaria/papaspizzaria.jpg",
+   "replaces": [
+    "227"
+   ],
+   "add": false
+  },
+  {
+   "slug": "paperio2",
+   "title": "Paper.io 2",
+   "cover": "https://lite.3kh0.net/projects/paperio2/images/icon512.png",
+   "replaces": [
+    "102"
+   ],
+   "add": false
+  },
+  {
+   "slug": "papery-planes",
+   "title": "Papery Planes",
+   "cover": "https://lite.3kh0.net/projects/papery-planes/splash.jpg",
+   "replaces": [],
+   "add": true
+  },
+  {
+   "slug": "polybranch",
+   "title": "PolyBranch",
+   "cover": "https://lite.3kh0.net/projects/polybranch/img/pic1.png",
+   "replaces": [],
+   "add": true
+  },
+  {
+   "slug": "portalflash",
+   "title": "Portal (Flash)",
+   "cover": "https://lite.3kh0.net/projects/portalflash/portaltheflashversion.jpg",
+   "replaces": [],
+   "add": true
+  },
+  {
+   "slug": "push-the-square",
+   "title": "Push The Square",
+   "cover": "https://lite.3kh0.net/projects/push-the-square/img/splash.png",
+   "replaces": [],
+   "add": true
+  },
+  {
+   "slug": "push-your-luck",
+   "title": "Push Your Luck",
+   "cover": "https://lite.3kh0.net/projects/push-your-luck/assets/img/push.png",
+   "replaces": [],
+   "add": true
+  },
+  {
+   "slug": "retro-bowl",
+   "title": "Retro Bowl",
+   "cover": "https://lite.3kh0.net/projects/retro-bowl/img/icon.jpg",
+   "replaces": [],
+   "add": true
+  },
+  {
+   "slug": "rooftop-snipers",
+   "title": "Rooftop Snipers",
+   "cover": "https://lite.3kh0.net/projects/rooftop-snipers/img/preview.png",
+   "replaces": [
+    "283"
+   ],
+   "add": false
+  },
+  {
+   "slug": "sand-game",
+   "title": "Sand Game",
+   "cover": "https://lite.3kh0.net/projects/sand-game/sand.png",
+   "replaces": [],
+   "add": true
+  },
+  {
+   "slug": "slope",
+   "title": "Slope",
+   "cover": "https://lite.3kh0.net/projects/slope/slope4.jpeg",
+   "replaces": [],
+   "add": true
+  },
+  {
+   "slug": "smashkarts",
+   "title": "Smash Carts",
+   "cover": "https://lite.3kh0.net/projects/smashkarts/images/icon-512.png",
+   "replaces": [
+    "370"
+   ],
+   "add": false
+  },
+  {
+   "slug": "smokingbarrels",
+   "title": "Smoking Barrels",
+   "cover": "https://lite.3kh0.net/projects/smokingbarrels/smokingbarrels.jpg",
+   "replaces": [],
+   "add": true
+  },
+  {
+   "slug": "snowbattle",
+   "title": "Snowbattle",
+   "cover": "https://lite.3kh0.net/projects/snowbattle/img/logo.png",
+   "replaces": [],
+   "add": true
+  },
+  {
+   "slug": "solitaire",
+   "title": "Solitare",
+   "cover": "https://lite.3kh0.net/projects/solitaire/screen-shot.png",
+   "replaces": [],
+   "add": true
+  },
+  {
+   "slug": "sort-the-court",
+   "title": "Sort The Court",
+   "cover": "https://lite.3kh0.net/projects/sort-the-court/img/splash.png",
+   "replaces": [
+    "346"
+   ],
+   "add": false
+  },
+  {
+   "slug": "stack",
+   "title": "Stack",
+   "cover": "https://lite.3kh0.net/projects/stack/stack.png",
+   "replaces": [],
+   "add": true
+  },
+  {
+   "slug": "stealingthediamond",
+   "title": "Stealing The Diamond",
+   "cover": "https://lite.3kh0.net/projects/stealingthediamond/stealingthediamond.jpg",
+   "replaces": [],
+   "add": true
+  },
+  {
+   "slug": "stickwar",
+   "title": "Stick War",
+   "cover": "https://lite.3kh0.net/projects/stickwar/stickwar.jpg",
+   "replaces": [],
+   "add": true
+  },
+  {
+   "slug": "stormthehouse2",
+   "title": "Storm The House 2",
+   "cover": "https://lite.3kh0.net/projects/stormthehouse2/stormthehouse2.jpg",
+   "replaces": [],
+   "add": true
+  },
+  {
+   "slug": "sm64",
+   "title": "Super Mario 64",
+   "cover": "https://lite.3kh0.net/projects/sm64/logo.png",
+   "replaces": [
+    "572"
+   ],
+   "add": false
+  },
+  {
+   "slug": "superhot",
+   "title": "Superhot",
+   "cover": "https://lite.3kh0.net/projects/superhot/hot.jpg",
+   "replaces": [
+    "233"
+   ],
+   "add": false
+  },
+  {
+   "slug": "tacticalassasin2",
+   "title": "Tactical Assassin 2",
+   "cover": "https://lite.3kh0.net/projects/tacticalassasin2/tacticalassassin2.png",
+   "replaces": [],
+   "add": true
+  },
+  {
+   "slug": "tank-trouble-2",
+   "title": "Tank Trouble 2",
+   "cover": "https://lite.3kh0.net/projects/tank-trouble-2/tank.jpeg",
+   "replaces": [],
+   "add": true
+  },
+  {
+   "slug": "tanuki-sunset",
+   "title": "Tanuki Sunset",
+   "cover": "https://lite.3kh0.net/projects/tanuki-sunset/img/cover.png",
+   "replaces": [
+    "305"
+   ],
+   "add": false
+  },
+  {
+   "slug": "temple-run-2",
+   "title": "Temple Run 2",
+   "cover": "https://lite.3kh0.net/projects/temple-run-2/img/og-icon.png",
+   "replaces": [],
+   "add": true
+  },
+  {
+   "slug": "the-final-earth",
+   "title": "The Final Earth",
+   "cover": "https://lite.3kh0.net/projects/the-final-earth/images.png",
+   "replaces": [],
+   "add": true
+  },
+  {
+   "slug": "theheist",
+   "title": "The Heist",
+   "cover": "https://lite.3kh0.net/projects/theheist/theheist.jpg",
+   "replaces": [],
+   "add": true
+  },
+  {
+   "slug": "there-is-no-game",
+   "title": "There Is No Game",
+   "cover": "https://lite.3kh0.net/projects/there-is-no-game/logo.png",
+   "replaces": [],
+   "add": true
+  },
+  {
+   "slug": "thisistheonlylevel",
+   "title": "This Is The Only Level",
+   "cover": "https://lite.3kh0.net/projects/thisistheonlylevel/thisistheonlylevel.png",
+   "replaces": [
+    "106"
+   ],
+   "add": false
+  },
+  {
+   "slug": "tosstheturtle",
+   "title": "Toss The Turtle",
+   "cover": "https://lite.3kh0.net/projects/tosstheturtle/tosstheturtle.png",
+   "replaces": [
+    "110"
+   ],
+   "add": false
+  },
+  {
+   "slug": "tube-jumpers",
+   "title": "Tube Jumpers",
+   "cover": "https://lite.3kh0.net/projects/tube-jumpers/img/shark.jpg",
+   "replaces": [
+    "111"
+   ],
+   "add": false
+  },
+  {
+   "slug": "tunnel-rush",
+   "title": "Tunnel Rush",
+   "cover": "https://lite.3kh0.net/projects/tunnel-rush/img/tunnel.jpg",
+   "replaces": [
+    "206"
+   ],
+   "add": false
+  },
+  {
+   "slug": "vex3",
+   "title": "Vex 3",
+   "cover": "https://lite.3kh0.net/projects/vex3/vex3.png",
+   "replaces": [
+    "47"
+   ],
+   "add": false
+  },
+  {
+   "slug": "vex4",
+   "title": "Vex 4",
+   "cover": "https://lite.3kh0.net/projects/vex4/vex4.png",
+   "replaces": [
+    "49"
+   ],
+   "add": false
+  },
+  {
+   "slug": "vex5",
+   "title": "Vex 5",
+   "cover": "https://lite.3kh0.net/projects/vex5/vex.jpeg",
+   "replaces": [
+    "50"
+   ],
+   "add": false
+  },
+  {
+   "slug": "vex6",
+   "title": "Vex 6",
+   "cover": "https://lite.3kh0.net/projects/vex6/assets/icon.jpeg",
+   "replaces": [
+    "51"
+   ],
+   "add": false
+  },
+  {
+   "slug": "wolf3d",
+   "title": "Wolfenstein 3D",
+   "cover": "https://lite.3kh0.net/projects/wolf3d/art/wolf3d.png",
+   "replaces": [],
+   "add": true
+  },
+  {
+   "slug": "wordle",
+   "title": "Wordle",
+   "cover": "https://lite.3kh0.net/projects/wordle/img/logo_512x512.png",
+   "replaces": [
+    "112"
+   ],
+   "add": false
+  },
+  {
+   "slug": "worlds-hardest-game",
+   "title": "World's Hardest Game",
+   "cover": "https://lite.3kh0.net/projects/worlds-hardest-game/images/splash.jpg",
+   "replaces": [
+    "103"
+   ],
+   "add": false
+  },
+  {
+   "slug": "worlds-hardest-game-2",
+   "title": "World's Hardest Game 2",
+   "cover": "https://lite.3kh0.net/projects/worlds-hardest-game-2/the-worlds-hardest-game-2.jpg",
+   "replaces": [],
+   "add": true
+  },
+  {
+   "slug": "you-are-bezos",
+   "title": "You Are Jeff Bezos",
+   "cover": "https://lite.3kh0.net/projects/you-are-bezos/img/banner.png",
+   "replaces": [],
+   "add": true
+  }
+ ]
+}
