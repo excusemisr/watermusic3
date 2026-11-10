@@ -211,6 +211,11 @@ more or fewer addresses.
 - Categories come from `CATEGORY_RULES` in `app.js`. **Trolling** is first in the
   list (troll, cat mario, rage game, prank, syobon), and search matches a game's
   tags and author as well as its name.
+- `TROLLING_KEYS` overrides that guess by key when a name gives nothing away:
+  the soundboard (`cdn:179`), The Impossible Quiz (`cdn:507`), the frequency
+  generator (`local:freqgen`) and the 3kh0 joke games (`3kh0:fake-virus`,
+  `edgenotfound`, `tv-static`, `bigredbutton`, `gimme-the-airpod`,
+  `game-inside`, `there-is-no-game`) all sit on the Trolling shelf.
 - The skin is rounder now: pill search bar, chips and buttons, 14px cards with a
   3px hover lift. Those cost compositor frames, so `concept.js` sets
   `html[data-perf="lite"]` on ChromeOS, on anything reporting 4 or fewer cores or

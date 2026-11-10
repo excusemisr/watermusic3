@@ -60,6 +60,13 @@
    "add": true
   },
   {
+   "slug": "bigredbutton",
+   "title": "Big Red Button",
+   "cover": "https://lite.3kh0.net/projects/bigredbutton/bigredbutton.png",
+   "replaces": [],
+   "add": true
+  },
+  {
    "slug": "btts",
    "title": "Big Tower Tiny Square",
    "cover": "https://lite.3kh0.net/projects/btts/images.png",
@@ -253,6 +260,13 @@
    "add": false
   },
   {
+   "slug": "edgenotfound",
+   "title": "Edge Not Found",
+   "cover": "https://lite.3kh0.net/projects/edgenotfound/edge.png",
+   "replaces": [],
+   "add": true
+  },
+  {
    "slug": "elasticman",
    "title": "Elastic Man",
    "cover": "https://lite.3kh0.net/projects/elasticman/elasticman.jpg",
@@ -290,6 +304,13 @@
    "add": true
   },
   {
+   "slug": "fake-virus",
+   "title": "Fake Virus",
+   "cover": "https://lite.3kh0.net/projects/fake-virus/icon.png",
+   "replaces": [],
+   "add": true
+  },
+  {
    "slug": "flappy-bird",
    "title": "Flappy Bird",
    "cover": "https://lite.3kh0.net/projects/flappy-bird/assets/thumb.png",
@@ -302,6 +323,13 @@
    "slug": "flashtetris",
    "title": "Flash Tetris",
    "cover": "https://lite.3kh0.net/projects/flashtetris/flashtetris.png",
+   "replaces": [],
+   "add": true
+  },
+  {
+   "slug": "game-inside",
+   "title": "Game Inside a Game Inside a Game...",
+   "cover": "https://lite.3kh0.net/projects/game-inside/img/display.png",
    "replaces": [],
    "add": true
   },
@@ -320,6 +348,13 @@
     "338"
    ],
    "add": false
+  },
+  {
+   "slug": "gimme-the-airpod",
+   "title": "Gimme the Airpod",
+   "cover": "https://lite.3kh0.net/projects/gimme-the-airpod/img/logo.png",
+   "replaces": [],
+   "add": true
   },
   {
    "slug": "google-snake",
@@ -757,6 +792,13 @@
     "206"
    ],
    "add": false
+  },
+  {
+   "slug": "tv-static",
+   "title": "TV Static",
+   "cover": "https://lite.3kh0.net/projects/tv-static/static.png",
+   "replaces": [],
+   "add": true
   },
   {
    "slug": "vex3",

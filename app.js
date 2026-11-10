@@ -223,6 +223,25 @@
     let games = [];
     let kh0Slugs = new Map();   // our cdn id -> { slug, url }
     let kh0Extras = [];         // cards for games only 3kh0 hosts
+
+    // the Trolling shelf: these belong there whatever they are called, so the key
+    // wins over whatever CATEGORY_RULES guessed from the name
+    const TROLLING_KEYS = new Set([
+        'cdn:179',              // soundboard
+        'cdn:507',              // the impossible quiz
+        'local:freqgen',        // frequency generator
+        '3kh0:fake-virus',
+        '3kh0:edgenotfound',
+        '3kh0:tv-static',
+        '3kh0:bigredbutton',
+        '3kh0:gimme-the-airpod',
+        '3kh0:game-inside',
+        '3kh0:there-is-no-game'
+    ]);
+    function applyTrolling(list) {
+        list.forEach((g) => { if (TROLLING_KEYS.has(g.key)) g.category = 'trolling'; });
+        return list;
+    }
     let popularity = {};
     // the list from recommended.html — [{ id, name, why }], in display order
     let recommended = [];
@@ -1930,14 +1949,14 @@
             const extras = await kh0Ready;
             if (extras) kh0Extras = extras;
             if (cached) {
-                games = withKh0(dedupeKeys(cached.map(normalizeCdn).filter((g) => !g.hidden)));
+                games = applyTrolling(withKh0(dedupeKeys(cached.map(normalizeCdn).filter((g) => !g.hidden))));
                 renderAll();
             }
 
             const [zones, localGames] = await Promise.all([fetchZones(), fetchLocalGames()]);
             if (zones) store(ZONES_CACHE_KEY, { at: Date.now(), data: zones });
             const cdnGames = dedupeKeys((zones || cached || []).map(normalizeCdn).filter((g) => !g.hidden));
-            games = withKh0(cdnGames).concat(localGames);
+            games = applyTrolling(withKh0(cdnGames).concat(localGames));
             renderAll();
             await applyDeepLink(early);
             fetchPopularity();
