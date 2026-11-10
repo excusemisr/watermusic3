@@ -96,16 +96,22 @@ python -m http.server 8123
   joke pages were left out.
 - Shared links use `?g=<slug>` for these, alongside `?id=NN` and `?local=…`.
 
-**FNAF comes from `irv77/hd_fnaf`**
+**FNAF runs on this site, file-by-file from a CDN**
 
-- FNAF 1, 2, 3, 4, World, Sister Location, Pizzeria Simulator and UCN point at
-  [irv77/hd_fnaf](https://github.com/irv77/hd_fnaf) on GitHub Pages (folders
-  `1 2 3 4 w sl ps ucn`) — the Clickteam games ported to HTML5, which is the
-  only version of them that actually runs. The map is `HD_FNAF` at the top of
-  `app.js`; the cdn entries for those ids (38–41, 185, 190–192) keep their
-  cards and just load here instead.
-- FNAF 4: Halloween Edition (`428`) has no build in that repo, so it still
-  points at the cdn.
+- FNAF 1, 2, 3, 4, World, Sister Location, Pizzeria Simulator and UCN are the
+  Clickteam games ported to HTML5 ([irv77/hd_fnaf](https://github.com/irv77/hd_fnaf)).
+  They are **2.6 GB**, which this repo (and GitHub Pages' 1 GB site limit) cannot
+  hold, so `fnaf.html` runs on our domain and starts the game itself: the tab
+  stays on `…/fnaf.html?g=1`, the address bar never leaves the site, and the game
+  document is written here so its saves belong to this origin.
+- Files stream from `cdn.jsdelivr.net/gh/irv77/hd_fnaf@main` — a host the site
+  already uses for covers — with `raw.githack.com` for Sister Location, whose
+  19 resource chunks are 36 MB each and over jsDelivr's 20 MB per-file cap.
+  `HD_FNAF` at the top of `app.js` maps cdn id → folder (and optional `host`);
+  the cdn entries (38–41, 185, 190–192) keep their cards and just load there.
+- If both hosts are blocked on a network, `fnaf.html` says so instead of hanging.
+- FNAF 4: Halloween Edition (`428`) has no build in that repo, so it still points
+  at the cdn.
 
 **Bonus fix found while curating:** the manifest ships two games with `id: 1`
 (Bowmasters and OvO), so they shared one catalog key — starring or opening one
@@ -222,6 +228,7 @@ concept.js       card entrance, featured carousel, ⌘K palette
 app.js           catalog (CATALOG_IDS allowlist), recommended list reader,
                  viewer, caching, the 3s warning cooldown, window.wm hook
 proxy.html       the public proxy hub (open, no gate)
+fnaf.html        FNAF loader: runs on this domain, starts the game from a CDN
 play.html        game loader: fetches a CDN game page and starts it in the tab
                  (the CDN serves those files as text/plain, so linking straight
                  at them shows source instead of the game)

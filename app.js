@@ -13,17 +13,19 @@
     // 3kh0's own copies of the same games: plain pages on their host that actually
     // run, so they win over our cdn version. The list lives in data/3kh0.json.
     const KH0_INDEX = ROOT + 'data/3kh0.json';
-    // the Clickteam FNAF builds, hosted by irv77 on GitHub Pages: these replace the
-    // cdn copies, which never got past their loader
+    // The Clickteam FNAF builds are 2.6 GB in total — far more than this repo (or
+    // GitHub Pages) can hold — so fnaf.html runs on this site and pulls the game
+    // from a CDN. The tab stays on our own domain; nothing here gets bigger.
+    const FNAF_LOADER = ROOT + 'fnaf.html?g=';
     const HD_FNAF = {
-        '38': 'https://irv77.github.io/hd_fnaf/1/',
-        '39': 'https://irv77.github.io/hd_fnaf/2/',
-        '40': 'https://irv77.github.io/hd_fnaf/3/',
-        '41': 'https://irv77.github.io/hd_fnaf/4/',
-        '185': 'https://irv77.github.io/hd_fnaf/sl/',
-        '190': 'https://irv77.github.io/hd_fnaf/w/',
-        '191': 'https://irv77.github.io/hd_fnaf/ps/',
-        '192': 'https://irv77.github.io/hd_fnaf/ucn/'
+        '38': { g: '1' },
+        '39': { g: '2' },
+        '40': { g: '3' },
+        '41': { g: '4' },
+        '185': { g: 'sl', host: 'githack' },   // its resources are over jsDelivr's 20 MB cap
+        '190': { g: 'w' },
+        '191': { g: 'ps' },
+        '192': { g: 'ucn' }
     };
     const ZONES_URLS = [
         'https://cdn.jsdelivr.net/gh/gnmathcopy/assets@main/zones.json',
@@ -479,7 +481,7 @@
             if (game.source !== 'cdn') return;
             const fnaf = HD_FNAF[String(game.id)];
             if (!fnaf) return;
-            game.url = fnaf;
+            game.url = FNAF_LOADER + fnaf.g + (fnaf.host ? '&h=' + fnaf.host : '');
             game.type = 'hosted';
             game.hostedBy = 'irv77';
         });

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="midnight">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Starting FNAF…</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <style>
+        html, body { height: 100%; }
+        body {
+            margin: 0; display: grid; place-items: center; text-align: center;
+            background: #08080b; color: #f2f3f5; padding: 24px;
+            font: 400 14px/1.6 'Outfit', system-ui, -apple-system, 'Segoe UI', sans-serif;
+        }
+        .spin {
+            width: 26px; height: 26px; margin: 0 auto 14px; border-radius: 50%;
+            border: 2px solid rgba(255,255,255,.14); border-top-color: #d7ff3e;
+            animation: turn .7s linear infinite;
+        }
+        @keyframes turn { to { transform: rotate(360deg); } }
+        p { margin: 0 0 10px; color: #9a9aa5; }
+        .err { display: none; max-width: 46ch; color: #ff9a9a; }
+        a { color: #d7ff3e; text-decoration: none; border-bottom: 1px solid rgba(215,255,62,.4); }
+    </style>
+</head>
+<body>
+    <div>
+        <div class="spin" id="spin"></div>
+        <p id="msg">Getting the game…</p>
+        <p class="err" id="err"></p>
+        <p><a href="./index.html" id="back">Back to watermusic</a></p>
+    </div>
+<script>
+/* The Clickteam FNAF builds are ~2.6 GB in total, which is more than this whole
+   site is allowed to hold, so they stay on a CDN. This page runs on our own
+   domain and starts the game from here: the address bar never leaves the site.
+   One catch: a CDN hands an .html file back as plain text, so a tab pointed at
+   it would print the source, and a script tag with the wrong MIME type would be
+   blocked. Fetching the page and writing it into this document fixes both. */
+(function () {
+    'use strict';
+
+    var HOSTS = {
+        // cdn.jsdelivr.net is already used for covers, so it is not a new domain
+        jsdelivr: 'https://cdn.jsdelivr.net/gh/irv77/hd_fnaf@main/',
+        // jsdelivr refuses files over 20 MB; Sister Location's resources are 36 MB
+        githack: 'https://raw.githack.com/irv77/hd_fnaf/main/'
+    };
+
+    var msg = document.getElementById('msg');
+    var spin = document.getElementById('spin');
+    var err = document.getElementById('err');
+    var params = new URLSearchParams(location.search);
+    var game = String(params.get('g') || '').replace(/[^A-Za-z0-9_-]/g, '');
+    var host = HOSTS[params.get('h')] || HOSTS.jsdelivr;
+
+    function fail(text) {
+        spin.style.display = 'none';
+        msg.style.display = 'none';
+        err.textContent = text;
+        err.style.display = 'block';
+    }
+
+    if (!game) { fail('That link is missing its game.'); return; }
+
+    /* a game that asks for "src/main.js" has to resolve it next to the game, not
+       next to this page, so every document gets a <base> for the CDN folder */
+    function withBase(html, dir) {
+        if (/<base[\s>]/i.test(html)) return html;
+        var tag = '<base href="' + dir + '">';
+        if (/<head[^>]*>/i.test(html)) return html.replace(/<head[^>]*>/i, function (m) { return m + tag; });
+        if (/<html[^>]*>/i.test(html)) return html.replace(/<html[^>]*>/i, function (m) { return m + '<head>' + tag + '</head>'; });
+        return tag + html;
+    }
+
+    var dir = host + game + '/';
+    msg.textContent = 'Getting the game…';
+
+    fetch(dir + 'index.html', { cache: 'default' })
+        .then(function (res) {
+            if (!res.ok) throw new Error('HTTP ' + res.status);
+            return res.text();
+        })
+        .then(function (html) {
+            msg.textContent = 'Starting…';
+            document.open();
+            document.write(withBase(html, dir));
+            document.close();
+        })
+        .catch(function (e) {
+            fail('That game could not be loaded (' + (e && e.message ? e.message : 'network error') + '). ' +
+                'It may be blocked on this network.');
+        });
+})();
+</script>
+</body>
+</html>
