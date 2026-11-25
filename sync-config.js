@@ -1,5 +1,5 @@
 /* ============================================================
-   watermusic · account server
+   watermusic . account server
    Fill these two values in and accounts stop being device-only:
    every username then keeps its stars, settings and game saves
    on the server and loads them on any browser.

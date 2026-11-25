@@ -1724,22 +1724,29 @@
         }
         return true;
     }
+    // the snapshot rides on the user record itself, so an account needs no table
+    // and no policies: just a project, a username and a password
+    function syncSnapshot() {
+        const keys = snapshotKeys();
+        // the game catalog is a cache, not progress; it is refetched on any device
+        delete keys['wm.zones.v2'];
+        return keys;
+    }
     async function syncPull(acct) {
-        const res = await syncCall('/rest/v1/wm_state?select=data&user_id=eq.' + encodeURIComponent(acct.remoteId), {
-            headers: syncHeaders(acct.access)
-        });
+        const res = await syncCall('/auth/v1/user', { headers: syncHeaders(acct.access) });
         if (!res.ok) throw new Error(syncMessage(res, 'Could not load the account.'));
-        return Array.isArray(res.body) && res.body[0] ? res.body[0].data : null;
+        const meta = res.body && res.body.user_metadata;
+        return meta && meta.wm ? meta.wm : null;
     }
     async function syncPushNow() {
         const acct = syncAccount();
         if (!SYNC || !acct || syncBusy) return false;
         syncBusy = true;
         try {
-            const res = await syncCall('/rest/v1/wm_state', {
-                method: 'POST',
-                headers: syncHeaders(acct.access, { Prefer: 'resolution=merge-duplicates,return=minimal' }),
-                body: JSON.stringify([{ user_id: acct.remoteId, data: snapshotKeys(), updated_at: new Date().toISOString() }])
+            const res = await syncCall('/auth/v1/user', {
+                method: 'PUT',
+                headers: syncHeaders(acct.access),
+                body: JSON.stringify({ data: { wm: syncSnapshot() } })
             });
             if (res.status === 401 && (await syncRefresh())) {
                 syncBusy = false;
