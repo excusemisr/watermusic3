@@ -402,30 +402,26 @@ can log out. There is no account code; switching always needs the password.
 ## Interface (25 November)
 
 `concept.css` is the whole interface; `app.css` supplies structure and fallbacks.
-The current design is a desktop-shell layout, not a page with a hero:
+The layout is full-bleed on purpose — there is no `max-width` on `.shell`:
 
-- **Command bar.** One fixed 54px bar: brand on the left, the search field
-  centred (`max-width: 640px`), Random / Sort / Proxy / Find on the right. It is
-  the only always-visible glass surface besides the dock.
-- **Dock.** A 52px icon-only dock, vertically centred on the left, with labels on
-  hover and a 2px mint marker on the active view. Under 1024px it flips to a
-  bottom dock with an underline marker. Everything else is plain dark surface.
-- **Library first.** `#grid` uses `repeat(auto-fill, minmax(188px, 1fr))` — six
-  columns at 1920, four at 1440, two on a phone. Cards have no frame: 16:10
-  artwork with a 10px radius, name under it, mono uppercase metadata under that.
-  Hover lifts the art 3px, zooms it 4%, tints the name mint and reveals the star
-  and play chip. The pinned badge is hidden; nothing repeats down the grid.
-- **Side rail.** 340px, sticky, scrolls inside itself: the featured game as a
-  small window (art, label, title, Play, dots, timer), then Recommended and Jump
-  back in as 46px rows, then the shelf note with the live count and links.
-- **No hero.** The masthead, stat cards and shortcut strip are gone. The library
-  heading is a mono `LIBRARY 318` label; the starred view renames it and hides
-  the category chips.
-- **Settings** opens as a 780px window with a left section list; dialogs, the
-  palette (600px) and the viewer bar share the same flat panel language.
-- The header, dock, feature window and dialogs are the glass surfaces — fine
-  1px borders, a soft top highlight, 20-30px blur; the game artwork stays flat
-  and vivid. No neon, no glow, no gradients behind the cards.
+- **Command bar.** Fixed 66px glass bar, 16px from the edges: brand left, the
+  search field centred at up to 700px (44px tall, 15px text), Random / Sort /
+  Proxy / Find right. Layered glass: a diagonal white wash over
+  `rgba(13,15,20,.58)`, a 1px inner highlight, 34px blur at 180% saturation.
+- **Dock.** 66px wide, 22px icons in 52x48 targets, mint marker and mint fill on
+  the active view, labels on hover. Becomes a bottom dock under 1024px.
+- **Featured banner.** A full-width 340px glass panel: text on the left (46px
+  display title, author, mint Play, Surprise me), artwork on the right with a
+  gradient that fades it into the panel, dots and timer along the bottom.
+- **Rails.** Recommended and Jump back in are full-width horizontal rails of
+  196-248px cards with their own scrollbar, not a tiny sidebar.
+- **Library.** `repeat(auto-fill, minmax(240px, 1fr))` — 7 columns at 2048
+  (253px cards), 5 at 1440, 2 on a phone, 28/22px gutters. No card frames: 16:10
+  art, 14.5px name, 10.5px mono metadata; hover lifts, zooms and tints the name.
+- **Type scale.** 15px body, 14.5px card names, 13px filters and controls, 16px
+  display section headings, 12.5px notes. Nothing under 10px except mono meta.
+- **Glass** is limited to the bar, dock, featured panel, settings window, dialogs
+  and palette; artwork stays flat. No neon, no glow, no star fields.
 
 ## Slop
 

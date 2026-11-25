@@ -28,7 +28,7 @@
     <script src="https://cdn.jsdelivr.net/gh/gnmathcopy/gnmathcopy.github.io@main/gnmath.js"></script>
 
     <link rel="stylesheet" href="./app.css?v=9">
-    <link rel="stylesheet" href="./concept.css?v=22">
+    <link rel="stylesheet" href="./concept.css?v=28">
 </head>
 <body>
 <a class="sr-only" href="#games">Skip to games</a>
@@ -66,74 +66,73 @@
 </header>
 
 <main class="shell">
-    <div class="page">
-        <section class="library" id="games">
-            <div class="lib-head">
-                <div class="lib-title">
-                    <h2 id="viewTitle">Library</h2>
-                    <span class="count" id="allCount">0</span>
-                </div>
-                <div class="lib-actions">
-                    <span class="kbd-hint"><b>&#8984;K</b> search &middot; <b>R</b> random</span>
-                    <button class="ghost" id="paletteBtn2" type="button">Find a game</button>
-                </div>
+    <section class="feature" id="spotlight" role="button" tabindex="0" aria-label="Featured game">
+        <div class="feature-art">
+            <div class="sp-bg" id="spBg"></div>
+            <div class="sp-bg alt" id="spBgAlt"></div>
+            <div class="sp-veil"></div>
+            <span class="sp-corner">1 / 6</span>
+        </div>
+        <div class="feature-body">
+            <div class="sp-label">Featured</div>
+            <h2 class="sp-title" id="spTitle">Loading&hellip;</h2>
+            <div class="sp-sub" id="spSub">Picking something good</div>
+            <div class="feature-actions">
+                <button class="sp-play" id="spPlay" type="button">Play now</button>
+                <button class="ghost lg" type="button" id="spRandom">Surprise me</button>
             </div>
-            <div class="chips" id="categoryNav"></div>
-            <div class="grid" id="grid"></div>
-            <div class="grid-status" id="gridStatus"></div>
-            <div class="sentinel" id="sentinel"></div>
-        </section>
+        </div>
+        <div class="sp-foot">
+            <div class="sp-dots" id="spDots" aria-hidden="true"></div>
+            <div class="sp-timer"><i id="spTimer"></i></div>
+        </div>
+    </section>
 
-        <aside class="side">
-            <section class="feature" id="spotlight" role="button" tabindex="0" aria-label="Featured game">
-                <div class="feature-art">
-                    <div class="sp-bg" id="spBg"></div>
-                    <div class="sp-bg alt" id="spBgAlt"></div>
-                    <div class="sp-veil"></div>
-                    <span class="sp-corner">1 / 6</span>
-                </div>
-                <div class="feature-body">
-                    <div class="sp-text">
-                        <div class="sp-label">Featured</div>
-                        <div class="sp-title" id="spTitle">Loading&hellip;</div>
-                        <div class="sp-sub" id="spSub">Picking something good</div>
-                    </div>
-                    <button class="sp-play" id="spPlay" type="button">Play</button>
-                </div>
-                <div class="sp-foot">
-                    <div class="sp-dots" id="spDots" aria-hidden="true"></div>
-                    <div class="sp-timer"><i id="spTimer"></i></div>
-                </div>
-            </section>
+    <section class="rail-sec" id="recSection" hidden>
+        <div class="sec-head">
+            <h3>Recommended</h3>
+            <span class="sec-note">picked from the shelf</span>
+            <a href="./recommended.html">See all</a>
+        </div>
+        <div class="rail-row" id="recRow"></div>
+    </section>
 
-            <section class="mini" id="recSection" hidden>
-                <div class="mini-head">
-                    <h3>Recommended</h3>
-                    <a href="./recommended.html">See all</a>
-                </div>
-                <div class="mini-list" id="recRow"></div>
-            </section>
+    <section class="rail-sec" id="recentSection" hidden>
+        <div class="sec-head">
+            <h3>Jump back in</h3>
+            <span class="sec-note">your last few</span>
+            <button id="clearRecent" type="button">Clear</button>
+        </div>
+        <div class="rail-row" id="recentRow"></div>
+    </section>
 
-            <section class="mini" id="recentSection" hidden>
-                <div class="mini-head">
-                    <h3>Jump back in</h3>
-                    <button id="clearRecent" type="button">Clear</button>
-                </div>
-                <div class="mini-list" id="recentRow"></div>
-            </section>
+    <section class="library" id="games">
+        <div class="lib-head">
+            <div class="lib-title">
+                <h2 id="viewTitle">Library</h2>
+                <span class="count" id="allCount">0</span>
+            </div>
+            <div class="lib-actions">
+                <span class="kbd-hint"><b>&#8984;K</b> search &middot; <b>R</b> random</span>
+                <button class="ghost" id="paletteBtn2" type="button">Find a game</button>
+            </div>
+        </div>
+        <div class="chips" id="categoryNav"></div>
+        <div class="grid" id="grid"></div>
+        <div class="grid-status" id="gridStatus"></div>
+        <div class="sentinel" id="sentinel"></div>
+    </section>
 
-            <section class="mini shelf">
-                <div class="mini-head"><h3>On this shelf</h3></div>
-                <p class="shelf-line"><b id="footCount">&mdash;</b> games, every page served from this site. No installs, no redirects.</p>
-                <div class="shelf-links">
-                    <a href="./recommended.html">Recommended</a>
-                    <a href="./proxy.html">Proxy</a>
-                    <a href="https://moonlight-hub.pages.dev/" target="_blank" rel="noopener noreferrer">Moonlight Hub</a>
-                    <a href="https://bi6zonerecoverybytaylor.vercel.app/" target="_blank" rel="noopener noreferrer">Bi6zone</a>
-                </div>
-            </section>
-        </aside>
+    <div class="shelf-line">
+        <span><b id="footCount">&mdash;</b> games on this shelf, every page served from this site.</span>
+        <span class="shelf-links">
+            <a href="./recommended.html">Recommended</a>
+            <a href="./proxy.html">Proxy</a>
+            <a href="https://moonlight-hub.pages.dev/" target="_blank" rel="noopener noreferrer">Moonlight Hub</a>
+            <a href="https://bi6zonerecoverybytaylor.vercel.app/" target="_blank" rel="noopener noreferrer">Bi6zone</a>
+        </span>
     </div>
+
     <div class="ad-slot">
         <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-5521219086088837" data-ad-slot="5549138288" data-ad-format="auto" data-full-width-responsive="true"></ins>
     </div>
@@ -386,7 +385,7 @@
 
 <div class="toast-wrap" id="toastWrap"></div>
 
-<script src="./app.js?v=30" defer></script>
+<script src="./app.js?v=31" defer></script>
 <script src="./player.js?v=1" defer></script>
     <script src="./concept.js?v=9" defer></script>
 <script>

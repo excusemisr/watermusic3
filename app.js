@@ -2218,6 +2218,8 @@
     $('randomBtn').addEventListener('click', randomGame);
     const heroRandom = $('heroRandom');
     if (heroRandom) heroRandom.addEventListener('click', randomGame);
+    const spRandom = $('spRandom');
+    if (spRandom) spRandom.addEventListener('click', (e) => { e.stopPropagation(); randomGame(); });
 
     $('spotlight').addEventListener('click', () => {
         const key = $('spotlight').dataset.key;
