@@ -58,6 +58,11 @@
        that is not listed is invisible everywhere — grid, search, palette,
        recents, featured.
        ---------------------------------------------------------------- */
+    // taken off the shelf on 25 november, all slop: 212 (a second Cut the Rope),
+    // 543 Jelly Drift, 544 Plinko, 571 Layers Roll, 572 Lazy Jumper,
+    // 573 Man Runner 2048, 574 Pottery Master, 577 Steal Brainrot Online,
+    // 197 Elastic Man, 257 Google Baseball, 515 PacMan (Horror). Add an id back
+    // here to bring one back.
     const CATALOG_IDS = new Set([
         '1', '2', '3', '5', '7', '8', '11', '12', '24', '26', '38', '39',
         '40', '41', '44', '45', '46', '47', '48', '49', '50', '51', '52', '53',
@@ -68,19 +73,19 @@
         '119', '120', '124', '125', '126', '129', '130', '146', '151', '169', '170', '173',
         '174', '175', '176', '177', '178', '179', '180', '181', '182', '183', '297', '298',
         '299', '300', '301', '185', '186', '187', '190', '191', '192', '194', '195', '196',
-        '197', '199', '200', '201', '203', '205', '206', '212', '213', '214', '215', '216',
+        '199', '200', '201', '203', '205', '206', '213', '214', '215', '216',
         '217', '218', '219', '220', '221', '222', '223', '224', '225', '226', '227', '228',
         '229', '230', '231', '232', '233', '234', '235', '236', '237', '238', '239', '240',
         '241', '242', '243', '244', '245', '246', '247', '248', '249', '250', '251', '252',
-        '257', '259', '261', '262', '263', '264', '266', '267', '269', '270', '271', '272',
+        '259', '261', '262', '263', '264', '266', '267', '269', '270', '271', '272',
         '273', '276', '278', '279', '283', '287', '288', '289', '290', '291', '292', '293',
         '303', '304', '305', '309', '312', '313', '314', '316', '333', '334', '335', '336',
         '337', '338', '339', '340', '341', '342', '344', '345', '346', '350', '360', '361',
         '368', '369', '370', '427', '428', '430', '433', '435', '436', '438', '440', '444',
         '445', '446', '448', '449', '450', '451', '456', '457', '460', '461', '465', '466',
         '467', '468', '470', '471', '474', '481', '489', '490', '501', '505', '506', '507',
-        '508', '512', '515', '520', '524', '542', '543', '544', '547', '548', '549', '550',
-        '554', '559', '569', '571', '572', '573', '574', '577', '585'
+        '508', '512', '520', '524', '542', '547', '548', '549', '550',
+        '554', '559', '569', '585'
     ]);
     // work, but only when they get their own tab
     const FORCE_TAB_IDS = new Set(['264', '26', '44', '448']);
@@ -1100,7 +1105,7 @@
 
     /* ---------------- update log ---------------- */
     const UPDATE_KEY = 'wm.updates.seen';
-    const UPDATE_ID = '2026-11-25-every-game-local';
+    const UPDATE_ID = '2026-11-25-accounts-and-no-slop';
 
     function closeUpdateLog() {
         const gate = $('updateLog');
@@ -1587,14 +1592,14 @@
         db.data[db.current] = rec;
         acctWrite(db);
     }
-    function acctCreate(name) {
+    function acctCreate(name, pin) {
         const db = acctDb();
         acctSaveCurrent(db);
         // a new account starts from whatever is on screen right now
         const base = db.current && db.data[db.current] ? db.data[db.current].keys : snapshotKeys();
         const id = acctId();
         const label = String(name || '').trim().slice(0, 24) || ('Player ' + (db.list.length + 1));
-        db.list.push({ id: id, name: label, created: Date.now() });
+        db.list.push({ id: id, name: label, created: Date.now(), pin: pin || '' });
         db.data[id] = { keys: base || {} };
         db.current = id;
         acctWrite(db);
@@ -1675,6 +1680,112 @@
                 '<div class="field" style="margin-top:12px"><button class="btn" type="button" data-action="acct-export">Fill in the code</button><button class="btn" type="button" data-action="acct-import">Load from the code</button></div>' +
                 '<textarea id="acctCode" rows="4" spellcheck="false" placeholder="Account code" style="width:100%;margin-top:10px;padding:10px;border-radius:8px;border:1px solid var(--line);background:var(--panel-2);color:var(--ink);font:12px/1.5 var(--font-mono)"></textarea>' +
             '</section>';
+    }
+
+
+    /* ---------------- sign-in gate ----------------
+       Comes up on launch while this browser has no account. Registering takes
+       whatever is already on screen (stars, settings, saves) as the account, so
+       the only thing a player has to do is pick a name. Logging in swaps a named
+       snapshot back in, guarded by its PIN when it has one.
+       ---------------------------------------------------------------- */
+    const AUTH_TAB_KEY = 'wm.auth.tab';
+
+    function pinHash(pin) {
+        const text = 'wm:' + pin;
+        if (window.crypto && window.crypto.subtle && window.TextEncoder) {
+            return crypto.subtle.digest('SHA-256', new TextEncoder().encode(text)).then((buf) => {
+                return Array.prototype.map.call(new Uint8Array(buf), (b) => ('0' + b.toString(16)).slice(-2)).join('');
+            });
+        }
+        // no WebCrypto (file://): still better than keeping the PIN in the clear
+        let h = 5381;
+        for (let i = 0; i < text.length; i++) h = ((h * 33) ^ text.charCodeAt(i)) >>> 0;
+        return Promise.resolve('djb2:' + h.toString(16));
+    }
+
+    function authSay(text) {
+        const node = $('authErr');
+        if (node) node.textContent = text || '';
+    }
+    function fillAuthAccounts() {
+        const select = $('authAccount');
+        if (!select) return;
+        const db = acctDb();
+        select.innerHTML = db.list.length
+            ? db.list.map((a) => '<option value="' + a.id + '">' + escapeHtml(a.name) + (a.pin ? ' \u00b7 PIN' : '') + '</option>').join('')
+            : '<option value="">No accounts on this device yet</option>';
+    }
+    function authTab(which) {
+        const reg = $('authRegister');
+        const log = $('authLogin');
+        if (reg) reg.hidden = which !== 'register';
+        if (log) log.hidden = which !== 'login';
+        document.querySelectorAll('#authTabs [data-auth-tab]').forEach((b) => {
+            b.classList.toggle('on', b.getAttribute('data-auth-tab') === which);
+        });
+        try { sessionStorage.setItem(AUTH_TAB_KEY, which); } catch (e) { }
+        authSay('');
+        if (which === 'login') fillAuthAccounts();
+    }
+    function showAuthGate() {
+        const gate = $('authGate');
+        if (!gate) return;
+        if (acctDb().current) return;
+        fillAuthAccounts();
+        let tab = 'register';
+        try { tab = sessionStorage.getItem(AUTH_TAB_KEY) || 'register'; } catch (e) { }
+        authTab(tab === 'login' ? 'login' : 'register');
+        gate.classList.add('open');
+        setTimeout(() => { const n = $('authName'); if (n) n.focus(); }, 80);
+    }
+    function closeAuthGate() {
+        const gate = $('authGate');
+        if (gate) gate.classList.remove('open');
+    }
+    async function authRegister() {
+        const name = $('authName') ? $('authName').value.trim() : '';
+        const pin = $('authPin') ? $('authPin').value.trim() : '';
+        if (!name) { authSay('Give the account a name first.'); return; }
+        if (pin && pin.length < 4) { authSay('A PIN needs at least four characters.'); return; }
+        const hash = pin ? await pinHash(pin) : '';
+        acctCreate(name, hash);
+        closeAuthGate();
+    }
+    async function authLogin() {
+        const select = $('authAccount');
+        const id = select ? select.value : '';
+        const db = acctDb();
+        const acct = db.list.filter((a) => a.id === id)[0];
+        if (!acct) { authSay('Pick an account first.'); return; }
+        if (acct.pin) {
+            const pin = $('authLoginPin') ? $('authLoginPin').value.trim() : '';
+            const hash = pin ? await pinHash(pin) : '';
+            if (hash !== acct.pin) { authSay('That PIN is not right.'); return; }
+        }
+        closeAuthGate();
+        acctSwitch(id);
+    }
+    function wireAuthGate() {
+        const gate = $('authGate');
+        if (!gate) return;
+        gate.addEventListener('click', (e) => {
+            const tab = e.target.closest('[data-auth-tab]');
+            if (tab) { authTab(tab.getAttribute('data-auth-tab')); return; }
+            const action = e.target.closest('[data-action]');
+            if (!action) return;
+            const kind = action.getAttribute('data-action');
+            if (kind === 'auth-register') authRegister();
+            else if (kind === 'auth-login') authLogin();
+        });
+        const guest = $('authGuest');
+        if (guest) guest.addEventListener('click', closeAuthGate);
+        const loginPin = $('authLoginPin');
+        if (loginPin) loginPin.addEventListener('keydown', (e) => { if (e.key === 'Enter') authLogin(); });
+        const regPin = $('authPin');
+        if (regPin) regPin.addEventListener('keydown', (e) => { if (e.key === 'Enter') authRegister(); });
+        const regName = $('authName');
+        if (regName) regName.addEventListener('keydown', (e) => { if (e.key === 'Enter') authRegister(); });
     }
 
     const PANEL_RENDER = {
@@ -2232,6 +2343,8 @@
 
     function boot() {
         applyConfig();
+        wireAuthGate();
+        showAuthGate();
         renderCategories();
         renderSortMenu();
         attachHoverPrefetch();

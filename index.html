@@ -370,6 +370,8 @@
                 <li><b>Saves that stick</b>Games run on this site&rsquo;s own origin now, so the progress and high scores they write are actually kept.</li>
                 <li><b>Accounts</b>Settings &rarr; Account. A name gives you your own copy of the lot &mdash; stars, settings and every game save &mdash; and switching accounts switches the saves with it. An account code moves one to another computer.</li>
                 <li><b>Levels and streaks</b>Opening a game pays XP, a first play pays more, and the account panel counts how many days in a row you have played.</li>
+                <li><b>Sign in on launch</b>A register / log in card comes up until this browser has an account. Registering takes the stars, settings and saves already on screen; after that the panel at the top of the site is where you switch, add a PIN or copy an account code.</li>
+                <li><b>Slop off the shelf</b>Eleven filler entries are gone &mdash; the mobile-ad clones (Layers Roll, Lazy Jumper, Man Runner 2048, Pottery Master, Jelly Drift), the joke pages (Elastic Man, Google Baseball, PacMan Horror, Steal Brainrot Online, Plinko) and a duplicated Cut the Rope.</li>
             </ul>
         </div>
         <div class="risk-actions">
@@ -379,9 +381,46 @@
     </div>
 </div>
 
+<div class="risk" id="authGate" role="dialog" aria-modal="true" aria-labelledby="authTitle">
+    <div class="risk-panel">
+        <div class="risk-tape" aria-hidden="true"></div>
+        <div class="risk-head">
+            <div class="risk-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.6"/><path d="M4.8 20.4c0-3.6 3.2-5.9 7.2-5.9s7.2 2.3 7.2 5.9"/></svg>
+            </div>
+            <div>
+                <div class="risk-kicker">watermusic &middot; accounts</div>
+                <h3 id="authTitle">Keep your games</h3>
+            </div>
+        </div>
+        <div class="risk-body">
+            <p>An account on this device remembers your stars, your settings and <strong>every game save</strong>. Pick a name and you are in.</p>
+            <div class="seg" id="authTabs" style="margin-bottom:6px">
+                <button type="button" data-auth-tab="register" class="on">Register</button>
+                <button type="button" data-auth-tab="login">Log in</button>
+            </div>
+            <div id="authRegister">
+                <div class="field" style="margin-top:10px"><input type="text" id="authName" placeholder="Pick a name" maxlength="24" autocomplete="off"></div>
+                <div class="field" style="margin-top:8px"><input type="password" id="authPin" placeholder="PIN, 4+ characters (optional)" maxlength="24" autocomplete="off"></div>
+                <div class="field" style="margin-top:12px"><button class="btn primary" type="button" data-action="auth-register">Create account</button></div>
+            </div>
+            <div id="authLogin" hidden>
+                <div class="field" style="margin-top:10px"><select id="authAccount"></select></div>
+                <div class="field" style="margin-top:8px"><input type="password" id="authLoginPin" placeholder="PIN if this account has one" maxlength="24" autocomplete="off"></div>
+                <div class="field" style="margin-top:12px"><button class="btn primary" type="button" data-action="auth-login">Log in</button></div>
+            </div>
+            <p class="hint" id="authErr" style="margin-top:10px;color:#ff8080"></p>
+        </div>
+        <div class="risk-actions">
+            <button class="btn" id="authGuest" type="button">Continue without an account</button>
+        </div>
+        <div class="risk-foot">accounts stay in this browser &middot; nothing is uploaded</div>
+    </div>
+</div>
+
 <div class="toast-wrap" id="toastWrap"></div>
 
-<script src="./app.js?v=25" defer></script>
+<script src="./app.js?v=26" defer></script>
 <script src="./player.js?v=1" defer></script>
     <script src="./concept.js?v=9" defer></script>
 <script>

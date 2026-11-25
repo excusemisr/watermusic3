@@ -374,3 +374,23 @@ the snapshot too.
 has a local page now. The extras 3kh0 has and gn-math doesn't (the trolling shelf)
 are still added from `data/3kh0.json`, but they are served from this site's
 mirror and shard repos, never from `lite.3kh0.net`.
+
+## Sign-in gate (25 November)
+
+`#authGate` in `index.html` is a `.risk` panel that `showAuthGate()` opens on
+launch while `acctDb().current` is empty. Register takes a name and an optional
+PIN (SHA-256 of `wm:<pin>` through `crypto.subtle`, with a djb2 fallback for
+`file://`), and stores it on the new account. Log in lists the accounts on the
+device and checks the PIN when one is set; a wrong PIN keeps the gate open and
+says so. `Continue without an account` closes it until the next page load. The
+chosen tab is remembered in `sessionStorage` under `wm.auth.tab`.
+
+Accounts created before PINs existed have `pin: ''`, so they log in without one.
+
+## Slop
+
+`CATALOG_IDS` no longer lists 212 (a duplicate Cut the Rope), 543 Jelly Drift,
+544 Plinko, 571 Layers Roll, 572 Lazy Jumper, 573 Man Runner 2048,
+574 Pottery Master, 577 Steal Brainrot Online, 197 Elastic Man, 257 Google
+Baseball or 515 PacMan (Horror). The comment above the list names them all; add
+an id back to bring one back. The shelf went from 329 to 318 games.
