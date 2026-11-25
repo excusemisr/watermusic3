@@ -401,14 +401,28 @@ can log out. There is no account code; switching always needs the password.
 
 ## Skin (25 November)
 
-The last block in `concept.css` is a self-contained skin layered on top of the
-rest: translucent `--glass` surfaces with a 28px blur behind the rail, top bar,
-sheet, modals and cards; pill buttons and chips; 16-28px radii; a segmented
-control built from `.seg` for every picker. The two native `<select>` controls
-(sort and tab disguise) are gone — they render as `.seg` chips, because an OS
-dropdown cannot be styled. `#authGate` has its own block: 432px card, grabber,
-iOS-style segmented tabs, 48px fields, a full-width pill button and a plain
-**Skip** link at the bottom.
+`concept.css` is the whole look; `app.css` only carries structure and fallbacks.
+The skin block at the end of `concept.css` is the current design, layered over
+the earlier component styles so nothing is lost:
+
+- **Sidebar.** A 236px floating glass panel at 18px from each edge, brand and
+  labelled nav rows (Games, Starred, Recent, Proxy, Settings at the bottom) with
+  an accent-tinted row for the current view. Under 1024px the same element
+  becomes a floating bottom dock with icon-over-label tabs, and everything stays
+  in one row.
+- **Top bar.** One 60px pill pinned under the sidebar's top edge: the search
+  field fills it, the action buttons sit at the right, all on a 26px blur.
+- **Hero.** Two columns — a 70px `watermusic.` headline with a count pill
+  (`#mastCount games on the shelf`), three stat cards, and the featured game as
+  a 400px banner with a pill Play button, dots and a progress line.
+- **Cards.** 18px radius, glass fill, cover zoom and an accent ring on hover,
+  floating star and new-tab controls, pill play chip.
+- **Settings.** Slides in from the right as a full-height 540px drawer with the
+  sections as a horizontal row of pills instead of a side list.
+- **Account card.** A centred 432px sheet with a grabber, iOS segmented tabs,
+  50px fields and **Skip** as a plain link at the bottom.
+- Every native `<select>` is still gone: pickers are `.seg` pill groups, so no
+  OS dropdown can appear.
 
 ## Slop
 
