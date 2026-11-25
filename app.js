@@ -167,7 +167,7 @@
             .trim()
             .replace(/\b\w/g, (c) => c.toUpperCase()) || folder;
     }
-    function store(key, value) { try { localStorage.setItem(key, JSON.stringify(value)); } catch (e) { } }
+    function store(key, value) { try { localStorage.setItem(key, JSON.stringify(value)); } catch (e) { } requestSync(); }
     function read(key, fallback) {
         try { const v = JSON.parse(localStorage.getItem(key)); return v == null ? fallback : v; } catch (e) { return fallback; }
     }
@@ -1532,7 +1532,7 @@
 
     function panelAbout() {
         return '' +
-            '<section><h4>watermusic</h4><span class="hint">A free games portal that runs entirely in your browser. Accounts and saves stay on this device &mdash; nothing is uploaded.</span>' +
+            '<section><h4>watermusic</h4><span class="hint">A free games portal that runs in your browser. ' + (syncOn() ? 'With an account, your stars, settings and game saves are tied to the username and load on any device you sign in on.' : 'Accounts and progress are kept in this browser only, because no account server is configured.') + '</span>' +
                 row('Version', 'Catalogue release', '<span class="pill">3.3</span>') +
                 row('Index', 'Everything playable in this build.', '<span class="pill">' + games.length + ' games</span>') +
             '</section>' +
@@ -1589,7 +1589,7 @@
         db.data[db.current] = rec;
         acctWrite(db);
     }
-    function acctCreate(name, cred) {
+    function acctCreate(name, cred, remote) {
         const db = acctDb();
         acctSaveCurrent(db);
         // a new account starts from whatever is on screen right now
@@ -1601,13 +1601,17 @@
             name: label,
             created: Date.now(),
             salt: cred && cred.salt ? cred.salt : '',
-            hash: cred && cred.hash ? cred.hash : ''
+            hash: cred && cred.hash ? cred.hash : '',
+            remoteId: remote && remote.id ? remote.id : '',
+            access: remote && remote.access ? remote.access : '',
+            refresh: remote && remote.refresh ? remote.refresh : ''
         });
         db.data[id] = { keys: base || {} };
         db.current = id;
         acctWrite(db);
         toast('Signed in as ' + label);
         renderSheet();
+        if (remote) requestSync();
     }
     function acctSwitch(id) {
         const db = acctDb();
@@ -1636,6 +1640,128 @@
         acctWrite(db);
         renderSheet();
         toast(hit ? 'Removed ' + hit.name : 'Account removed');
+    }
+
+    /* ---------------- cloud sync ----------------
+       Optional Supabase backend. Usernames map to <name>@players.watermusic.app
+       because that is what Supabase auth takes; the display name stays the
+       username. One row per user in wm_state holds the same localStorage
+       snapshot the local accounts already use, so stars, settings and game
+       saves move with the account instead of dying with the browser.
+       With sync-config.js left empty everything still works, on this device.
+       ---------------------------------------------------------------- */
+    const SYNC = (window.WM_SYNC && window.WM_SYNC.url && window.WM_SYNC.key)
+        ? { url: String(window.WM_SYNC.url).replace(/\/+$/, ''), key: window.WM_SYNC.key }
+        : null;
+    const SYNC_DOMAIN = 'players.watermusic.app';
+    let syncTimer = 0;
+    let syncBusy = false;
+
+    function syncOn() { return !!SYNC; }
+    function syncEmail(name) {
+        const local = String(name).toLowerCase().replace(/[^a-z0-9._-]/g, '');
+        return (local || 'player') + '@' + SYNC_DOMAIN;
+    }
+    function syncAccount() {
+        const db = acctDb();
+        const cur = db.list.filter((a) => a.id === db.current)[0];
+        return cur && cur.remoteId && cur.access ? cur : null;
+    }
+    async function syncCall(path, opts) {
+        const res = await fetch(SYNC.url + path, opts);
+        const text = await res.text();
+        let body = null;
+        try { body = text ? JSON.parse(text) : null; } catch (e) { }
+        return { ok: res.ok, status: res.status, body: body };
+    }
+    function syncMessage(res, fallback) {
+        const b = res.body || {};
+        return b.msg || b.error_description || b.message || b.error || fallback;
+    }
+    function syncHeaders(token, extra) {
+        return Object.assign({
+            apikey: SYNC.key,
+            Authorization: 'Bearer ' + (token || ''),
+            'Content-Type': 'application/json'
+        }, extra || {});
+    }
+    async function syncSignup(name, password) {
+        const res = await syncCall('/auth/v1/signup', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', apikey: SYNC.key },
+            body: JSON.stringify({ email: syncEmail(name), password: password })
+        });
+        if (!res.ok) throw new Error(syncMessage(res, 'That username could not be registered.'));
+        if (res.body && res.body.access_token) return res.body;
+        // some Supabase projects hand back no session until the address is confirmed
+        return null;
+    }
+    async function syncLogin(name, password) {
+        const res = await syncCall('/auth/v1/token?grant_type=password', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', apikey: SYNC.key },
+            body: JSON.stringify({ email: syncEmail(name), password: password })
+        });
+        if (res.status === 400 || res.status === 401) return null;
+        if (!res.ok) throw new Error(syncMessage(res, 'Could not reach the account server.'));
+        return res.body;
+    }
+    async function syncRefresh() {
+        const acct = syncAccount();
+        if (!acct || !acct.refresh) return false;
+        const res = await syncCall('/auth/v1/token?grant_type=refresh_token', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', apikey: SYNC.key },
+            body: JSON.stringify({ refresh_token: acct.refresh })
+        });
+        if (!res.ok) return false;
+        const db = acctDb();
+        const rec = db.list.filter((a) => a.id === acct.id)[0];
+        if (rec) {
+            rec.access = res.body.access_token;
+            rec.refresh = res.body.refresh_token || rec.refresh;
+            acctWrite(db);
+        }
+        return true;
+    }
+    async function syncPull(acct) {
+        const res = await syncCall('/rest/v1/wm_state?select=data&user_id=eq.' + encodeURIComponent(acct.remoteId), {
+            headers: syncHeaders(acct.access)
+        });
+        if (!res.ok) throw new Error(syncMessage(res, 'Could not load the account.'));
+        return Array.isArray(res.body) && res.body[0] ? res.body[0].data : null;
+    }
+    async function syncPushNow() {
+        const acct = syncAccount();
+        if (!SYNC || !acct || syncBusy) return false;
+        syncBusy = true;
+        try {
+            const res = await syncCall('/rest/v1/wm_state', {
+                method: 'POST',
+                keepalive: true,
+                headers: syncHeaders(acct.access, { Prefer: 'resolution=merge-duplicates,return=minimal' }),
+                body: JSON.stringify([{ user_id: acct.remoteId, data: snapshotKeys(), updated_at: new Date().toISOString() }])
+            });
+            if (res.status === 401 && (await syncRefresh())) {
+                syncBusy = false;
+                return syncPushNow();
+            }
+            if (!res.ok) throw new Error(syncMessage(res, 'Could not save this account.'));
+            const db = acctDb();
+            const rec = db.list.filter((a) => a.id === acct.id)[0];
+            if (rec) { rec.at = Date.now(); acctWrite(db); }
+            return true;
+        } catch (e) {
+            console.warn('[sync]', e.message);
+            return false;
+        } finally {
+            syncBusy = false;
+        }
+    }
+    function requestSync() {
+        if (!SYNC) return;
+        if (syncTimer) clearTimeout(syncTimer);
+        syncTimer = setTimeout(() => { syncTimer = 0; syncPushNow(); }, 2500);
     }
 
     function statsRead() {
@@ -1674,6 +1800,12 @@
         const db = acctDb();
         const s = statsRead();
         const cur = acctName(db);
+        const remote = syncAccount();
+        const syncLine = !syncOn()
+            ? 'Only on this browser \u2014 no account server is configured.'
+            : remote
+                ? 'Synced with the account server' + (remote.at ? ' \u00b7 last save ' + new Date(remote.at).toLocaleTimeString() : '')
+                : 'Made before sync existed \u2014 log out and back in to attach it.';
         const rows = db.list.map((a) => (
             '<div class="preview-tile"><div><div class="pv-name">' + escapeHtml(a.name) + (a.id === db.current ? ' \u00b7 signed in' : '') + '</div>' +
             '<div class="pv-meta">added ' + new Date(a.created).toLocaleDateString() + '</div></div></div>'
@@ -1681,7 +1813,10 @@
         return '' +
             '<section><h4>Signed in</h4><span class="hint"><b>' + escapeHtml(cur) + '</b> \u00b7 level ' + levelOf(s.xp) +
                 ' \u00b7 ' + (s.plays || 0) + ' games played' + (s.streak ? ' \u00b7 ' + s.streak + '-day streak' : '') + '</span>' +
-                '<div class="field" style="margin-top:12px"><button class="btn" type="button" data-action="acct-logout">Log out</button></div>' +
+                '<span class="hint" style="margin-top:6px">' + escapeHtml(syncLine) + '</span>' +
+                '<div class="field" style="margin-top:12px">' +
+                    (remote ? '<button class="btn" type="button" data-action="acct-sync">Save now</button>' : '') +
+                    '<button class="btn" type="button" data-action="acct-logout">Log out</button></div>' +
             '</section>' +
             '<section><h4>Accounts here</h4><span class="hint">Each username keeps its own stars, settings and game saves. A password is needed to get back into one.</span>' + rows + '</section>' +
             '<section><h4>Add another account</h4><span class="hint">This one starts from what is on screen right now.</span>' +
@@ -1789,6 +1924,12 @@
         const log = $('authLogin');
         const contRow = $('authContinueRow');
         const cont = $('authContinue');
+        const foot = $('authFoot');
+        if (foot) {
+            foot.textContent = syncOn()
+                ? 'sign in once \u00b7 stars, settings and saves follow you to any device'
+                : 'this build has no account server \u00b7 add one in sync-config.js to sync across devices';
+        }
         if (signed) {
             if (tabs) tabs.hidden = true;
             if (reg) reg.hidden = true;
@@ -1822,6 +1963,31 @@
             authSay('That username is taken on this device.');
             return;
         }
+        if (syncOn()) {
+            authSay('Creating your account\u2026');
+            let session = null;
+            try {
+                session = await syncSignup(name, password);
+                if (!session) session = await syncLogin(name, password);
+            } catch (e) {
+                authSay(e.message);
+                return;
+            }
+            if (!session) {
+                authSay('The account server wants an email confirmation. Turn that off in Supabase, then try again.');
+                return;
+            }
+            const salt = randomSalt();
+            const hash = await hashPassword(password, salt);
+            acctCreate(name, { salt: salt, hash: hash }, {
+                id: session.user.id, access: session.access_token, refresh: session.refresh_token
+            });
+            await syncPushNow();
+            authSay('');
+            closeAuthGate();
+            toast('Account created \u00b7 it follows you to any device');
+            return;
+        }
         const salt = randomSalt();
         const hash = await hashPassword(password, salt);
         acctCreate(name, { salt: salt, hash: hash });
@@ -1831,6 +1997,50 @@
         const name = $('authUser') ? $('authUser').value.trim() : '';
         const password = $('authPassLogin') ? $('authPassLogin').value : '';
         if (!name) { authSay('Type your username.'); return; }
+
+        if (syncOn()) {
+            authSay('Checking your account\u2026');
+            let session = null;
+            try {
+                session = await syncLogin(name, password);
+            } catch (e) {
+                authSay(e.message);
+                return;
+            }
+            if (!session) { authSay('That username and password do not match.'); return; }
+            const remote = { remoteId: session.user.id, access: session.access_token };
+            let keys = null;
+            try {
+                keys = await syncPull(remote);
+            } catch (e) {
+                authSay(e.message);
+                return;
+            }
+            const db = acctDb();
+            acctSaveCurrent(db);
+            let rec = db.list.filter((a) => a.name.toLowerCase() === name.toLowerCase())[0];
+            const salt = randomSalt();
+            const hash = await hashPassword(password, salt);
+            if (!rec) {
+                rec = { id: acctId(), name: name.slice(0, 24), created: Date.now() };
+                db.list.push(rec);
+            }
+            rec.salt = salt;
+            rec.hash = hash;
+            rec.remoteId = remote.remoteId;
+            rec.access = remote.access;
+            rec.refresh = session.refresh_token || '';
+            rec.at = Date.now();
+            db.current = rec.id;
+            db.data[rec.id] = { keys: keys || snapshotKeys() };
+            acctWrite(db);
+            closeAuthGate();
+            try { sessionStorage.setItem('wm.auth.signed', '1'); } catch (e) { }
+            toast('Signed in as ' + rec.name);
+            location.reload();
+            return;
+        }
+
         const acct = acctDb().list.filter((a) => a.name.toLowerCase() === name.toLowerCase())[0];
         if (!acct) { authSay('No account with that username on this device.'); return; }
         if (!(await passwordMatches(acct, password))) { authSay('That password is not right.'); return; }
@@ -2080,6 +2290,11 @@
                     toast('The notice will show again');
                 } else if (kind === 'acct-new') {
                     acctCreateFromPanel();
+                } else if (kind === 'acct-sync') {
+                    syncPushNow().then((ok) => {
+                        toast(ok ? 'Account saved to the server' : 'Could not save right now \u2014 still on this device');
+                        renderSheet();
+                    });
                 } else if (kind === 'acct-logout') {
                     acctLogout();
                 } else if (kind === 'acct-delete') {
@@ -2476,6 +2691,11 @@
         if (url && isBlocked(url)) return;
         return nativeOpen.apply(this, arguments);
     };
+
+    if (syncAccount()) {
+        requestSync();
+        window.addEventListener('pagehide', () => { syncPushNow(); });
+    }
 
     /* ---------------- concept hooks ----------------
        additive only: concept.js needs to read the catalog, open a game and
