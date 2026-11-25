@@ -1476,10 +1476,7 @@
             '<section><h4>Speed</h4><span class="hint">Games are cached after the first load, so the second launch is instant.</span>' +
                 row('Prefetch on hover', 'Start downloading a game as soon as you hover it.', toggle('prefetch', config.prefetch)) +
                 row('Cache games on this device', 'Stores played games locally for instant replays.', toggle('cacheGames', config.cacheGames)) +
-                row('Default sort', 'Used when the page loads.', '<select data-select="sort">' +
-                    [['name', 'Name A-Z'], ['id', 'Newest ID'], ['popular', 'Most played'], ['random', 'Shuffle']]
-                        .map((o) => '<option value="' + o[0] + '"' + (config.sort === o[0] ? ' selected' : '') + '>' + o[1] + '</option>').join('') +
-                    '</select>') +
+                row('Default sort', 'Used when the page loads.', seg('sort', [['name', 'A-Z'], ['id', 'Newest'], ['popular', 'Played'], ['random', 'Shuffle']], config.sort)) +
             '</section>' +
             '<section><h4>Launch</h4>' +
                 row('Open games in a new tab', 'On by default. Turning it off plays games inside this page instead.', toggle('openInTab', config.openInTab !== false)) +
@@ -1502,13 +1499,9 @@
     };
 
     function panelPrivacy() {
-        const options = Object.keys(CLOAK_PRESETS).map((k) => (
-            '<option value="' + k + '"' + (config.cloakPreset === k ? ' selected' : '') + '>' + CLOAK_PRESETS[k][0] + '</option>'
-        )).join('');
         return '' +
             '<section><h4>Tab disguise</h4><span class="hint">Change the tab title and icon so it looks like something else.</span>' +
-                row('Preset', 'Quick disguises for school.', '<select data-select="cloakPreset">' + options +
-                    '<option value="custom"' + (config.cloakPreset === 'custom' ? ' selected' : '') + '>Custom</option></select>') +
+                row('Preset', 'Quick disguises for school.', seg('cloakPreset', [['none', 'None'], ['quizlet', 'Quizlet'], ['google', 'Google'], ['classroom', 'Classroom'], ['desmos', 'Desmos'], ['custom', 'Custom']], config.cloakPreset)) +
                 '<div class="field" style="margin-top:12px"><input type="text" id="cloakTitle" placeholder="Tab title" value="' + escapeHtml(config.cloakTitle) + '"><button class="btn" type="button" data-action="apply-cloak">Apply</button></div>' +
                 '<div class="field" style="margin-top:8px"><input type="text" id="cloakIcon" placeholder="Icon URL" value="' + escapeHtml(config.cloakIcon) + '"></div>' +
             '</section>' +
@@ -1619,6 +1612,7 @@
         db.current = id;
         acctWrite(db);
         restoreKeys(target);
+        try { sessionStorage.setItem('wm.auth.signed', '1'); } catch (e) { }
         location.reload();
     }
     function acctLogout() {
@@ -1775,13 +1769,37 @@
     function showAuthGate() {
         const gate = $('authGate');
         if (!gate) return;
-        if (acctDb().current) return;
-        let tab = 'register';
-        try { tab = sessionStorage.getItem(AUTH_TAB_KEY) || 'register'; } catch (e) { }
-        authTab(tab === 'login' ? 'login' : 'register');
+        // a sign-in reload lands here one step before the page settles, so let
+        // that one pass through and show the card on every start after it
+        try {
+            if (sessionStorage.getItem('wm.auth.signed') === '1') {
+                sessionStorage.removeItem('wm.auth.signed');
+                return;
+            }
+        } catch (e) { }
+        const db = acctDb();
+        const signed = db.current ? acctName(db) : '';
+        const tabs = $('authTabs');
+        const reg = $('authRegister');
+        const log = $('authLogin');
+        const contRow = $('authContinueRow');
+        const cont = $('authContinue');
+        if (signed) {
+            if (tabs) tabs.hidden = true;
+            if (reg) reg.hidden = true;
+            if (log) log.hidden = true;
+            if (contRow) contRow.hidden = false;
+            if (cont) cont.textContent = 'Continue as ' + signed;
+        } else {
+            if (tabs) tabs.hidden = false;
+            if (contRow) contRow.hidden = true;
+            let tab = 'register';
+            try { tab = sessionStorage.getItem(AUTH_TAB_KEY) || 'register'; } catch (e) { }
+            authTab(tab === 'login' ? 'login' : 'register');
+        }
         gate.classList.add('open');
         setTimeout(() => {
-            const n = tab === 'login' ? $('authUser') : $('authName');
+            const n = signed ? $('authContinue') : ($('authRegister').hidden ? $('authUser') : $('authName'));
             if (n) n.focus();
         }, 80);
     }
@@ -1826,8 +1844,10 @@
             if (kind === 'auth-register') authRegister();
             else if (kind === 'auth-login') authLogin();
         });
-        const guest = $('authGuest');
-        if (guest) guest.addEventListener('click', closeAuthGate);
+        const skip = $('authSkip');
+        if (skip) skip.addEventListener('click', closeAuthGate);
+        const cont = $('authContinue');
+        if (cont) cont.addEventListener('click', closeAuthGate);
         [['authPassLogin', authLogin], ['authPass', authRegister], ['authName', authRegister], ['authUser', authLogin]].forEach((pair) => {
             const node = $(pair[0]);
             if (node) node.addEventListener('keydown', (e) => { if (e.key === 'Enter') pair[1](); });
@@ -1933,6 +1953,24 @@
         setTimeout(() => document.addEventListener('keydown', handler, true), 50);
     }
 
+    function applyCloakPreset(value) {
+        config.cloakPreset = value;
+        const preset = CLOAK_PRESETS[value];
+        if (value === 'none') {
+            // removing the disguise has to put the real title back
+            document.title = 'watermusic - play something';
+            setFavicon('favicon.png');
+        }
+        if (preset && value !== 'none') {
+            config.cloakTitle = preset[1];
+            config.cloakIcon = preset[2];
+            document.title = preset[1];
+            setFavicon(preset[2]);
+        }
+        saveConfig();
+        renderSheet();
+    }
+
     function applyCloak() {
         const titleNode = $('cloakTitle');
         const iconNode = $('cloakIcon');
@@ -1990,6 +2028,7 @@
                 if (key === 'columns') value = Number(value);
                 if (key === 'motion') value = !(value === 'reduced');
                 segNode.querySelectorAll('button').forEach((b) => b.classList.toggle('on', b === segBtn));
+                if (key === 'cloakPreset') { applyCloakPreset(value); return; }
                 setConfig(key, value);
                 return;
             }
@@ -2067,19 +2106,7 @@
             if (select) {
                 const key = select.getAttribute('data-select');
                 let value = select.value;
-                if (key === 'cloakPreset') {
-                    config.cloakPreset = value;
-                    const preset = CLOAK_PRESETS[value];
-                    if (preset && value !== 'none') {
-                        config.cloakTitle = preset[1];
-                        config.cloakIcon = preset[2];
-                        document.title = preset[1];
-                        setFavicon(preset[2]);
-                    }
-                    saveConfig();
-                    renderSheet();
-                    return;
-                }
+                if (key === 'cloakPreset') { applyCloakPreset(value); return; }
                 setConfig(key, value);
                 return;
             }

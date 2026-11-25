@@ -1060,3 +1060,199 @@ html[data-perf="lite"] .card .play-pop{transition:opacity .1s}
 html[data-perf="lite"] .sp-timer i.run{animation-duration:9s}
 html[data-perf="lite"] .viewer .frame-wrap{animation:none}
 html[data-perf="lite"] ::-webkit-scrollbar{width:8px}
+
+/* ============================================================
+   20 · skin — floating glass, iphone corners
+   hyprland: translucent layers, one accent, everything rounded
+   iphone: big radii, pill controls, segmented pickers, no chrome
+   ============================================================ */
+:root{
+    --card-r:16px;
+    --glass:rgba(18,18,25,.66);
+    --glass-2:rgba(255,255,255,.055);
+    --glass-3:rgba(255,255,255,.09);
+    --stroke:rgba(255,255,255,.085);
+    --stroke-2:rgba(255,255,255,.16);
+    --lift:0 24px 60px -34px rgba(0,0,0,.95);
+    --accent-soft:rgba(var(--accent-rgb),.14);
+}
+html[data-theme="light"]{
+    --glass:rgba(255,255,255,.74);
+    --glass-2:rgba(16,18,28,.05);
+    --glass-3:rgba(16,18,28,.09);
+    --stroke:rgba(16,18,28,.09);
+    --stroke-2:rgba(16,18,28,.18);
+    --lift:0 24px 50px -34px rgba(20,22,34,.32);
+}
+body{letter-spacing:-.004em}
+
+/* ---- floating chrome ---- */
+.rail,.topbar,.popover,.sheet-panel,.risk-panel,.palette-panel,.viewer-bar{
+    background:var(--glass);
+    border:1px solid var(--stroke);
+    box-shadow:var(--lift), inset 0 1px 0 rgba(255,255,255,.055);
+    -webkit-backdrop-filter:blur(28px) saturate(150%);
+    backdrop-filter:blur(28px) saturate(150%);
+}
+.rail{left:18px;width:70px;border-radius:26px;padding:12px 8px}
+.rail-logo{border-radius:12px}
+.rail-btn{width:54px;height:52px;border-radius:16px}
+.rail-btn:hover{background:var(--glass-3)}
+.rail-btn.active{background:var(--accent-soft);color:var(--ink)}
+.rail-btn.active::before{display:none}
+.rail-btn.active svg{color:var(--accent)}
+.rail-tip{border-radius:12px;border-color:var(--stroke);background:var(--glass)}
+
+.topbar{top:14px;height:58px;border-radius:999px;padding:0 10px 0 14px}
+.search{height:40px;border-radius:999px;background:var(--glass-2);border-color:transparent;padding:0 14px}
+.search:focus-within{background:var(--glass-3);border-color:rgba(var(--accent-rgb),.5);box-shadow:0 0 0 3px rgba(var(--accent-rgb),.14)}
+.search input{font:400 14.5px/1 var(--font);letter-spacing:0}
+.kbd{font:500 11px/1 var(--font);border-radius:7px;background:var(--glass-2);border-color:transparent;padding:6px 7px}
+.icon-btn{height:38px;border-radius:999px;border-color:transparent;background:var(--glass-2)}
+.icon-btn:hover{background:var(--glass-3);border-color:transparent}
+.icon-btn.labeled{padding:0 14px;font:500 13px/1 var(--font)}
+.popover{border-radius:20px;padding:6px;border-color:var(--stroke)}
+.popover button{border-radius:14px;font:500 13px/1 var(--font);padding:9px 10px}
+
+/* ---- masthead ---- */
+.mast-sub{font:400 15.5px/1.6 var(--font)}
+.stat{border-color:var(--stroke);border-radius:16px;background:var(--glass-2)}
+.stat b{font:600 20px/1 var(--font);letter-spacing:-.03em}
+.spotlight{border-radius:22px;border-color:var(--stroke)}
+.sp-play{border-radius:999px;height:44px;padding:0 20px}
+.sp-corner{border-radius:999px}
+
+/* ---- cards ---- */
+.card{border-radius:16px;background:var(--glass);border-color:var(--stroke);
+    transition:transform .24s var(--ease), border-color .24s, box-shadow .24s, background .24s}
+.card:hover{transform:translateY(-3px);background:var(--glass);
+    border-color:rgba(var(--accent-rgb),.55);
+    box-shadow:0 28px 54px -32px rgba(0,0,0,.95), 0 0 0 1px rgba(var(--accent-rgb),.22)}
+html[data-motion="reduced"] .card:hover{transform:none}
+.thumb-wrap{border-radius:15px 15px 0 0}
+.card .info{border-top:1px solid var(--stroke);padding:11px 13px 13px}
+.card .name{font:500 13.5px/1.3 var(--font)}
+.card .fav{border-radius:999px;width:30px;height:30px}
+.card .pin{border-radius:999px;padding:5px 9px}
+.card .newtab{border-radius:999px;padding:5px 9px}
+.card .play-pop{border-radius:999px;padding:7px 13px}
+
+/* ---- chips + buttons ---- */
+.chips{gap:8px}
+.chip{height:34px;padding:0 15px;border-radius:999px;border-color:transparent;background:var(--glass-2);
+    font:500 13px/1 var(--font);display:inline-flex;align-items:center}
+.chip:hover{background:var(--glass-3);border-color:transparent}
+.chip.active{background:var(--accent);border-color:transparent;color:var(--accent-ink);
+    box-shadow:0 10px 22px -14px rgba(var(--accent-rgb),.95)}
+.chip .n{font:600 11px/1 var(--font);opacity:.6}
+.btn{height:40px;padding:0 18px;border-radius:999px;border-color:var(--stroke);background:var(--glass-2);
+    font:500 13.5px/1 var(--font);transition:background .16s,border-color .16s,transform .12s,filter .16s}
+.btn:hover{background:var(--glass-3);border-color:var(--stroke-2);transform:none}
+.btn:active{transform:scale(.98)}
+.btn.primary{background:linear-gradient(135deg,var(--accent),rgba(var(--accent-rgb),.76));border-color:transparent;color:var(--accent-ink);
+    box-shadow:0 14px 26px -18px rgba(var(--accent-rgb),.95)}
+.btn.primary:hover{filter:brightness(1.06)}
+.btn.danger{background:rgba(255,90,90,.12);border-color:rgba(255,110,110,.35);color:#ffb4b4}
+.link-btn{font:500 13px/1 var(--font)}
+
+/* ---- segmented control (ios) ---- */
+.seg{display:flex;gap:2px;padding:3px;border-radius:16px;background:var(--glass-2);width:max-content;max-width:100%;flex-wrap:wrap}
+.seg button{min-width:0;height:32px;padding:0 14px;border:0;border-radius:13px;background:none;color:var(--dim);
+    font:500 12.5px/1 var(--font);letter-spacing:0;text-transform:none;transition:background .16s,color .16s}
+.seg button:hover:not(.on){color:var(--ink);background:var(--glass-3);border:0}
+.seg button.on{background:var(--accent);color:var(--accent-ink);box-shadow:0 6px 14px -10px rgba(0,0,0,.9)}
+.row .control{max-width:100%}
+.row .control .seg{justify-content:flex-end}
+
+/* ---- fields ---- */
+.field{gap:10px}
+.field input[type="text"],.field input[type="password"],.field select{
+    flex:1;min-width:150px;height:44px;padding:0 15px;
+    border:1px solid transparent;border-radius:16px;
+    background:var(--glass-2);color:var(--ink);
+    font:400 14px/1 var(--font);letter-spacing:0;
+    transition:background .16s,border-color .16s,box-shadow .16s;
+}
+.field input[type="text"]:hover,.field input[type="password"]:hover{background:var(--glass-3)}
+.field input[type="text"]:focus,.field input[type="password"]:focus,.field select:focus{
+    background:var(--glass-3);border-color:rgba(var(--accent-rgb),.55);
+    box-shadow:0 0 0 3px rgba(var(--accent-rgb),.14);outline:none;
+}
+.field input::placeholder{color:var(--dimmer)}
+.field select{color:var(--ink);border-color:transparent}
+
+/* ---- sheet ---- */
+.sheet{background:rgba(3,3,6,.62);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px)}
+.sheet-panel{border-radius:28px;overflow:hidden}
+.sheet-head{height:62px;padding:0 20px;border-bottom:1px solid var(--stroke)}
+.sheet-head h3{font:600 16px/1 var(--font);letter-spacing:-.02em}
+.sheet-nav{width:200px;padding:12px 10px;gap:4px}
+.sheet-nav button{border-radius:14px;padding:10px 12px;font:500 13px/1 var(--font)}
+.sheet-nav button.active{background:var(--accent-soft);color:var(--ink)}
+.sheet-body .section h4{font:600 13px/1 var(--font);letter-spacing:0}
+.sheet-body .hint{font:400 12.5px/1.5 var(--font);color:var(--dim)}
+.preview-tile{border-radius:16px;border-color:var(--stroke);background:var(--glass-2)}
+.swatch{border-radius:10px}
+
+/* ---- modals ---- */
+.risk{background:rgba(3,3,6,.55);-webkit-backdrop-filter:blur(18px) saturate(130%);backdrop-filter:blur(18px) saturate(130%)}
+.risk-panel{max-width:470px;width:100%;border-radius:28px;padding:26px 24px 20px;border-color:var(--stroke)}
+.risk-tape{display:none}
+.risk-icon{width:44px;height:44px;border-radius:999px;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center;border:0}
+.risk-icon svg{width:20px;height:20px}
+.risk-kicker{font:500 10.5px/1 var(--font);letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
+.risk-head h3{font:600 1.3rem/1.2 var(--font);letter-spacing:-.03em}
+.risk-body p{font:400 14px/1.6 var(--font)}
+.risk-game{border-radius:16px;border-color:var(--stroke);background:var(--glass-2)}
+.risk-actions{gap:10px;margin-top:16px}
+.risk-actions .btn{height:46px;flex:1;border-radius:999px;font:600 14px/1 var(--font)}
+.risk-foot{font:400 11.5px/1.6 var(--font);color:var(--dimmer);text-align:center;margin-top:12px}
+.risk-opt{font:400 13px/1 var(--font)}
+
+/* ---- the account card ---- */
+#authGate .risk-panel{max-width:432px;padding:32px 24px 18px;position:relative}
+#authGate .risk-panel::before{
+    content:"";position:absolute;top:11px;left:50%;transform:translateX(-50%);
+    width:40px;height:4px;border-radius:99px;background:var(--stroke-2);
+}
+#authGate .risk-head{gap:12px;margin-bottom:2px}
+#authGate .risk-head h3{font-size:1.45rem}
+#authGate .risk-body{padding:0}
+#authGate .risk-body p{margin:2px 0 16px;color:var(--dim)}
+#authTabs{display:flex;width:100%;padding:4px;border-radius:18px;margin-bottom:2px}
+#authTabs button{flex:1;height:36px;border-radius:14px;font:600 13px/1 var(--font)}
+#authGate .field{width:100%;margin-top:12px}
+#authGate .field input{height:48px;border-radius:17px;font:400 15px/1 var(--font);padding:0 16px}
+#authGate .field .btn{width:100%;height:48px;border-radius:999px;font:600 14.5px/1 var(--font)}
+#authGate .hint{display:block;margin:10px 0 0;text-align:center;font:400 12px/1.5 var(--font);color:var(--dimmer)}
+#authErr:empty{display:none}
+#authErr{color:#ff8f8f}
+#authContinueRow{margin-top:4px}
+.auth-skip{
+    display:block;width:100%;margin:2px 0 0;padding:14px 0 6px;
+    border:0;background:none;border-radius:14px;cursor:pointer;
+    color:var(--dim);font:500 13.5px/1 var(--font);
+    transition:color .15s,background .15s;
+}
+.auth-skip:hover{color:var(--ink);background:var(--glass-2)}
+#authTabs[hidden],#authContinueRow[hidden],#authRegister[hidden],#authLogin[hidden]{display:none !important}
+
+/* ---- viewer ---- */
+.viewer-bar{border-radius:20px;height:56px}
+.v-btn{border-radius:999px;padding:0 13px;font:500 12.5px/1 var(--font)}
+.frame-wrap{border-radius:20px;border-color:var(--stroke)}
+.loader-title{font:600 15px/1 var(--font)}
+.progress{height:4px}
+.grid-status,.quickbar-hints span{font:400 13px/1.6 var(--font)}
+
+@media (max-width:700px){
+    .rail{left:10px;border-radius:22px;width:62px;padding:9px 5px}
+    .rail-btn{height:48px;border-radius:14px}
+    .topbar{height:54px;border-radius:24px;padding:0 8px}
+    .search{height:38px}
+    .icon-btn.labeled span{display:none}
+    .icon-btn.labeled{width:38px;padding:0}
+    #authGate .risk-panel{border-radius:26px;padding:30px 18px 16px}
+    .sheet-panel{border-radius:24px}
+    .skin-scroll{}
+}

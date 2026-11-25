@@ -377,25 +377,38 @@ mirror and shard repos, never from `lite.3kh0.net`.
 
 ## Sign-in gate (25 November)
 
-`#authGate` in `index.html` is a `.risk` panel that `showAuthGate()` opens on
-launch while `acctDb().current` is empty. Accounts are **username + password**:
+`#authGate` in `index.html` is a `.risk` card that `showAuthGate()` opens **on
+every launch**, not just the first one. Accounts are username + password:
 
-- Register takes a username and a password (4+ characters, usernames are unique
-  per device, case-insensitive). The password is stored as
-  `sha256(salt + ':' + password)` with a random 12-byte salt in the account
-  record; nothing is written in the clear. `crypto.subtle` is used where it
-  exists, with a djb2 fallback on `file://`.
-- Log in takes the same two fields, finds the account by username and checks the
-  hash. A wrong password keeps the gate open and says so.
-- Accounts created before passwords existed still have a `pin`; `passwordMatches()`
-  checks the old `sha256('wm:' + pin)` hash so those still open with their PIN.
-- `Continue without an account` closes the gate until the next page load. The
-  chosen tab is remembered in `sessionStorage` (`wm.auth.tab`).
+- Register takes a username and a password (4+ characters, usernames unique per
+  device, case-insensitive). The password is stored as
+  `sha256(salt + ':' + password)` with a random 12-byte salt; `crypto.subtle`
+  where it exists, a djb2 fallback on `file://`.
+- Log in takes the same two fields and checks the hash; a wrong password keeps
+  the card open and says so.
+- An already-signed-in browser gets a single **Continue as <name>** button
+  instead of the forms. **Skip** at the bottom of the card closes it for that
+  page load either way.
+- Logging in reloads to apply that account's snapshot; a `wm.auth.signed` flag in
+  `sessionStorage` lets that one reload through so the card does not pop back up
+  a second later.
+- Accounts created before passwords existed still carry a `pin`;
+  `passwordMatches()` checks the old `sha256('wm:' + pin)` so they still open.
 
 Settings → Account shows who is signed in (level, plays, streak), lists the
 accounts on the device, can create another one (it adopts the current state) and
-can log out — logging out reloads straight back into the gate. There is no
-account code any more; switching always needs the password.
+can log out. There is no account code; switching always needs the password.
+
+## Skin (25 November)
+
+The last block in `concept.css` is a self-contained skin layered on top of the
+rest: translucent `--glass` surfaces with a 28px blur behind the rail, top bar,
+sheet, modals and cards; pill buttons and chips; 16-28px radii; a segmented
+control built from `.seg` for every picker. The two native `<select>` controls
+(sort and tab disguise) are gone — they render as `.seg` chips, because an OS
+dropdown cannot be styled. `#authGate` has its own block: 432px card, grabber,
+iOS-style segmented tabs, 48px fields, a full-width pill button and a plain
+**Skip** link at the bottom.
 
 ## Slop
 

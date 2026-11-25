@@ -27,8 +27,8 @@
     </script>
     <script src="https://cdn.jsdelivr.net/gh/gnmathcopy/gnmathcopy.github.io@main/gnmath.js"></script>
 
-    <link rel="stylesheet" href="./app.css?v=8">
-    <link rel="stylesheet" href="./concept.css?v=16">
+    <link rel="stylesheet" href="./app.css?v=9">
+    <link rel="stylesheet" href="./concept.css?v=17">
 </head>
 <body>
 <a class="sr-only" href="#games">Skip to games</a>
@@ -370,7 +370,8 @@
                 <li><b>Saves that stick</b>Games run on this site&rsquo;s own origin now, so the progress and high scores they write are actually kept.</li>
                 <li><b>Accounts</b>Register a username and password and you get your own copy of the lot &mdash; stars, settings and every game save &mdash; and logging back in brings the saves with it. Settings &rarr; Account lists who is signed in.</li>
                 <li><b>Levels and streaks</b>Opening a game pays XP, a first play pays more, and the account panel counts how many days in a row you have played.</li>
-                <li><b>Sign in on launch</b>A register / log in card comes up until this browser has an account &mdash; username and password, not a code. Registering takes the stars, settings and saves already on screen. Settings &rarr; Account can add a second account or log you out.</li>
+                <li><b>Sign in on launch</b>The account card now comes up on every start &mdash; username and password, not a code &mdash; with a <b>Skip</b> at the bottom. Registering takes the stars, settings and saves already on screen, and a signed-in browser gets a one-tap Continue.</li>
+                <li><b>New skin</b>Floating glass surfaces, pill controls and big iOS corners, with the segmented pickers replacing the last two native dropdowns.</li>
                 <li><b>Slop off the shelf</b>Eleven filler entries are gone &mdash; the mobile-ad clones (Layers Roll, Lazy Jumper, Man Runner 2048, Pottery Master, Jelly Drift), the joke pages (Elastic Man, Google Baseball, PacMan Horror, Steal Brainrot Online, Plinko) and a duplicated Cut the Rope.</li>
             </ul>
         </div>
@@ -383,45 +384,45 @@
 
 <div class="risk" id="authGate" role="dialog" aria-modal="true" aria-labelledby="authTitle">
     <div class="risk-panel">
-        <div class="risk-tape" aria-hidden="true"></div>
         <div class="risk-head">
             <div class="risk-icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.6"/><path d="M4.8 20.4c0-3.6 3.2-5.9 7.2-5.9s7.2 2.3 7.2 5.9"/></svg>
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.6"/><path d="M4.8 20.4c0-3.6 3.2-5.9 7.2-5.9s7.2 2.3 7.2 5.9"/></svg>
             </div>
             <div>
-                <div class="risk-kicker">watermusic &middot; accounts</div>
-                <h3 id="authTitle">Log in to keep your games</h3>
+                <div class="risk-kicker">watermusic</div>
+                <h3 id="authTitle">Your account</h3>
             </div>
         </div>
         <div class="risk-body">
-            <p>A username and password on this device remember your stars, your settings and <strong>every game save</strong>. They stay in this browser.</p>
-            <div class="seg" id="authTabs" style="margin-bottom:6px">
+            <p>Stars, settings and every game save stay with the account you log in to.</p>
+            <div class="seg" id="authTabs">
                 <button type="button" data-auth-tab="register" class="on">Register</button>
                 <button type="button" data-auth-tab="login">Log in</button>
             </div>
             <div id="authRegister">
-                <div class="field" style="margin-top:10px"><input type="text" id="authName" placeholder="Username" maxlength="24" autocomplete="username"></div>
-                <div class="field" style="margin-top:8px"><input type="password" id="authPass" placeholder="Password, 4+ characters" maxlength="64" autocomplete="new-password"></div>
+                <div class="field" style="margin-top:12px"><input type="text" id="authName" placeholder="Username" maxlength="24" autocomplete="username"></div>
+                <div class="field" style="margin-top:10px"><input type="password" id="authPass" placeholder="Password" maxlength="64" autocomplete="new-password"></div>
                 <div class="field" style="margin-top:12px"><button class="btn primary" type="button" data-action="auth-register">Create account</button></div>
             </div>
             <div id="authLogin" hidden>
-                <div class="field" style="margin-top:10px"><input type="text" id="authUser" placeholder="Username" maxlength="24" autocomplete="username"></div>
-                <div class="field" style="margin-top:8px"><input type="password" id="authPassLogin" placeholder="Password" maxlength="64" autocomplete="current-password"></div>
-                <p class="hint" id="authKnown" style="margin-top:8px"></p>
-                <div class="field" style="margin-top:8px"><button class="btn primary" type="button" data-action="auth-login">Log in</button></div>
+                <div class="field" style="margin-top:12px"><input type="text" id="authUser" placeholder="Username" maxlength="24" autocomplete="username"></div>
+                <div class="field" style="margin-top:10px"><input type="password" id="authPassLogin" placeholder="Password" maxlength="64" autocomplete="current-password"></div>
+                <p class="hint" id="authKnown"></p>
+                <div class="field" style="margin-top:10px"><button class="btn primary" type="button" data-action="auth-login">Log in</button></div>
             </div>
-            <p class="hint" id="authErr" style="margin-top:10px;color:#ff8080"></p>
+            <p class="hint" id="authErr"></p>
         </div>
-        <div class="risk-actions">
-            <button class="btn" id="authGuest" type="button">Continue without an account</button>
+        <div class="risk-actions" id="authContinueRow" hidden>
+            <button class="btn primary" id="authContinue" type="button">Continue</button>
         </div>
+        <button class="auth-skip" id="authSkip" type="button">Skip</button>
         <div class="risk-foot">accounts stay in this browser &middot; nothing is uploaded</div>
     </div>
 </div>
 
 <div class="toast-wrap" id="toastWrap"></div>
 
-<script src="./app.js?v=27" defer></script>
+<script src="./app.js?v=28" defer></script>
 <script src="./player.js?v=1" defer></script>
     <script src="./concept.js?v=9" defer></script>
 <script>
