@@ -1650,7 +1650,7 @@
        saves move with the account instead of dying with the browser.
        With sync-config.js left empty everything still works, on this device.
        ---------------------------------------------------------------- */
-    const SYNC = (window.WM_SYNC && window.WM_SYNC.url && window.WM_SYNC.key)
+    var SYNC = (window.WM_SYNC && window.WM_SYNC.url && window.WM_SYNC.key)
         ? { url: String(window.WM_SYNC.url).replace(/\/+$/, ''), key: window.WM_SYNC.key }
         : null;
     const SYNC_DOMAIN = 'players.watermusic.app';
@@ -1738,7 +1738,6 @@
         try {
             const res = await syncCall('/rest/v1/wm_state', {
                 method: 'POST',
-                keepalive: true,
                 headers: syncHeaders(acct.access, { Prefer: 'resolution=merge-duplicates,return=minimal' }),
                 body: JSON.stringify([{ user_id: acct.remoteId, data: snapshotKeys(), updated_at: new Date().toISOString() }])
             });
@@ -2034,6 +2033,8 @@
             db.current = rec.id;
             db.data[rec.id] = { keys: keys || snapshotKeys() };
             acctWrite(db);
+            // put the account's stars, settings and saves on this device before the reload
+            restoreKeys(keys || {});
             closeAuthGate();
             try { sessionStorage.setItem('wm.auth.signed', '1'); } catch (e) { }
             toast('Signed in as ' + rec.name);
@@ -2695,6 +2696,8 @@
     if (syncAccount()) {
         requestSync();
         window.addEventListener('pagehide', () => { syncPushNow(); });
+        // games write straight to localStorage inside their frame, so poll as well
+        setInterval(() => { if (document.visibilityState === 'visible') syncPushNow(); }, 30000);
     }
 
     /* ---------------- concept hooks ----------------
