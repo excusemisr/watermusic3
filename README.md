@@ -399,31 +399,33 @@ Settings → Account shows who is signed in (level, plays, streak), lists the
 accounts on the device, can create another one (it adopts the current state) and
 can log out. There is no account code; switching always needs the password.
 
-## Skin (25 November)
+## Interface (25 November)
 
-`concept.css` is the whole look; `app.css` only carries structure and fallbacks.
-The skin block at the end of `concept.css` is the current design, layered over
-the earlier component styles so nothing is lost:
+`concept.css` is the whole interface; `app.css` supplies structure and fallbacks.
+The current design is a desktop-shell layout, not a page with a hero:
 
-- **Sidebar.** A 236px floating glass panel that hugs its content (top-left, no
-  stretched empty column), brand and
-  labelled nav rows (Games, Starred, Recent, Proxy, Settings at the bottom) with
-  an accent-tinted row for the current view. Under 1024px the same element
-  becomes a floating bottom dock with icon-over-label tabs, and everything stays
-  in one row.
-- **Top bar.** One 60px pill pinned under the sidebar's top edge: the search
-  field fills it, the action buttons sit at the right, all on a 26px blur.
-- **Hero.** Two columns — a 70px `watermusic.` headline with a count pill
-  (`#mastCount games on the shelf`), three stat cards, and the featured game as
-  a 400px banner with a pill Play button, dots and a progress line.
-- **Cards.** 18px radius, glass fill, cover zoom and an accent ring on hover,
-  floating star and new-tab controls, pill play chip.
-- **Settings.** Slides in from the right as a full-height 540px drawer with the
-  sections as a horizontal row of pills instead of a side list.
-- **Account card.** A centred 432px sheet with a grabber, iOS segmented tabs,
-  50px fields and **Skip** as a plain link at the bottom.
-- Every native `<select>` is still gone: pickers are `.seg` pill groups, so no
-  OS dropdown can appear.
+- **Command bar.** One fixed 54px bar: brand on the left, the search field
+  centred (`max-width: 640px`), Random / Sort / Proxy / Find on the right. It is
+  the only always-visible glass surface besides the dock.
+- **Dock.** A 52px icon-only dock, vertically centred on the left, with labels on
+  hover and a 2px mint marker on the active view. Under 1024px it flips to a
+  bottom dock with an underline marker. Everything else is plain dark surface.
+- **Library first.** `#grid` uses `repeat(auto-fill, minmax(188px, 1fr))` — six
+  columns at 1920, four at 1440, two on a phone. Cards have no frame: 16:10
+  artwork with a 10px radius, name under it, mono uppercase metadata under that.
+  Hover lifts the art 3px, zooms it 4%, tints the name mint and reveals the star
+  and play chip. The pinned badge is hidden; nothing repeats down the grid.
+- **Side rail.** 340px, sticky, scrolls inside itself: the featured game as a
+  small window (art, label, title, Play, dots, timer), then Recommended and Jump
+  back in as 46px rows, then the shelf note with the live count and links.
+- **No hero.** The masthead, stat cards and shortcut strip are gone. The library
+  heading is a mono `LIBRARY 318` label; the starred view renames it and hides
+  the category chips.
+- **Settings** opens as a 780px window with a left section list; dialogs, the
+  palette (600px) and the viewer bar share the same flat panel language.
+- The header, dock, feature window and dialogs are the glass surfaces — fine
+  1px borders, a soft top highlight, 20-30px blur; the game artwork stays flat
+  and vivid. No neon, no glow, no gradients behind the cards.
 
 ## Slop
 

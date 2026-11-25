@@ -661,7 +661,7 @@
         $('allCount').textContent = total;
         // the starred view is a filter, not a separate page — say so, or the
         // heading reads "All games 1" and looks broken
-        $('viewTitle').textContent = state.starred ? 'Starred' : 'All games';
+        $('viewTitle').textContent = state.starred ? 'Starred' : 'Library';
         $('categoryNav').hidden = !!state.starred;
         if (!games.length) { status.innerHTML = ''; return; }
         if (!total) {
@@ -748,7 +748,8 @@
     }
 
     function updateStats() {
-        $('statGames').textContent = games.length;
+        const gamesNode = $('statGames');
+        if (gamesNode) gamesNode.textContent = games.length;
         $('footCount').textContent = games.length;
         const mast = $('mastCount');
         if (mast) mast.textContent = games.length;
@@ -2215,7 +2216,8 @@
         openGame(pool[Math.floor(Math.random() * pool.length)]);
     }
     $('randomBtn').addEventListener('click', randomGame);
-    $('heroRandom').addEventListener('click', randomGame);
+    const heroRandom = $('heroRandom');
+    if (heroRandom) heroRandom.addEventListener('click', randomGame);
 
     $('spotlight').addEventListener('click', () => {
         const key = $('spotlight').dataset.key;

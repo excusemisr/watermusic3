@@ -28,176 +28,140 @@
     <script src="https://cdn.jsdelivr.net/gh/gnmathcopy/gnmathcopy.github.io@main/gnmath.js"></script>
 
     <link rel="stylesheet" href="./app.css?v=9">
-    <link rel="stylesheet" href="./concept.css?v=20">
+    <link rel="stylesheet" href="./concept.css?v=22">
 </head>
 <body>
 <a class="sr-only" href="#games">Skip to games</a>
 <div id="scrollBar" aria-hidden="true"></div>
 
-<aside class="rail" aria-label="Main navigation">
-    <a class="rail-brand" href="./index.html" aria-label="watermusic home">
-        <span class="rail-logo"></span>
-        <span class="rail-name">watermusic</span>
+<header class="bar">
+    <a class="brand" href="./index.html" aria-label="watermusic home">
+        <span class="brand-mark" aria-hidden="true"></span>
+        <span class="brand-name">watermusic</span>
     </a>
-    <div class="rail-group">
-        <button class="rail-btn active" data-nav="games" type="button">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="7" width="19" height="10" rx="5"/><path d="M8 10.5v3M6.5 12h3"/><circle cx="16.5" cy="11" r="0.9" fill="currentColor" stroke="none"/><circle cx="18.5" cy="13.5" r="0.9" fill="currentColor" stroke="none"/></svg>
-            <span class="rail-label">Games</span>
-            <span class="rail-tip" aria-hidden="true">Library</span>
+    <label class="cmd">
+        <svg class="cmd-icon" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+        <input type="text" id="searchBar" placeholder="Search games, genres, authors" autocomplete="off" spellcheck="false" aria-label="Search games">
+        <span class="kbd" aria-hidden="true">&#8984;K</span>
+    </label>
+    <div class="bar-tools">
+        <button class="tool" id="randomBtn" type="button" title="Random game (R)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7h4l10 10h4"/><path d="M21 17v4h-4"/><path d="M3 17h4L17 7h4"/><path d="M21 3v4h-4"/></svg>
+            <span>Random</span>
         </button>
-        <button class="rail-btn" data-nav="starred" type="button">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.6l2.6 5.3 5.9.9-4.3 4.1 1 5.8-5.2-2.8-5.2 2.8 1-5.8-4.3-4.1 5.9-.9z"/></svg>
-            <span class="rail-label">Starred</span>
-            <span class="rail-tip" aria-hidden="true">Starred</span>
-        </button>
-        <button class="rail-btn" data-nav="recent" type="button">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg>
-            <span class="rail-label">Recent</span>
-            <span class="rail-tip" aria-hidden="true">Recently played</span>
+        <div class="topbar-wrap">
+            <button class="tool" id="sortBtn" type="button" title="Sort the library" aria-haspopup="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M6 12h12M9 18h6"/></svg>
+                <span>Sort</span>
+            </button>
+            <div class="popover" id="sortMenu"></div>
+        </div>
+        <a class="tool icon" href="./proxy.html" title="Proxy hub" aria-label="Proxy hub">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17"/><path d="M12 3.5c2.2 2.4 3.3 5.3 3.3 8.5s-1.1 6.1-3.3 8.5c-2.2-2.4-3.3-5.3-3.3-8.5S9.8 5.9 12 3.5z"/></svg>
+        </a>
+        <button class="tool icon" id="paletteBtn" type="button" title="Quick find (Ctrl K)" aria-label="Quick find">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M4 12h10M4 18h13"/></svg>
         </button>
     </div>
-    <a class="rail-btn" href="./proxy.html">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17"/><path d="M12 3.5c2.2 2.4 3.3 5.3 3.3 8.5s-1.1 6.1-3.3 8.5c-2.2-2.4-3.3-5.3-3.3-8.5S9.8 5.9 12 3.5z"/></svg>
-        <span class="rail-label">Proxy</span>
-        <span class="rail-tip" aria-hidden="true">Proxy hub</span>
-    </a>
-    <div class="rail-spacer"></div>
-    <button class="rail-btn" id="settingsBtn" type="button">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-        <span class="rail-label">Settings</span>
-        <span class="rail-tip" aria-hidden="true">Settings</span>
-    </button>
-</aside>
+</header>
 
 <main class="shell">
-    <div class="topbar">
-        <label class="search">
-            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
-            <input type="text" id="searchBar" placeholder="Search games…" autocomplete="off" spellcheck="false" aria-label="Search games">
-            <span class="kbd">⌘ K</span>
-        </label>
-        <div class="topbar-actions">
-            <button class="icon-btn labeled" id="randomBtn" type="button" title="Random game (R)">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h4l10 10h4"/><path d="M21 17v4h-4"/><path d="M3 17h4L17 7h4"/><path d="M21 3v4h-4"/></svg>
-                <span>Random</span>
-            </button>
-            <div class="topbar-wrap">
-                <button class="icon-btn labeled" id="sortBtn" type="button" title="Change the sort order" aria-haspopup="true">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M6 12h12M9 18h6"/></svg>
-                    <span>Sort</span>
-                </button>
-                <div class="popover" id="sortMenu"></div>
-            </div>
-            <a class="icon-btn labeled" href="./proxy.html" title="Open the proxy hub">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17"/><path d="M12 3.5c2.2 2.4 3.3 5.3 3.3 8.5s-1.1 6.1-3.3 8.5c-2.2-2.4-3.3-5.3-3.3-8.5S9.8 5.9 12 3.5z"/></svg>
-                <span>Proxy</span>
-            </a>
-            <button class="icon-btn labeled" id="paletteBtn" type="button" title="Quick find (Ctrl K)">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
-                <span>Find</span>
-            </button>
-        </div>
-    </div>
-
-    <section class="masthead">
-        <div class="mast-copy">
-            <p class="mast-kicker"><span id="mastCount">—</span> games on the shelf</p>
-            <h1 class="mast-title">watermusic<em>.</em></h1>
-            <p class="mast-sub">Browser games that open right here. No installs, no download bar — click a game and you are playing. Sign in to keep your saves and settings together.</p>
-            <div class="mast-actions">
-                <button class="btn primary" id="heroRandom" type="button">
-                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-                    Random game
-                </button>
-                <a class="btn" href="#games">Browse all</a>
-                <a class="btn" href="./proxy.html">Proxy</a>
-            </div>
-            <div class="mast-stats">
-                <div class="stat"><b id="statGames">—</b><span>games</span></div>
-                <div class="stat"><b id="statCached">0</b><span>cached</span></div>
-                <div class="stat"><b id="statStarred">0</b><span>starred</span></div>
-            </div>
-        </div>
-
-        <div class="spotlight" id="spotlight" role="button" tabindex="0" aria-label="Featured game">
-            <div class="sp-bg" id="spBg"></div>
-            <div class="sp-bg alt" id="spBgAlt"></div>
-            <div class="sp-veil"></div>
-            <div class="sp-top">
-                <span class="sp-corner">1 / 6</span>
-            </div>
-            <div class="sp-content">
-                <div class="sp-text">
-                    <div class="sp-label">Featured</div>
-                    <div class="sp-title" id="spTitle">Loading…</div>
-                    <div class="sp-sub" id="spSub">Picking something good</div>
+    <div class="page">
+        <section class="library" id="games">
+            <div class="lib-head">
+                <div class="lib-title">
+                    <h2 id="viewTitle">Library</h2>
+                    <span class="count" id="allCount">0</span>
                 </div>
-                <button class="sp-play" id="spPlay" type="button">
-                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-                    <span>Play</span>
-                </button>
+                <div class="lib-actions">
+                    <span class="kbd-hint"><b>&#8984;K</b> search &middot; <b>R</b> random</span>
+                    <button class="ghost" id="paletteBtn2" type="button">Find a game</button>
+                </div>
             </div>
-            <div class="sp-foot">
-                <div class="sp-dots" id="spDots" aria-hidden="true"></div>
-                <div class="sp-timer"><i id="spTimer"></i></div>
-            </div>
-        </div>
-    </section>
+            <div class="chips" id="categoryNav"></div>
+            <div class="grid" id="grid"></div>
+            <div class="grid-status" id="gridStatus"></div>
+            <div class="sentinel" id="sentinel"></div>
+        </section>
 
-    <div class="quickbar">
-        <div class="quickbar-hints">
-            <span><b>Click a tile</b> to play</span>
-            <span><b>⌘ K</b> quick find</span>
-            <span><b>R</b> random game</span>
-            <span><b>Esc</b> close</span>
-        </div>
-        <div class="quickbar-count" data-game-count>loading…</div>
+        <aside class="side">
+            <section class="feature" id="spotlight" role="button" tabindex="0" aria-label="Featured game">
+                <div class="feature-art">
+                    <div class="sp-bg" id="spBg"></div>
+                    <div class="sp-bg alt" id="spBgAlt"></div>
+                    <div class="sp-veil"></div>
+                    <span class="sp-corner">1 / 6</span>
+                </div>
+                <div class="feature-body">
+                    <div class="sp-text">
+                        <div class="sp-label">Featured</div>
+                        <div class="sp-title" id="spTitle">Loading&hellip;</div>
+                        <div class="sp-sub" id="spSub">Picking something good</div>
+                    </div>
+                    <button class="sp-play" id="spPlay" type="button">Play</button>
+                </div>
+                <div class="sp-foot">
+                    <div class="sp-dots" id="spDots" aria-hidden="true"></div>
+                    <div class="sp-timer"><i id="spTimer"></i></div>
+                </div>
+            </section>
+
+            <section class="mini" id="recSection" hidden>
+                <div class="mini-head">
+                    <h3>Recommended</h3>
+                    <a href="./recommended.html">See all</a>
+                </div>
+                <div class="mini-list" id="recRow"></div>
+            </section>
+
+            <section class="mini" id="recentSection" hidden>
+                <div class="mini-head">
+                    <h3>Jump back in</h3>
+                    <button id="clearRecent" type="button">Clear</button>
+                </div>
+                <div class="mini-list" id="recentRow"></div>
+            </section>
+
+            <section class="mini shelf">
+                <div class="mini-head"><h3>On this shelf</h3></div>
+                <p class="shelf-line"><b id="footCount">&mdash;</b> games, every page served from this site. No installs, no redirects.</p>
+                <div class="shelf-links">
+                    <a href="./recommended.html">Recommended</a>
+                    <a href="./proxy.html">Proxy</a>
+                    <a href="https://moonlight-hub.pages.dev/" target="_blank" rel="noopener noreferrer">Moonlight Hub</a>
+                    <a href="https://bi6zonerecoverybytaylor.vercel.app/" target="_blank" rel="noopener noreferrer">Bi6zone</a>
+                </div>
+            </section>
+        </aside>
     </div>
-
-    <section class="section" id="recSection" hidden>
-        <div class="section-head">
-            <h2>Recommended</h2>
-            <div class="rule"></div>
-            <a class="link-btn" href="./recommended.html">See the list</a>
-        </div>
-        <div class="row-scroll" id="recRow"></div>
-    </section>
-
-    <section class="section" id="recentSection" hidden>
-        <div class="section-head">
-            <h2>Jump back in</h2>
-            <div class="rule"></div>
-            <button class="link-btn" id="clearRecent" type="button">Clear</button>
-        </div>
-        <div class="row-scroll" id="recentRow"></div>
-    </section>
-
-    <section class="section" id="games">
-        <div class="section-head">
-            <h2><span id="viewTitle">All games</span> <span class="count" id="allCount">0</span></h2>
-            <div class="rule"></div>
-            <button class="link-btn" id="paletteBtn2" type="button">Search with ⌘K</button>
-        </div>
-        <div class="chips scroll" id="categoryNav"></div>
-        <div class="grid" id="grid"></div>
-        <div class="grid-status" id="gridStatus"></div>
-        <div class="sentinel" id="sentinel"></div>
-    </section>
-
     <div class="ad-slot">
         <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-5521219086088837" data-ad-slot="5549138288" data-ad-format="auto" data-full-width-responsive="true"></ins>
     </div>
-
-    <footer>
-        <div>watermusic · <span id="footCount">—</span> titles</div>
-        <nav>
-            <a href="./recommended.html">Recommended</a>
-            <a href="./proxy.html">Proxy</a>
-            <a href="https://moonlight-hub.pages.dev/" target="_blank" rel="noopener noreferrer">Moonlight Hub</a>
-            <a href="https://bi6zonerecoverybytaylor.vercel.app/" target="_blank" rel="noopener noreferrer">Bi6zone</a>
-        </nav>
-    </footer>
 </main>
+
+<nav class="dock" aria-label="Main navigation">
+    <button class="dock-btn active" data-nav="games" type="button" aria-label="Library">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="7" width="19" height="10" rx="3"/><path d="M8 10.5v3M6.5 12h3"/><circle cx="16.5" cy="11" r="0.9" fill="currentColor" stroke="none"/><circle cx="18.5" cy="13.5" r="0.9" fill="currentColor" stroke="none"/></svg>
+        <span class="dock-label">Library</span>
+    </button>
+    <button class="dock-btn" data-nav="starred" type="button" aria-label="Starred">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.6l2.6 5.3 5.9.9-4.3 4.1 1 5.8-5.2-2.8-5.2 2.8 1-5.8-4.3-4.1 5.9-.9z"/></svg>
+        <span class="dock-label">Starred</span>
+    </button>
+    <button class="dock-btn" data-nav="recent" type="button" aria-label="Recent">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg>
+        <span class="dock-label">Recent</span>
+    </button>
+    <span class="dock-sep" aria-hidden="true"></span>
+    <a class="dock-btn" href="./proxy.html" aria-label="Proxy">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17"/><path d="M12 3.5c2.2 2.4 3.3 5.3 3.3 8.5s-1.1 6.1-3.3 8.5c-2.2-2.4-3.3-5.3-3.3-8.5S9.8 5.9 12 3.5z"/></svg>
+        <span class="dock-label">Proxy</span>
+    </a>
+    <button class="dock-btn" id="settingsBtn" type="button" aria-label="Settings">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        <span class="dock-label">Settings</span>
+    </button>
+</nav>
 
 <div class="palette" id="palette" role="dialog" aria-modal="true" aria-label="Quick find" aria-hidden="true">
     <div class="palette-panel">
@@ -371,7 +335,7 @@
                 <li><b>Accounts</b>Register a username and password and you get your own copy of the lot &mdash; stars, settings and every game save &mdash; and logging back in brings the saves with it. Settings &rarr; Account lists who is signed in.</li>
                 <li><b>Levels and streaks</b>Opening a game pays XP, a first play pays more, and the account panel counts how many days in a row you have played.</li>
                 <li><b>Sign in on launch</b>The account card now comes up on every start &mdash; username and password, not a code &mdash; with a <b>Skip</b> at the bottom. Registering takes the stars, settings and saves already on screen, and a signed-in browser gets a one-tap Continue.</li>
-                <li><b>New skin</b>The whole frame is rebuilt: a labelled glass sidebar (a bottom dock on phones), an editorial hero next to the featured game, cards that lift when you point at them, and Settings sliding in as a right-hand drawer with its tabs across the top.</li>
+                <li><b>New interface</b>The page is a desktop shell now: a command bar on top, a floating icon dock on the left, the library taking the width with a curated rail beside it &#8212; featured window, recommended, jump back in. No hero, no stat cards.</li>
                 <li><b>Slop off the shelf</b>Eleven filler entries are gone &mdash; the mobile-ad clones (Layers Roll, Lazy Jumper, Man Runner 2048, Pottery Master, Jelly Drift), the joke pages (Elastic Man, Google Baseball, PacMan Horror, Steal Brainrot Online, Plinko) and a duplicated Cut the Rope.</li>
             </ul>
         </div>
@@ -422,7 +386,7 @@
 
 <div class="toast-wrap" id="toastWrap"></div>
 
-<script src="./app.js?v=29" defer></script>
+<script src="./app.js?v=30" defer></script>
 <script src="./player.js?v=1" defer></script>
     <script src="./concept.js?v=9" defer></script>
 <script>
