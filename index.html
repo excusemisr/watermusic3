@@ -12,8 +12,6 @@
 
     <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
     <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
-    <link rel="preconnect" href="https://lite.3kh0.net" crossorigin>
-    <link rel="dns-prefetch" href="https://lite.3kh0.net">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&family=Outfit:wght@200..800&family=Sora:wght@200..700&family=JetBrains+Mono:wght@400..700&display=swap" rel="stylesheet">
@@ -29,8 +27,8 @@
     </script>
     <script src="https://cdn.jsdelivr.net/gh/gnmathcopy/gnmathcopy.github.io@main/gnmath.js"></script>
 
-    <link rel="stylesheet" href="./app.css?v=7">
-    <link rel="stylesheet" href="./concept.css?v=9">
+    <link rel="stylesheet" href="./app.css?v=8">
+    <link rel="stylesheet" href="./concept.css?v=16">
 </head>
 <body>
 <a class="sr-only" href="#games">Skip to games</a>
@@ -45,29 +43,29 @@
         <button class="rail-btn active" data-nav="games" type="button">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="7" width="19" height="10" rx="5"/><path d="M8 10.5v3M6.5 12h3"/><circle cx="16.5" cy="11" r="0.9" fill="currentColor" stroke="none"/><circle cx="18.5" cy="13.5" r="0.9" fill="currentColor" stroke="none"/></svg>
             <span class="rail-label">Games</span>
-            <span class="rail-tip">Library</span>
+            <span class="rail-tip" aria-hidden="true">Library</span>
         </button>
         <button class="rail-btn" data-nav="starred" type="button">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.6l2.6 5.3 5.9.9-4.3 4.1 1 5.8-5.2-2.8-5.2 2.8 1-5.8-4.3-4.1 5.9-.9z"/></svg>
             <span class="rail-label">Starred</span>
-            <span class="rail-tip">Starred</span>
+            <span class="rail-tip" aria-hidden="true">Starred</span>
         </button>
         <button class="rail-btn" data-nav="recent" type="button">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg>
             <span class="rail-label">Recent</span>
-            <span class="rail-tip">Recently played</span>
+            <span class="rail-tip" aria-hidden="true">Recently played</span>
         </button>
     </div>
     <a class="rail-btn" href="./proxy.html">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17"/><path d="M12 3.5c2.2 2.4 3.3 5.3 3.3 8.5s-1.1 6.1-3.3 8.5c-2.2-2.4-3.3-5.3-3.3-8.5S9.8 5.9 12 3.5z"/></svg>
         <span class="rail-label">Proxy</span>
-        <span class="rail-tip">Proxy hub</span>
+        <span class="rail-tip" aria-hidden="true">Proxy hub</span>
     </a>
     <div class="rail-spacer"></div>
     <button class="rail-btn" id="settingsBtn" type="button">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
         <span class="rail-label">Settings</span>
-        <span class="rail-tip">Settings</span>
+        <span class="rail-tip" aria-hidden="true">Settings</span>
     </button>
 </aside>
 
@@ -105,7 +103,7 @@
         <div class="mast-copy">
             <p class="mast-kicker"><span id="mastCount">—</span> games on the shelf</p>
             <h1 class="mast-title">watermusic<em>.</em></h1>
-            <p class="mast-sub">Browser games that open right here. No installs, no account, no download bar — click a game and you are playing.</p>
+            <p class="mast-sub">Browser games that open right here. No installs, no download bar — click a game and you are playing. Sign in to keep your saves and settings together.</p>
             <div class="mast-actions">
                 <button class="btn primary" id="heroRandom" type="button">
                     <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
@@ -331,6 +329,27 @@
     </div>
 </div>
 
+<div class="welcome" id="welcome" role="dialog" aria-modal="true" aria-labelledby="welcomeTitle" aria-hidden="true">
+    <div class="welcome-wall" id="welcomeWall" aria-hidden="true"></div>
+    <div class="welcome-veil" aria-hidden="true"></div>
+    <button class="welcome-skip" id="welcomeSkip" type="button">Skip</button>
+    <div class="welcome-inner">
+        <p class="welcome-kicker">The browser game shelf</p>
+        <h2 class="welcome-title" id="welcomeTitle">watermusic<em>.</em></h2>
+        <p class="welcome-lede">A few hundred games that start on the click, all served from this site. Pick a tile and you are already playing — sign in if you want your saves to follow you.</p>
+        <div class="welcome-actions">
+            <button class="btn primary" id="welcomeStart" type="button">Start playing</button>
+            <button class="btn" id="welcomeRandom" type="button">Surprise me</button>
+        </div>
+        <div class="welcome-stats">
+            <div><b id="welcomeGames">—</b><span>games</span></div>
+            <div><b id="welcomeCats">—</b><span>categories</span></div>
+            <div><b>0</b><span>installs</span></div>
+        </div>
+        <p class="welcome-foot"><b>⌘K</b> to find something · <b>R</b> for something random</p>
+    </div>
+</div>
+
 <div class="risk updates" id="updateLog" role="dialog" aria-modal="true" aria-labelledby="updateTitle">
     <div class="risk-panel">
         <div class="risk-tape" aria-hidden="true"></div>
@@ -339,18 +358,18 @@
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M18.4 5.6l-2.1 2.1M7.7 16.3l-2.1 2.1"/><circle cx="12" cy="12" r="3.4"/></svg>
             </div>
             <div>
-                <div class="risk-kicker" id="updateKicker">update log · 10 november</div>
-                <h3 id="updateTitle">The games actually load now</h3>
+                <div class="risk-kicker" id="updateKicker">update log · 25 november</div>
+                <h3 id="updateTitle">Every game lives on watermusic now</h3>
             </div>
         </div>
         <div class="risk-body">
-            <p>Most of this shelf came from one CDN of single-file uploads and plenty of those files were dead. Every game 3kh0 also hosts now opens their copy instead, and a pile of new ones came across with it.</p>
+            <p>Every game page is a file on this server now instead of a link to someone else&rsquo;s. The whole library was pulled down and lives in <code>gamehosting/gnmath/</code>, so nothing redirects, nothing waits on a CDN, and the games that used to come up blank have their own copy again.</p>
             <ul class="upd-list">
-                <li><b>Same card, working file</b>2048, Doodle Jump, Vex 3&ndash;6, Moto X3M, Bloons TD, Duck Life, Cut the Rope, Tunnel Rush, Wordle and about thirty more keep their name, cover, star and Recommended slot &mdash; they just load 3kh0&rsquo;s build now.</li>
-                <li><b>62 new games</b>Krunker, Retro Bowl, Slope, Temple Run 2, Among Us, Wolfenstein 3D, Portal, Geometry Dash, Minecraft Classic, Tank Trouble 2, Stick War, Minesweeper, Solitaire and the rest. No clicker clones, no 2048 re-skins, nothing that is just a joke page.</li>
-                <li><b>Where they come from</b>3kh0&rsquo;s own host, linked as-is &mdash; when they fix a game, the fix lands here without us touching anything.</li>
-                <li><b>FNAF, all eight</b>Five Nights at Freddy&rsquo;s 1&ndash;4, World, Sister Location, Pizzeria Simulator and Ultimate Custom Night now start <b>on this site</b> &mdash; the address bar stays on watermusic, and the game files stream from a CDN because they weigh 2.6&nbsp;GB.</li>
-                <li><b>A Trolling tab</b>It had one game in it. Now the soundboard, the frequency generator, Fake Virus, Edge Not Found, TV Static, Big Red Button, Game Inside a Game, There Is No Game and The Impossible Quiz are all on it &mdash; and it is still the first chip, so it is one tap away.</li>
+                <li><b>948 pages, hosted here</b>gn-math&rsquo;s html repo, cloned in and served from watermusic. Each tile opens its own file, so the address bar stays on this site.</li>
+                <li><b>No 3kh0 redirects left</b>No game is handed off to 3kh0 any more. The trolling shelf &mdash; Soundboard, Fake Virus, TV Static and the rest &mdash; stays, served from our own mirrors.</li>
+                <li><b>Saves that stick</b>Games run on this site&rsquo;s own origin now, so the progress and high scores they write are actually kept.</li>
+                <li><b>Accounts</b>Settings &rarr; Account. A name gives you your own copy of the lot &mdash; stars, settings and every game save &mdash; and switching accounts switches the saves with it. An account code moves one to another computer.</li>
+                <li><b>Levels and streaks</b>Opening a game pays XP, a first play pays more, and the account panel counts how many days in a row you have played.</li>
             </ul>
         </div>
         <div class="risk-actions">
@@ -362,7 +381,7 @@
 
 <div class="toast-wrap" id="toastWrap"></div>
 
-<script src="./app.js?v=16" defer></script>
+<script src="./app.js?v=25" defer></script>
 <script src="./player.js?v=1" defer></script>
     <script src="./concept.js?v=9" defer></script>
 <script>

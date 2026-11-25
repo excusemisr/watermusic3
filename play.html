@@ -31,12 +31,11 @@
         <p><a href="./index.html" id="back">Back to watermusic</a></p>
     </div>
 <script>
-/* jsDelivr hands these game files back as text/plain, so a tab pointed at the
-   CDN shows the source instead of the game. This page fetches the game and
-   writes it into a real document, which the browser then runs normally. */
+/* Old bookmarks and links point at play.html?id=NN. The games are real files on
+   this server now (gamehosting/gnmath/), so this page just looks the file up in
+   the manifest and sends the tab straight there. */
 (function () {
     'use strict';
-    var HTML_URL = 'https://cdn.jsdelivr.net/gh/gnmathcopy/html@main';
     var msg = document.getElementById('msg');
     var spin = document.getElementById('spin');
     var err = document.getElementById('err');
@@ -49,33 +48,23 @@
         err.style.display = 'block';
     }
 
-    /* a game that uses relative paths resolves them from the CDN, not from here;
-       the ones that ship their own <base> already take care of themselves */
-    function withBase(html) {
-        if (/<base[\s>]/i.test(html)) return html;
-        var tag = '<base href="' + HTML_URL + '/">';
-        if (/<head[^>]*>/i.test(html)) return html.replace(/<head[^>]*>/i, function (m) { return m + tag; });
-        if (/<html[^>]*>/i.test(html)) return html.replace(/<html[^>]*>/i, function (m) { return m + '<head>' + tag + '</head>'; });
-        return tag + html;
-    }
-
     if (!/^\d+$/.test(id)) { fail('That link is missing its game id.'); return; }
 
-    msg.textContent = 'Downloading game files…';
-    fetch(HTML_URL + '/' + id + '.html', { cache: 'default' })
+    msg.textContent = 'Finding the game…';
+    fetch('./data/zones.json', { cache: 'default' })
         .then(function (res) {
             if (!res.ok) throw new Error('HTTP ' + res.status);
-            return res.text();
+            return res.json();
         })
-        .then(function (html) {
+        .then(function (list) {
+            var zone = (Array.isArray(list) ? list : []).filter(function (z) { return String(z.id) === id; })[0];
+            var url = zone ? String(zone.url || '').replace('{HTML_URL}', './gamehosting/gnmath').replace('{COVER_URL}', '') : '';
+            if (!url || url.indexOf('gamehosting/') === -1) throw new Error('that game is no longer in the list');
             msg.textContent = 'Starting the game…';
-            var game = withBase(html);
-            document.open();
-            document.write(game);
-            document.close();
+            location.replace(url);
         })
         .catch(function (e) {
-            fail('That game could not be downloaded (' + (e && e.message ? e.message : 'network error') + ').');
+            fail('That game could not be opened (' + (e && e.message ? e.message : 'network error') + ').');
         });
 })();
 </script>

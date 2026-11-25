@@ -9,10 +9,16 @@
     /* ---------------- constants ---------------- */
     const ROOT = new URL('./', location.href).href;
     const COVER_URL = 'https://cdn.jsdelivr.net/gh/gnmathcopy/covers@main';
-    const HTML_URL = 'https://cdn.jsdelivr.net/gh/gnmathcopy/html@main';
-    // 3kh0's own copies of the same games: plain pages on their host that actually
-    // run, so they win over our cdn version. The list lives in data/3kh0.json.
+    // Game pages are real files on this server now: gamehosting/gnmath/<id>-fix*.html,
+    // copied straight from github.com/gn-math/html. Nothing is fetched from a CDN,
+    // nothing is rewritten into play.html, and each game runs on this origin, so the
+    // saves the game writes stay put.
+    const HTML_URL = ROOT + 'gamehosting/gnmath';
+    // 3kh0 only supplies the extras gn-math has no page for (the trolling shelf);
+    // those copies live on this site's own mirror and shard repos, never 3kh0.net.
     const KH0_INDEX = ROOT + 'data/3kh0.json';
+    const KH0_LOCAL = ROOT + 'gamehosting/3kh0/';
+    const SHARDS_URL = ROOT + 'data/shards.json';
     // The Clickteam FNAF builds are 2.6 GB in total — far more than this repo (or
     // GitHub Pages) can hold — so fnaf.html runs on this site and pulls the game
     // from a CDN. The tab stays on our own domain; nothing here gets bigger.
@@ -27,10 +33,11 @@
         '191': { g: 'ps' },
         '192': { g: 'ucn' }
     };
+    // the manifest ships with the site, so the shelf loads even with every CDN blocked
     const ZONES_URLS = [
+        ROOT + 'data/zones.json',
         'https://cdn.jsdelivr.net/gh/gnmathcopy/assets@main/zones.json',
-        'https://raw.githubusercontent.com/gnmathcopy/assets/main/zones.json',
-        'https://cdn.jsdelivr.net/gh/gnmathcopy/assets/zones.json'
+        'https://raw.githubusercontent.com/gnmathcopy/assets/main/zones.json'
     ];
     const LOCAL_BASE = ROOT + 'gamehosting/';
     const PLAY_URL = ROOT + 'play.html?id=';
@@ -322,9 +329,12 @@
             recRank: rec,
             forceTab: FORCE_TAB_IDS.has(idStr),
             cover: String(z.cover || '').replace('{COVER_URL}', COVER_URL).replace('{HTML_URL}', HTML_URL),
-            // the soundboard ships with the site, so play our own copy instead of the CDN one
+            // the soundboard ships with the site, so play our own copy instead of the manifest one
             url: soundboard ? SOUNDBOARD_URL : resolved,
-            type: soundboard ? 'soundboard' : (external ? 'external' : 'cdn'),
+            // every page in the manifest is a file on this server, so the viewer points
+            // the frame straight at it: no fetch, no srcdoc, no play.html in between
+            type: soundboard ? 'soundboard' : (external ? 'external' : 'hosted'),
+            hostedBy: soundboard || external ? '' : 'watermusic',
             source: 'cdn',
             author: z.author || '',
             authorLink: z.authorLink || '',
@@ -446,21 +456,64 @@
     }
 
     /* ---------------- 3kh0's copies ---------------- */
-    // Their files are ordinary pages served from their own host, so these games
-    // open straight at lite.3kh0.net instead of going through play.html.
+    // Their builds are ordinary pages, mirrored onto this server by
+    // scripts/mirror-3kh0.py, so these games skip play.html entirely.
+    // The 1 GB mirror is split across five GitHub Pages repos, one folder each
+    // (scripts/split-shards.py decides who holds what). On localhost the copy on
+    // disk wins, so development never waits on a shard; `?shards=remote` forces
+    // the hosted ones so a split can be tested before it is pushed.
+    let shards = null;
+    let shardsTried = false;
+
+    async function fetchShards() {
+        if (shardsTried) return shards;
+        shardsTried = true;
+        try {
+            const res = await fetch(SHARDS_URL + '?v=' + Date.now(), { cache: 'no-store' });
+            if (!res.ok) return (shards = null);
+            const forced = new URLSearchParams(location.search).get('shards') === 'remote';
+            if (!forced && /^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname)) return (shards = null);
+            const json = await res.json();
+            if (!json || !Array.isArray(json.repos) || !json.shards) return (shards = null);
+            return (shards = json);
+        } catch (e) { return (shards = null); }
+    }
+
+    // where one game lives: its own shard repo, or the local mirror
+    function kh0Base(slug) {
+        if (!shards) return KH0_LOCAL;
+        const n = shards.shards[slug];
+        const repo = n ? shards.repos[n - 1] : null;
+        if (!repo) return KH0_LOCAL;
+        return String(shards.origin).replace(/\/$/, '') + '/' + repo + '/' + String(shards.path || 'gamehosting/3kh0/');
+    }
+
+    // covers moved with their game, so they have to follow the same shard
+    function kh0Cover(cover, slug) {
+        if (!cover) return '';
+        if (/^https?:/i.test(cover)) return cover;
+        const rel = String(cover).replace(/^\.?\//, '');
+        const prefix = 'gamehosting/3kh0/';
+        if (rel.indexOf(prefix) === 0) return kh0Base(slug) + rel.slice(prefix.length);
+        return ROOT + rel;
+    }
+
     async function fetchKh0() {
         try {
             const res = await fetch(KH0_INDEX + '?v=' + Date.now(), { cache: 'no-store' });
             if (!res.ok) return null;
             const json = await res.json();
-            const base = json.base || 'https://lite.3kh0.net/projects/';
+            await fetchShards();
+            // the games are mirrored into gamehosting/3kh0/<slug>/ and its shard
+            // repos, so nothing has to reach lite.3kh0.net, which school filters block
+            const localBase = ROOT + String(json.base || 'gamehosting/3kh0/').replace(/^\.?\//, '');
             const list = Array.isArray(json.games) ? json.games : [];
             const extras = [];
             kh0Slugs = new Map();
             list.forEach((entry) => {
                 const slug = String(entry.slug || '').replace(/[^\w.-]/g, '');
                 if (!slug) return;
-                const url = base + slug + '/index.html';
+                const url = (shards ? kh0Base(slug) : localBase) + slug + '/index.html';
                 (entry.replaces || []).forEach((id) => kh0Slugs.set(String(id), { slug: slug, url: url }));
                 if (!entry.add) return;
                 extras.push({
@@ -468,12 +521,12 @@
                     id: '3kh0:' + slug,
                     slug: slug,
                     name: entry.title || slug,
-                    cover: entry.cover || '',
+                    cover: kh0Cover(entry.cover, slug),
                     url: url,
                     type: 'hosted',
-                    hostedBy: '3kh0',
+                    hostedBy: 'watermusic',
                     source: '3kh0',
-                    author: '3kh0',
+                    author: 'watermusic',
                     authorLink: '',
                     category: categorize(entry.title || slug),
                     featured: false
@@ -483,18 +536,10 @@
         } catch (e) { return null; }
     }
 
-    // a card whose game 3kh0 also hosts keeps everything about itself — name,
-    // cover, star, recommended slot — and only swaps where it loads from
+    // nothing is swapped for a 3kh0 build any more: every game in the manifest now
+    // opens our own copy of gn-math's page. Only the extras 3kh0 has and gn-math
+    // doesn't (the trolling shelf) are still added, and from our own mirrors.
     function withKh0(list) {
-        list.forEach((game) => {
-            if (game.source !== 'cdn') return;
-            const hit = kh0Slugs.get(String(game.id));
-            if (!hit) return;
-            game.url = hit.url;
-            game.type = 'hosted';
-            game.hostedBy = '3kh0';
-            return;
-        });
         // FNAF comes from irv77's HTML5 builds, one folder per game
         list.forEach((game) => {
             if (game.source !== 'cdn') return;
@@ -504,7 +549,12 @@
             game.type = 'hosted';
             game.hostedBy = 'irv77';
         });
-        return list.concat(kh0Extras);
+        const seenUrls = new Set();
+        return list.concat(kh0Extras).filter((game) => {
+            if (seenUrls.has(game.url)) return false;
+            seenUrls.add(game.url);
+            return true;
+        });
     }
 
     async function fetchPopularity() {
@@ -538,17 +588,13 @@
             }
             return true;
         }).sort((a, b) => {
-            // recommended games stay on top, in the order recommended.html lists them
-            if (a.recRank !== b.recRank) {
-                if (a.recRank < 0) return 1;
-                if (b.recRank < 0) return -1;
-                return a.recRank - b.recRank;
-            }
+            // the grid is one plain list now. Recommended games keep their own
+            // strip above it instead of being pinned to the top of every sort.
             switch (state.sort) {
                 case 'popular': return (popularity[b.id] || 0) - (popularity[a.id] || 0) || a.name.localeCompare(b.name);
                 case 'id': return String(a.id).localeCompare(String(b.id), undefined, { numeric: true });
                 case 'random': return Math.random() - 0.5;
-                default: return a.name.localeCompare(b.name, undefined, { sensitivity: 'base' });
+                default: return a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: 'base' });
             }
         });
     }
@@ -561,21 +607,28 @@
         } catch (e) { return safe; }
     }
 
-    function ordinal(n) {
-        const s = String(n + 1);
-        return s.length < 2 ? '0' + s : s;
+    // a card with no cover (or one that fails to load) shows its initials
+    function initials(name) {
+        const words = String(name || '?').trim().split(/\s+/).filter(Boolean);
+        if (!words.length) return '?';
+        return (words.length > 1 ? words[0].charAt(0) + words[1].charAt(0) : words[0].slice(0, 2)).toUpperCase();
     }
 
     function cardHTML(game, query, eager, index) {
         const fav = favs.has(game.key);
         const meta = game.author ? escapeHtml(game.author) : '';
+        const name = escapeHtml(game.name);
+        // the play button is a real <button> covering the tile, and the star is a
+        // sibling button on top of it — a button inside a button is invalid and
+        // screen readers cannot pick the star out of it
         return '' +
-            '<article class="card' + (game.pinned ? ' pinned' : '') + '" data-key="' + escapeHtml(game.key) + '" tabindex="0" role="button" aria-label="Play ' + escapeHtml(game.name) + '">' +
+            '<article class="card' + (game.pinned ? ' pinned' : '') + '" data-key="' + escapeHtml(game.key) + '">' +
+                '<button class="card-play" type="button" aria-label="Play ' + name + '"></button>' +
                 '<div class="thumb-wrap">' +
+                    '<span class="cover-fallback" aria-hidden="true">' + escapeHtml(initials(game.name)) + '</span>' +
                     '<img class="thumb" src="' + escapeHtml(game.cover) + '" alt="" ' + (eager ? 'loading="eager" fetchpriority="high"' : 'loading="lazy"') + ' decoding="async">' +
                     (game.pinned ? '<span class="pin"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 3.6l2.6 5.3 5.9.9-4.3 4.1 1 5.8-5.2-2.8-5.2 2.8 1-5.8-4.3-4.1 5.9-.9z"/></svg>Recommended</span>' : '') +
-                    '<span class="idx">' + ordinal(index || 0) + '</span>' +
-                    '<button class="fav' + (fav ? ' on' : '') + '" data-fav="' + escapeHtml(game.key) + '" type="button" aria-label="Star game" title="Star game">' +
+                    '<button class="fav' + (fav ? ' on' : '') + '" data-fav="' + escapeHtml(game.key) + '" type="button" aria-label="Star ' + name + '" title="Star ' + name + '">' +
                         '<svg viewBox="0 0 24 24" fill="' + (fav ? 'currentColor' : 'none') + '" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"><path d="M12 3.6l2.6 5.3 5.9.9-4.3 4.1 1 5.8-5.2-2.8-5.2 2.8 1-5.8-4.3-4.1 5.9-.9z"/></svg>' +
                     '</button>' +
                     (game.forceTab ? '<span class="newtab" title="Opens in its own tab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"/><path d="M20 4l-8 8"/><path d="M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg>New tab</span>' : '') +
@@ -726,6 +779,7 @@
     }
 
     function pushRecent(game) {
+        if (game) addPlay(game);
         recent = [game.key].concat(recent.filter((k) => k !== game.key)).slice(0, 16);
         store(RECENT_KEY, recent);
         renderRecent();
@@ -924,6 +978,7 @@
     function needsRisk(game) {
         // games served from this site never trigger the notice
         if (!game || game.type === 'local' || game.type === 'soundboard') return false;
+        if (game.type === 'hosted' && game.hostedBy === 'watermusic') return false;
         if (config.riskEvery) return true;
         return !riskAccepted;
     }
@@ -971,9 +1026,81 @@
         }
     }
 
+    /* ---------------- welcome ---------------- */
+    // shown once per browser, in place of the update log a first-time visitor has
+    // no reason to care about. A shared link goes straight to its game instead.
+    const WELCOME_KEY = 'wm.welcome.v1';
+
+    function buildWelcomeWall() {
+        const wall = $('welcomeWall');
+        if (!wall || wall.childElementCount) return;
+        const pool = games.filter((g) => g.cover).slice(0, 40);
+        if (!pool.length) return;
+        const perCol = Math.ceil(pool.length / 4);
+        let html = '';
+        for (let c = 0; c < 4; c++) {
+            const slice = pool.slice(c * perCol, c * perCol + perCol);
+            if (!slice.length) break;
+            // each card twice so the column drifts without a visible jump
+            const tiles = slice.concat(slice).map((g) =>
+                '<span><img src="' + escapeHtml(g.cover) + '" alt="" loading="lazy" decoding="async"></span>'
+            ).join('');
+            html += '<div class="welcome-col" style="--dur:' + (42 + c * 9) + 's;--dir:' + (c % 2 ? 'reverse' : 'normal') + '">' + tiles + '</div>';
+        }
+        wall.innerHTML = html;
+    }
+
+    // the shelf can render twice (cached first, then fresh), so the numbers are
+    // filled again once the real catalog lands
+    function fillWelcomeStats() {
+        if (!games.length) return;
+        const cats = new Set(games.map((g) => g.category)).size;
+        if ($('welcomeGames')) $('welcomeGames').textContent = games.length;
+        if ($('welcomeCats')) $('welcomeCats').textContent = cats;
+    }
+
+    function showWelcome() {
+        const gate = $('welcome');
+        if (!gate || read(WELCOME_KEY, false)) return false;
+        const params = new URLSearchParams(location.search);
+        if (params.get('id') || params.get('local') || params.get('g')) return false;
+        buildWelcomeWall();
+        fillWelcomeStats();
+        // having said hello, do not then show the release notes on the next visit
+        store(UPDATE_KEY, UPDATE_ID);
+        gate.classList.add('open');
+        gate.setAttribute('aria-hidden', 'false');
+        document.body.classList.add('welcome-open');
+        const start = $('welcomeStart');
+        if (start) setTimeout(() => start.focus(), 80);
+        return true;
+    }
+
+    function closeWelcome() {
+        const gate = $('welcome');
+        if (!gate || !gate.classList.contains('open')) return;
+        gate.classList.remove('open');
+        gate.setAttribute('aria-hidden', 'true');
+        document.body.classList.remove('welcome-open');
+        store(WELCOME_KEY, true);
+    }
+
+    function wireWelcome() {
+        const start = $('welcomeStart');
+        const random = $('welcomeRandom');
+        const skip = $('welcomeSkip');
+        if (skip) skip.addEventListener('click', closeWelcome);
+        if (start) start.addEventListener('click', () => {
+            closeWelcome();
+            const section = $('games');
+            if (section) section.scrollIntoView({ behavior: 'auto', block: 'start' });
+        });
+        if (random) random.addEventListener('click', () => { closeWelcome(); randomGame(); });
+    }
+
     /* ---------------- update log ---------------- */
     const UPDATE_KEY = 'wm.updates.seen';
-    const UPDATE_ID = '2026-11-10-games-from-3kh0';
+    const UPDATE_ID = '2026-11-25-every-game-local';
 
     function closeUpdateLog() {
         const gate = $('updateLog');
@@ -1253,8 +1380,11 @@
     document.addEventListener('error', (e) => {
         const img = e.target;
         if (img && img.classList && img.classList.contains('thumb')) {
+            // a dead cover used to leave an empty black tile; show the initials
+            const wrap = img.closest('.thumb-wrap');
+            if (wrap) wrap.classList.add('no-cover');
             img.classList.add('loaded');
-            img.style.opacity = '0';
+            img.hidden = true;
         }
     }, true);
 
@@ -1264,6 +1394,7 @@
         { key: 'layout', label: 'Layout', icon: '<rect x="3.5" y="3.5" width="7" height="7" rx="1.6"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.6"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.6"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.6"/>' },
         { key: 'playback', label: 'Playback', icon: '<path d="M8 5v14l11-7z"/>' },
         { key: 'privacy', label: 'Hide tab', icon: '<path d="M2.5 12s3.6-6.5 9.5-6.5S21.5 12 21.5 12 17.9 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="2.6"/>' },
+        { key: 'account', label: 'Account', icon: '<circle cx="12" cy="8" r="3.4"/><path d="M4.6 20.2c0-3.4 3.3-5.6 7.4-5.6s7.4 2.2 7.4 5.6"/>' },
         { key: 'data', label: 'Data', icon: '<ellipse cx="12" cy="6" rx="7" ry="2.6"/><path d="M5 6v12c0 1.4 3.1 2.6 7 2.6s7-1.2 7-2.6V6"/>' },
         { key: 'about', label: 'About', icon: '<circle cx="12" cy="12" r="8.5"/><path d="M12 11v5.5M12 7.6v.2"/>' }
     ];
@@ -1398,7 +1529,7 @@
 
     function panelAbout() {
         return '' +
-            '<section><h4>watermusic</h4><span class="hint">A free games portal that runs entirely in your browser. No account, no tracking.</span>' +
+            '<section><h4>watermusic</h4><span class="hint">A free games portal that runs entirely in your browser. Accounts and saves stay on this device &mdash; nothing is uploaded.</span>' +
                 row('Version', 'Catalogue release', '<span class="pill">3.3</span>') +
                 row('Index', 'Everything playable in this build.', '<span class="pill">' + games.length + ' games</span>') +
             '</section>' +
@@ -1407,11 +1538,151 @@
             '</section>';
     }
 
+
+    /* ---------------- accounts ----------------
+       An account is a named snapshot of this browser's localStorage, which is
+       also where the games keep their saves because they run on this origin.
+       Switching accounts swaps the snapshot in, so stars, settings and every
+       game save move together. Nothing leaves the device unless the player copies
+       the account code out by hand.
+       ---------------------------------------------------------------- */
+    const ACCT_KEY = 'wm.accounts.v1';
+    const STATS_KEY = 'wm.stats';
+    const ACCT_SKIP = [ACCT_KEY];
+
+    function acctDb() {
+        const db = read(ACCT_KEY, null);
+        if (db && Array.isArray(db.list) && db.data) return db;
+        return { list: [], current: null, data: {} };
+    }
+    function acctWrite(db) { store(ACCT_KEY, db); }
+    function acctId() { return 'a' + Date.now().toString(36) + Math.floor(Math.random() * 46656).toString(36); }
+    function acctName(db) {
+        const cur = db.list.filter((a) => a.id === db.current)[0];
+        return cur ? cur.name : 'Guest';
+    }
+    function snapshotKeys() {
+        const out = {};
+        for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+            if (!key || ACCT_SKIP.indexOf(key) !== -1) continue;
+            out[key] = localStorage.getItem(key);
+        }
+        return out;
+    }
+    function restoreKeys(keys) {
+        const keep = {};
+        for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+            if (key && ACCT_SKIP.indexOf(key) !== -1) keep[key] = localStorage.getItem(key);
+        }
+        try { localStorage.clear(); } catch (e) { }
+        Object.keys(keep).forEach((k) => { try { localStorage.setItem(k, keep[k]); } catch (e) { } });
+        Object.keys(keys || {}).forEach((k) => { try { localStorage.setItem(k, keys[k]); } catch (e) { } });
+    }
+    function acctSaveCurrent(db) {
+        if (!db.current) return;
+        const rec = db.data[db.current] || {};
+        rec.keys = snapshotKeys();
+        db.data[db.current] = rec;
+        acctWrite(db);
+    }
+    function acctCreate(name) {
+        const db = acctDb();
+        acctSaveCurrent(db);
+        // a new account starts from whatever is on screen right now
+        const base = db.current && db.data[db.current] ? db.data[db.current].keys : snapshotKeys();
+        const id = acctId();
+        const label = String(name || '').trim().slice(0, 24) || ('Player ' + (db.list.length + 1));
+        db.list.push({ id: id, name: label, created: Date.now() });
+        db.data[id] = { keys: base || {} };
+        db.current = id;
+        acctWrite(db);
+        toast('Signed in as ' + label);
+        renderSheet();
+    }
+    function acctSwitch(id) {
+        const db = acctDb();
+        if (!db.list.filter((a) => a.id === id).length) return;
+        acctSaveCurrent(db);
+        const target = (db.data[id] && db.data[id].keys) || {};
+        db.current = id;
+        acctWrite(db);
+        restoreKeys(target);
+        location.reload();
+    }
+    function acctDelete(id) {
+        const db = acctDb();
+        const hit = db.list.filter((a) => a.id === id)[0];
+        db.list = db.list.filter((a) => a.id !== id);
+        delete db.data[id];
+        if (db.current === id) db.current = null;
+        acctWrite(db);
+        renderSheet();
+        toast(hit ? 'Removed ' + hit.name : 'Account removed');
+    }
+
+    function statsRead() {
+        const s = read(STATS_KEY, null);
+        return s && typeof s === 'object' ? s : { plays: 0, xp: 0, streak: 0, day: '', last: {} };
+    }
+    function levelOf(xp) { return 1 + Math.floor(Math.sqrt(Math.max(0, xp || 0) / 40)); }
+    // one launch can pass through pushRecent twice (new tab, then the in-page
+    // viewer as a fallback), so count a game once per few seconds
+    let lastPlay = { key: '', at: 0 };
+    function addPlay(game) {
+        const now = Date.now();
+        if (lastPlay.key === game.key && now - lastPlay.at < 4000) return;
+        lastPlay = { key: game.key, at: now };
+        const s = statsRead();
+        const day = new Date().toISOString().slice(0, 10);
+        const yest = new Date(Date.now() - 86400000).toISOString().slice(0, 10);
+        if (s.day !== day) {
+            s.streak = s.day === yest ? (s.streak || 0) + 1 : 1;
+            s.day = day;
+        }
+        if (!s.last) s.last = {};
+        const fresh = !s.last[game.key];
+        const gain = fresh ? 25 : 5;
+        const before = levelOf(s.xp);
+        s.plays = (s.plays || 0) + 1;
+        s.xp = (s.xp || 0) + gain;
+        s.last[game.key] = 1;
+        statsWrite(s);
+        const after = levelOf(s.xp);
+        if (after > before) toast('Level ' + after + ' · ' + s.xp + ' XP');
+    }
+    function statsWrite(s) { store(STATS_KEY, s); }
+
+    function panelAccount() {
+        const db = acctDb();
+        const s = statsRead();
+        const rows = db.list.map((a) => (
+            '<div class="preview-tile"><div><div class="pv-name">' + escapeHtml(a.name) + (a.id === db.current ? ' · signed in' : '') + '</div>' +
+            '<div class="pv-meta">added ' + new Date(a.created).toLocaleDateString() + '</div></div>' +
+            (a.id === db.current
+                ? '<button class="btn danger" type="button" data-action="acct-delete" data-id="' + a.id + '">Remove</button>'
+                : '<button class="btn" type="button" data-action="acct-switch" data-id="' + a.id + '">Switch</button>') +
+            '</div>'
+        )).join('') || '<span class="hint">No accounts on this device yet.</span>';
+        return '' +
+            '<section><h4>On this device</h4><span class="hint">Signed in as <b>' + escapeHtml(acctName(db)) + '</b> · level ' + levelOf(s.xp) +
+                ' · ' + (s.plays || 0) + ' games played' + (s.streak ? ' · ' + s.streak + '-day streak' : '') + '</span>' +
+                '<div class="field" style="margin-top:12px"><input type="text" id="acctName" placeholder="Your name" maxlength="24"><button class="btn primary" type="button" data-action="acct-new">Sign in</button></div>' +
+            '</section>' +
+            '<section><h4>Accounts</h4><span class="hint">Each one keeps its own stars, settings and game saves.</span>' + rows + '</section>' +
+            '<section><h4>Move an account</h4><span class="hint">Saves live in this browser. Fill in the code, copy it, and load it on another computer.</span>' +
+                '<div class="field" style="margin-top:12px"><button class="btn" type="button" data-action="acct-export">Fill in the code</button><button class="btn" type="button" data-action="acct-import">Load from the code</button></div>' +
+                '<textarea id="acctCode" rows="4" spellcheck="false" placeholder="Account code" style="width:100%;margin-top:10px;padding:10px;border-radius:8px;border:1px solid var(--line);background:var(--panel-2);color:var(--ink);font:12px/1.5 var(--font-mono)"></textarea>' +
+            '</section>';
+    }
+
     const PANEL_RENDER = {
         appearance: panelAppearance,
         layout: panelLayout,
         playback: panelPlayback,
         privacy: panelPrivacy,
+        account: panelAccount,
         data: panelData,
         about: panelAbout
     };
@@ -1606,6 +1877,40 @@
                     riskAccepted = false;
                     store(RISK_KEY, false);
                     toast('The notice will show again');
+                } else if (kind === 'acct-new') {
+                    const nameNode = $('acctName');
+                    acctCreate(nameNode ? nameNode.value : '');
+                } else if (kind === 'acct-switch') {
+                    acctSwitch(action.getAttribute('data-id'));
+                } else if (kind === 'acct-delete') {
+                    acctDelete(action.getAttribute('data-id'));
+                } else if (kind === 'acct-export') {
+                    const db = acctDb();
+                    const keys = db.current && db.data[db.current] ? db.data[db.current].keys : snapshotKeys();
+                    const code = $('acctCode');
+                    if (code) {
+                        code.value = JSON.stringify({ v: 1, name: acctName(db), keys: keys || {} });
+                        code.select();
+                    }
+                    toast('Account code ready to copy');
+                } else if (kind === 'acct-import') {
+                    const code = $('acctCode');
+                    let data = null;
+                    try { data = JSON.parse(code ? code.value : ''); } catch (e) { data = null; }
+                    if (!data || !data.keys) { toast('That code could not be read'); }
+                    else {
+                        restoreKeys(data.keys);
+                        const db = acctDb();
+                        let id = db.current;
+                        if (!id) {
+                            id = acctId();
+                            db.list.push({ id: id, name: String(data.name || 'Restored').slice(0, 24), created: Date.now() });
+                            db.current = id;
+                        }
+                        db.data[id] = { keys: data.keys };
+                        acctWrite(db);
+                        location.reload();
+                    }
                 } else if (kind === 'apply-cloak') {
                     applyCloak();
                 } else if (kind === 'rebind-panic') {
@@ -1850,6 +2155,7 @@
             return;
         }
         if (e.key === 'Escape') {
+            if ($('welcome') && $('welcome').classList.contains('open')) { closeWelcome(); return; }
             if ($('updateLog') && $('updateLog').classList.contains('open')) { closeUpdateLog(); return; }
             if ($('tabGate').classList.contains('open')) { closeTabGate(); return; }
             if ($('riskGate').classList.contains('open')) { closeRisk(); return; }
@@ -1930,15 +2236,9 @@
         renderSortMenu();
         attachHoverPrefetch();
         startSyncObserver();
-        // the update log opens once per release, after the shelf has painted
-        setTimeout(showUpdateLog, 700);
-
-        // kick off the ?id= fetch immediately — the biggest win for shared links
-        const params = new URLSearchParams(location.search);
-        const deepId = params.get('id');
-        const early = (deepId && /^\d+$/.test(deepId))
-            ? fetch(HTML_URL + '/' + deepId + '.html', { cache: 'default' }).then((r) => (r.ok ? r.text() : null)).catch(() => null)
-            : null;
+        wireWelcome();
+        // the welcome screen waits for the shelf so its wall has covers to show;
+        // a first visit gets it, everyone else gets the update log once per release
 
         const cached = readZonesCache();
         const recReady = loadRecommended();
@@ -1958,17 +2258,26 @@
             const cdnGames = dedupeKeys((zones || cached || []).map(normalizeCdn).filter((g) => !g.hidden));
             games = applyTrolling(withKh0(cdnGames).concat(localGames));
             renderAll();
-            await applyDeepLink(early);
+            await applyDeepLink(null);
             fetchPopularity();
         })();
 
         // refresh the featured card + stats once data lands
+        let firstRunDone = false;
+        function firstRun() {
+            if (firstRunDone || !games.length) return;
+            firstRunDone = true;
+            if (!showWelcome()) showUpdateLog();
+        }
+
         function renderAll() {
             render();
             renderSpotlight();
             renderRecommended();
             renderRecent();
             updateStats();
+            firstRun();
+            if ($('welcome') && $('welcome').classList.contains('open')) fillWelcomeStats();
         }
 
         // re-render recent when it becomes available

@@ -1,2 +1,12 @@
 .vscode/settings.json
 _vault/
+
+# the 1 GB 3kh0 mirror is served from the shard repos, not from this one
+# (scripts/mirror-3kh0.py fills it locally, scripts/split-shards.py splits it)
+gamehosting/3kh0/
+
+# generated shard folders ready to push
+dist/
+
+# python bytecode from the scripts
+__pycache__/

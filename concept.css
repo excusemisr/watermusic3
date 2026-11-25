@@ -393,6 +393,7 @@ html[data-theme="light"] .card:hover{background:var(--panel-2)}
     filter:none;
     transition:opacity .3s;
 }
+.card .thumb[hidden]{display:none}
 .card:hover .thumb{transform:none;filter:none}
 .thumb-wrap::after{
     box-shadow:inset 0 0 0 1px var(--edge);
@@ -418,17 +419,112 @@ html[data-theme="light"] .card:hover{background:var(--panel-2)}
     font:600 10.5px/1 var(--font);letter-spacing:0;text-transform:none;
 }
 .card .pin svg{width:10px;height:10px}
-.card.pinned .idx{display:none}
 .card.pinned{border-color:var(--line-2)}
 
-.card .idx{
-    left:8px;top:8px;
-    border-radius:6px;padding:4px 6px;
-    font:500 10.5px/1 var(--font-mono);letter-spacing:0;
-    color:rgba(255,255,255,.85);
-    background:rgba(8,8,12,.6);
+/* the tile is a real button now, so the ring lives on the card */
+.card:focus-within{outline:2px solid var(--accent);outline-offset:3px}
+.card-play{
+    position:absolute;inset:0;z-index:2;
+    padding:0;border:0;border-radius:inherit;
+    background:none;cursor:pointer;
 }
-.card:hover .idx{background:rgba(8,8,12,.7);color:#fff}
+.card-play:focus-visible{outline:none}
+.card:focus-within .play-pop{opacity:1;transform:none}
+.card .fav:focus-visible{opacity:1}
+/* a cover that never arrived still gets a tile worth looking at */
+.cover-fallback{
+    position:absolute;inset:0;z-index:0;
+    display:grid;place-items:center;
+    font:600 30px/1 var(--font-mono);letter-spacing:.08em;
+    color:var(--dim);
+    background:linear-gradient(150deg,var(--panel-3),transparent 72%);
+    pointer-events:none;
+}
+.card .thumb{position:relative;z-index:1}
+.card.no-cover .thumb{display:none}
+.card.no-cover .thumb-wrap::before{opacity:0}
+
+/* ------------------------------------------------------------
+   welcome screen — first visit only, replaces the update log
+   ------------------------------------------------------------ */
+body.welcome-open{overflow:hidden}
+.welcome{
+    position:fixed;inset:0;z-index:140;
+    display:none;overflow:hidden;
+    background:var(--bg);color:var(--ink);
+}
+.welcome.open{display:block}
+.welcome-wall{
+    position:absolute;top:-14%;bottom:-16%;right:-6%;left:50%;
+    display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;
+    opacity:.6;filter:saturate(.8) brightness(1.05);
+    -webkit-mask-image:linear-gradient(90deg,transparent 0%,#000 30%);
+    mask-image:linear-gradient(90deg,transparent 0%,#000 30%);
+    pointer-events:none;
+}
+.welcome-col{
+    display:flex;flex-direction:column;gap:14px;
+    animation-name:welcomeDrift;animation-duration:var(--dur,44s);
+    animation-timing-function:linear;animation-iteration-count:infinite;
+    animation-direction:var(--dir,normal);
+}
+.welcome-col span{
+    display:block;border-radius:12px;overflow:hidden;
+    background:var(--panel-3);border:1px solid var(--line);
+}
+.welcome-col img{display:block;width:100%;aspect-ratio:1/1;object-fit:cover;opacity:.9}
+@keyframes welcomeDrift{from{transform:translateY(0)}to{transform:translateY(-16%)}}
+.welcome-veil{
+    position:absolute;inset:0;
+    background:linear-gradient(180deg,color-mix(in srgb,var(--bg) 14%,transparent) 0%,color-mix(in srgb,var(--bg) 30%,transparent) 55%,var(--bg) 96%);
+    -webkit-backdrop-filter:blur(1px);backdrop-filter:blur(1px);
+}
+.welcome-inner{
+    position:relative;z-index:2;
+    width:min(760px,54vw);min-height:100%;margin:0;
+    padding:clamp(32px,8vh,90px) 0 clamp(28px,6vh,64px) clamp(24px,8vw,150px);
+    display:flex;flex-direction:column;justify-content:center;
+    animation:welcomeIn .55s var(--ease) both;
+}
+@keyframes welcomeIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.welcome-kicker{margin:0 0 14px;font:500 13px/1 var(--font);color:var(--dim);letter-spacing:.01em}
+.welcome-title{margin:0;font-size:clamp(46px,9vw,86px);line-height:.94;letter-spacing:-.045em;font-weight:600}
+.welcome-title em{font-style:normal;color:var(--accent)}
+.welcome-lede{margin:18px 0 0;max-width:46ch;font-size:clamp(15px,1.6vw,18px);line-height:1.55;color:var(--dim)}
+.welcome-actions{display:flex;flex-wrap:wrap;gap:10px;margin:30px 0 0}
+.welcome-actions .btn{height:44px;padding:0 22px;font-size:14.5px}
+.welcome-actions .btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.welcome-stats{display:flex;flex-wrap:wrap;gap:34px;margin:38px 0 0;padding:20px 0 0;border-top:1px solid var(--line)}
+.welcome-stats div{display:flex;flex-direction:column;gap:5px}
+.welcome-stats b{font:600 22px/1 var(--font-mono);letter-spacing:-.02em}
+.welcome-stats span{font-size:12.5px;color:var(--dim)}
+.welcome-foot{margin:26px 0 0;font-size:12.5px;color:var(--dimmer)}
+.welcome-foot b{font-family:var(--font-mono);font-size:11.5px;font-weight:600;color:var(--dim);border:1px solid var(--line);border-radius:5px;padding:2px 5px;margin:0 1px}
+.welcome-skip{
+    position:absolute;top:20px;right:22px;z-index:3;
+    height:34px;padding:0 14px;border-radius:999px;
+    border:1px solid var(--line);
+    background:color-mix(in srgb,var(--bg) 74%,transparent);
+    color:var(--dim);
+    font:500 13px/1 var(--font);cursor:pointer;
+    -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
+    transition:color .15s,border-color .15s,background .15s;
+}
+.welcome-skip:hover{color:var(--ink);border-color:var(--line-2);background:var(--panel-2)}
+@media (max-width:1100px){
+    .welcome-wall{left:34%;grid-template-columns:repeat(2,minmax(0,1fr))}
+    .welcome-col:nth-child(n+3){display:none}
+    .welcome-inner{width:min(680px,86vw)}
+}
+@media (max-width:860px){
+    .welcome-wall{left:-20%;right:-20%;opacity:.26}
+    .welcome-inner{width:100%;padding-left:22px;padding-right:22px}
+    .welcome-veil{background:linear-gradient(180deg,color-mix(in srgb,var(--bg) 72%,transparent) 0%,color-mix(in srgb,var(--bg) 86%,transparent) 60%,var(--bg) 96%)}
+}
+@media (prefers-reduced-motion:reduce){
+    .welcome-col,.welcome-inner{animation:none}
+}
+html[data-perf="lite"] .welcome-col{animation:none}
 .card .fav{
     right:8px;top:8px;width:28px;height:28px;
     border-radius:7px;border:1px solid rgba(255,255,255,.16);
@@ -920,7 +1016,7 @@ footer a:hover{color:var(--ink);text-decoration:underline;text-underline-offset:
 .card .info{padding:11px 12px 13px;gap:4px}
 .card .name{font-size:13.5px;font-weight:600}
 .card .meta{font-size:11.5px}
-.card .pin,.card .newtab,.card .play-pop,.card .idx{border-radius:999px}
+.card .pin,.card .newtab,.card .play-pop{border-radius:999px}
 .card .fav{border-radius:999px}
 .btn{border-radius:999px;padding:0 17px}
 .btn.primary{box-shadow:0 12px 28px -18px rgba(var(--accent-rgb),.9)}

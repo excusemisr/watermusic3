@@ -35,6 +35,16 @@ python -m http.server 8123
 - Restyled viewer, loader, settings sheet, warning panel and toasts — plus a full
   light-theme pass.
 
+**Welcome screen**
+
+- A first visit opens a full-screen welcome instead of the update log: wordmark,
+  one line of copy, **Start playing** / **Surprise me**, live counts, and a slow
+  drifting wall of real covers on the right. Skip, or Esc.
+- It is once per browser (`wm.welcome.v1`), and a shared link (`?id=`, `?g=`,
+  `?local=`) skips it entirely — that visitor wants the game, not the pitch.
+- Seeing it also marks the current release as read, so a first-time visitor is
+  not handed release notes on their second visit.
+
 **New interaction**
 
 - **⌘K / Ctrl K command palette** — fuzzy search over the whole catalog, covers,
@@ -52,6 +62,9 @@ python -m http.server 8123
   palette row, no recent entry, no featured slot. **Catalog is 325**
   (261 curated CDN ids + 62 3kh0 games + the sample local game, plus the duplicate
   id 1 pair counted twice).
+- **The grid is one plain alphabetical list.** Recommended games keep their own
+  strip above it instead of being pinned to the top of every sort, so A-Z really
+  starts at A.
 - Carried over from the notes files: the 16 flagged / broken ids and the slop
   sweep (endless runners, idle / merge / tycoon clones, licensed shovelware,
   the "3D" one-tap wave) are all simply not in the allowlist. Kept on purpose:
@@ -83,18 +96,70 @@ python -m http.server 8123
   grid like any other card. `"href"` entries still open an outside page and stay
   on the Recommended page only.
 
-**Games load from 3kh0's copies**
+**3kh0's games are mirrored onto this server**
 
 - Most of the shelf came from one CDN of single-file uploads and a lot of those
-  files were dead, so any game 3kh0 also hosts now opens **their** copy from
-  `lite.3kh0.net`: same card, name, cover, star and Recommended slot, a build
-  that runs. Those are `type: 'hosted'` in the catalog — plain pages on their
-  own host, so they skip `play.html` entirely.
-- `data/3kh0.json` drives it: `slug`, `title`, `cover`, `replaces` (our CDN ids
-  the entry takes over) and `add` (true = a card of its own). Currently 45 ids
-  replaced and **62 new games** added; clicker/idle clones, 2048 re-skins and
-  joke pages were left out.
-- Shared links use `?g=<slug>` for these, alongside `?id=NN` and `?local=…`.
+  files were dead, so any game 3kh0 also hosts now opens **their** build — same
+  card, name, cover, star and Recommended slot, a version that runs.
+- That build used to load from `lite.3kh0.net`, which is blocked on plenty of
+  networks. It no longer does: all **112 games (1,039 MB, 5,302 files)** are
+  mirrored into `gamehosting/3kh0/<slug>/` and served from this origin, covers
+  included. Nothing in a mirrored game reaches `lite.3kh0.net`.
+- `scripts/mirror-3kh0.py` does it, from 3kh0's own public repo
+  (`github.com/3kh0/3kh0-lite`). It is resumable — running it again only fetches
+  files that are missing or the wrong size — and it rewrites absolute
+  `/projects/<slug>/` links to local ones on the way through.
+  ```bash
+  python scripts/mirror-3kh0.py            # fetch anything missing
+  python scripts/mirror-3kh0.py --verify   # report gaps, download nothing
+  ```
+- It also strips 3kh0's shared `/js/main.js`, which injects **their** AdSense and
+  analytics and rewrites the page title from `localStorage` — not something worth
+  serving from this site.
+- `data/3kh0.json` drives the catalog: `slug`, `title`, `cover`, `replaces` (our
+  CDN ids the entry takes over) and `add` (true = a card of its own). 112 entries
+  — 68 cards of their own and 44 CDN ids replaced. Clicker/idle clones, 2048
+  re-skins and joke pages were left out.
+- These are `type: 'hosted'` — plain pages, so they skip `play.html` entirely.
+  Shared links use `?g=<slug>`, alongside `?id=NN` and `?local=…`.
+- Note the size: a full copy of this folder is over a gigabyte, so a host with a
+  1 GB site limit (GitHub Pages) cannot hold it along with everything else — see
+  the shards below.
+
+**Shards: five Pages repos, not one**
+
+- The mirror is **1,039 MB**, and GitHub Pages stops at 1 GB per site, so it is
+  split by size across five repos. `scripts/split-shards.py` does the balancing
+  (biggest game first, into the lightest shard) and writes `data/shards.json`,
+  which is the only thing the site reads at runtime.
+
+  | shard | repo | games | size |
+  | --- | --- | --- | --- |
+  | 1 | `watermusic-games-1` | 21 | 208 MB |
+  | 2 | `watermusic-games-2` | 21 | 208 MB |
+  | 3 | `watermusic-games-3` | 22 | 208 MB |
+  | 4 | `watermusic-games-4` | 24 | 208 MB |
+  | 5 | `watermusic-games-5` | 24 | 208 MB |
+
+- Every shard is a normal repo root: `.nojekyll`, a small `index.html` listing
+  its games, `shard.json`, and the games at `gamehosting/3kh0/<slug>/` — the
+  same path they had here, so nothing in the pages changed.
+- Project pages all live on `https://<user>.github.io/<repo>/`, so the shards are
+  **the same origin as the shelf**. No CORS, no proxy, no special headers.
+- `gamehosting/3kh0/` and `dist/` are git-ignored: the shelf repo carries the
+  code, the shards carry the gigabytes.
+- **Local development is unchanged** — on `localhost` the site uses the copy on
+  disk, so nothing waits on a shard. Add `?shards=remote` to the URL to force the
+  hosted copies and test the split before pushing.
+- Rebuilding after a re-mirror:
+  ```bash
+  python scripts/mirror-3kh0.py     # refresh the folder on disk
+  python scripts/split-shards.py    # re-balance and rewrite data/shards.json
+  ```
+  Then push each `dist/shard-N/` (each folder is already its own repo root) and
+  enable **Pages → Deploy from a branch → main / (root)**.
+- Order matters on a first setup: publish the five shard repos **before** the
+  shelf, or the shelf will point at URLs that are still empty.
 
 **FNAF runs on this site, file-by-file from a CDN**
 
@@ -191,6 +256,13 @@ the address folders it printed — and delete the folders from the previous buil
 the same machine cleans up after itself). Change `POOL` in the script to publish
 more or fewer addresses.
 
+**Card fixes**
+
+- A tile is a real **`<button>` covering the card** with the star as a sibling `button` on top, instead of an `article` with `role="button"` wrapping a `button`. The old markup nested interactive controls, which is invalid and unlabelled in screen readers — the star now reads "Star Gunspin", not "Star game". The focus ring moved to `.card:focus-within`.
+- The corner **index badge** (`01`, `02`, …) is gone. It numbered whatever the current sort produced, so it usually matched nothing a visitor could see, and pinned cards hid it anyway.
+- A cover that fails to load now shows the game's **initials** on the panel (the same fallback `recommended.html` already used) instead of a blank black tile. `gamehosting/demo/` also got the `photo.png` its manifest promised, so the grid no longer 404s on it.
+- Rail tooltips are `aria-hidden`, so the dock no longer reads as "Games Library", "Starred Starred".
+
 **Fixes carried in the concept**
 
 - Theme preset swatches were collapsing to 2px wide (Chrome gives `<button>`
@@ -244,6 +316,8 @@ downloads/       single-file tools (the frequency generator now lives in
                  gamehosting/freqgen)
 ```
 
+`gamehosting/3kh0/` is the mirrored 3kh0 shelf (see above), one folder per slug;
+`scripts/mirror-3kh0.py` refills it from their public repo.
 `gamehosting/` holds your own games (`games.json` lists them) and
 `soundboard/` is the bundled soundboard game with its 600MB of audio under
 `soundboard/media/`.
@@ -267,3 +341,36 @@ instead of failing silently. The TTS panel is the same behaviour with the new sk
 
 Delete `concept.css` / `concept.js` and work the rules back into `app.css`, or
 keep the layered approach — the layer is loaded last, so either works.
+
+## Everything is hosted here now (25 November)
+
+The manifest still comes from `gn-math`'s `zones.json` (a copy ships in
+`data/zones.json`, so the shelf loads with every CDN blocked), but the pages it
+points at are real files: the whole `github.com/gn-math/html` repo was cloned in
+and lives in `gamehosting/gnmath/`, 948 single-file pages totalling about 78 MB.
+`HTML_URL` is `ROOT + 'gamehosting/gnmath'`, so `{HTML_URL}/41-fix2.html`
+resolves to a file on this server and the viewer puts that URL straight into the
+iframe — there is no fetch, no `srcdoc`, no `play.html` hop and no other host in
+the middle. `play.html?id=NN` still exists for old links: it looks the id up in
+`data/zones.json` and redirects to the file.
+
+Because the games now run on this site's own origin, they keep their own saves.
+`needsRisk()` never fires for `type: 'hosted'` games with
+`hostedBy: 'watermusic'`, since that notice was only ever about files someone
+else hosts.
+
+### Accounts
+
+Settings → Account. An account is a named snapshot of `localStorage` (key
+`wm.accounts.v1`, which is excluded from its own snapshots) — stars, settings and
+every game save move together, and switching accounts swaps the snapshot in and
+reloads. The account code is the snapshot as JSON, for moving one to another
+computer by hand. XP and the play streak live in `wm.stats`, so they travel with
+the snapshot too.
+
+### 3kh0
+
+`withKh0()` no longer swaps a games for 3kh0's build — every id in the manifest
+has a local page now. The extras 3kh0 has and gn-math doesn't (the trolling shelf)
+are still added from `data/3kh0.json`, but they are served from this site's
+mirror and shard repos, never from `lite.3kh0.net`.

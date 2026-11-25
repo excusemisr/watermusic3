@@ -1,879 +1,1104 @@
 {
  "note": "3kh0's copies of these games, served from lite.3kh0.net. 'add' cards are new; 'replaces' lists our cdn ids that now point here.",
- "base": "https://lite.3kh0.net/projects/",
+ "base": "gamehosting/3kh0/",
  "games": [
   {
    "slug": "2048",
    "title": "2048",
-   "cover": "https://lite.3kh0.net/projects/2048/thumb.png",
+   "cover": "gamehosting/3kh0/2048/thumb.png",
    "replaces": [
     "114"
    ],
-   "add": false
+   "add": false,
+   "local": true,
+   "source": "https://github.com/3kh0/3kh0-lite/tree/main/projects/2048"
   },
   {
    "slug": "achievementunlocked",
    "title": "Achievement Unlocked",
-   "cover": "https://lite.3kh0.net/projects/achievementunlocked/achievementunlocked.png",
+   "cover": "gamehosting/3kh0/achievementunlocked/achievementunlocked.png",
    "replaces": [
     "60"
    ],
-   "add": false
+   "add": false,
+   "local": true,
+   "source": "https://github.com/3kh0/3kh0-lite/tree/main/projects/achievementunlocked"
   },
   {
    "slug": "adrenalinechallenge",
    "title": "Adrenaline Challenge",
-   "cover": "https://lite.3kh0.net/projects/adrenalinechallenge/adrenalinechallenge.jpg",
+   "cover": "gamehosting/3kh0/adrenalinechallenge/adrenalinechallenge.jpg",
    "replaces": [],
-   "add": true
+   "add": true,
+   "local": true,
+   "source": "https://github.com/3kh0/3kh0-lite/tree/main/projects/adrenalinechallenge"
   },
   {
    "slug": "among-us",
    "title": "Among Us",
-   "cover": "https://lite.3kh0.net/projects/among-us/red.png",
+   "cover": "gamehosting/3kh0/among-us/red.png",
    "replaces": [],
-   "add": true
+   "add": true,
+   "local": true,
+   "source": "https://github.com/3kh0/3kh0-lite/tree/main/projects/among-us"
   },
   {
    "slug": "backrooms",
    "title": "Backrooms",
-   "cover": "https://lite.3kh0.net/projects/backrooms/img/splash.jpg",
+   "cover": "gamehosting/3kh0/backrooms/img/splash.jpg",
    "replaces": [
     "64"
    ],
-   "add": false
+   "add": false,
+   "local": true,
+   "source": "https://github.com/3kh0/3kh0-lite/tree/main/projects/backrooms"
   },
   {
    "slug": "basketball-stars",
    "title": "Basketball Stars",
-   "cover": "https://lite.3kh0.net/projects/basketball-stars/assets/images/basketball-stars.png",
+   "cover": "gamehosting/3kh0/basketball-stars/assets/images/basketball-stars.png",
    "replaces": [
     "272"
    ],
-   "add": false
+   "add": false,
+   "local": true,
+   "source": "https://github.com/3kh0/3kh0-lite/tree/main/projects/basketball-stars"
   },
   {
    "slug": "battleforgondor",
    "title": "Battle for Gondor",
-   "cover": "https://lite.3kh0.net/projects/battleforgondor/3557.jpg",
+   "cover": "gamehosting/3kh0/battleforgondor/3557.jpg",
    "replaces": [],
-   "add": true
+   "add": true,
+   "local": true,
+   "source": "https://github.com/3kh0/3kh0-lite/tree/main/projects/battleforgondor"
   },
   {
    "slug": "bigredbutton",
    "title": "Big Red Button",
-   "cover": "https://lite.3kh0.net/projects/bigredbutton/bigredbutton.png",
+   "cover": "gamehosting/3kh0/bigredbutton/bigredbutton.png",
    "replaces": [],
-   "add": true
+   "add": true,
+   "local": true,
+   "source": "https://github.com/3kh0/3kh0-lite/tree/main/projects/bigredbutton"
   },
   {
    "slug": "btts",
    "title": "Big Tower Tiny Square",
-   "cover": "https://lite.3kh0.net/projects/btts/images.png",
+   "cover": "gamehosting/3kh0/btts/images.png",
    "replaces": [
     "67"
    ],
-   "add": false
+   "add": false,
+   "local": true,
+   "source": "https://github.com/3kh0/3kh0-lite/tree/main/projects/btts"
   },
   {
    "slug": "blackknight",
    "title": "Black Knight",
-   "cover": "https://lite.3kh0.net/projects/blackknight/blackknight.png",
+   "cover": "gamehosting/3kh0/blackknight/blackknight.png",
    "replaces": [],
-   "add": true
+   "add": true,
+   "local": true,
+   "source": "https://github.com/3kh0/3kh0-lite/tree/main/projects/blackknight"
   },
   {
    "slug": "bloonstd",
    "title": "Bloons TD",
-   "cover": "https://lite.3kh0.net/projects/bloonstd/bloonstd.jpg",
+   "cover": "gamehosting/3kh0/bloonstd/bloonstd.jpg",
    "replaces": [
     "71"
    ],
-   "add": false
+   "add": false,
+   "local": true,
+   "source": "https://github.com/3kh0/3kh0-lite/tree/main/projects/bloonstd"
   },
   {
    "slug": "bloonstd2",
    "title": "Bloons TD 2",
-   "cover": "https://lite.3kh0.net/projects/bloonstd2/bloonstd2.png",
+   "cover": "gamehosting/3kh0/bloonstd2/bloonstd2.png",
    "replaces": [
     "72"
    ],
-   "add": false
+   "add": false,
+   "local": true,
+   "source": "https://github.com/3kh0/3kh0-lite/tree/main/projects/bloonstd2"
   },
   {
    "slug": "bloxors",
    "title": "Bloxors",
-   "cover": "https://lite.3kh0.net/projects/bloxors/block.png",
+   "cover": "gamehosting/3kh0/bloxors/block.png",
    "replaces": [
     "169"
    ],
-   "add": false
+   "add": false,
+   "local": true,
+   "source": "https://github.com/3kh0/3kh0-lite/tree/main/projects/bloxors"
   },
   {
    "slug": "boxhead2play",
    "title": "Box Head",
-   "cover": "https://lite.3kh0.net/projects/boxhead2play/boxhead2play.jpg",
+   "cover": "gamehosting/3kh0/boxhead2play/boxhead2play.jpg",
    "replaces": [],
-   "add": true
+   "add": true,
+   "local": true,
+   "source": "https://github.com/3kh0/3kh0-lite/tree/main/projects/boxhead2play"
   },
   {
    "slug": "cannon-basketball-4",
    "title": "Cannon Basketball 4",
-   "cover": "https://lite.3kh0.net/projects/cannon-basketball-4/img/splash.png",
+   "cover": "gamehosting/3kh0/cannon-basketball-4/img/splash.png",
    "replaces": [],
-   "add": true
+   "add": true,
+   "local": true,
+   "source": "https://github.com/3kh0/3kh0-lite/tree/main/projects/cannon-basketball-4"
   },
   {
    "slug": "canyondefense",
    "title": "Canyon Defense",
-   "cover": "https://lite.3kh0.net/projects/canyondefense/canyondefense.png",
+   "cover": "gamehosting/3kh0/canyondefense/canyondefense.png",
    "replaces": [],
-   "add": true
+   "add": true,
+   "local": true,
+   "source": "https://github.com/3kh0/3kh0-lite/tree/main/projects/canyondefense"
   },
   {
    "slug": "cell-machine",
    "title": "Cell Machine",
-   "cover": "https://lite.3kh0.net/projects/cell-machine/img/te9nDu.png",
+   "cover": "gamehosting/3kh0/cell-machine/img/te9nDu.png",
    "replaces": [],
-   "add": true
+   "add": true,
+   "local": true,
+   "source": "https://github.com/3kh0/3kh0-lite/tree/main/projects/cell-machine"
   },
   {
    "slug": "championarcher",
    "title": "Champion Archer",
-   "cover": "https://lite.3kh0.net/projects/championarcher/championarcher.png",
+   "cover": "gamehosting/3kh0/championarcher/championarcher.png",
    "replaces": [],
-   "add": true
+   "add": true,
+   "local": true,
+   "source": "https://github.com/3kh0/3kh0-lite/tree/main/projects/championarcher"
   },
   {
    "slug": "chrome-dino",
    "title": "Chrome Dino",
-   "cover": "https://lite.3kh0.net/projects/chrome-dino/icons/icon-256.png",
+   "cover": "gamehosting/3kh0/chrome-dino/icons/icon-256.png",
    "replaces": [],
-   "add": true
+   "add": true,
+   "local": true,
+   "source": "https://github.com/3kh0/3kh0-lite/tree/main/projects/chrome-dino"
   },
   {
    "slug": "circlo",
    "title": "circlO",
-   "cover": "https://lite.3kh0.net/projects/circlo/img/download.png",
+   "cover": "gamehosting/3kh0/circlo/img/download.png",
    "replaces": [],
-   "add": true
+   "add": true,
+   "local": true,
+   "source": "https://github.com/3kh0/3kh0-lite/tree/main/projects/circlo"
   },
   {
    "slug": "cookie-clicker",
    "title": "Cookie Clicker",
-   "cover": "https://lite.3kh0.net/projects/cookie-clicker/cookie1.jpeg",
+   "cover": "gamehosting/3kh0/cookie-clicker/cookie1.jpeg",
    "replaces": [
     "82"
    ],
-   "add": false
+   "add": false,
+   "local": true,
+   "source": "https://github.com/3kh0/3kh0-lite/tree/main/projects/cookie-clicker"
   },
   {
    "slug": "creativekillchamber",
    "title": "Creative Kill Chamber",
-   "cover": "https://lite.3kh0.net/projects/creativekillchamber/creativekillchamber.jpg",
+   "cover": "gamehosting/3kh0/creativekillchamber/creativekillchamber.jpg",
    "replaces": [],
-   "add": true
+   "add": true,
+   "local": true,
+   "source": "https://github.com/3kh0/3kh0-lite/tree/main/projects/creativekillchamber"
   },
   {
    "slug": "cubefield",
    "title": "Cubefield",
-   "cover": "https://lite.3kh0.net/projects/cubefield/cubefield.jpg",
+   "cover": "gamehosting/3kh0/cubefield/cubefield.jpg",
    "replaces": [
     "84"
    ],
-   "add": false
+   "add": false,
+   "local": true,
+   "source": "https://github.com/3kh0/3kh0-lite/tree/main/projects/cubefield"
   },
   {
    "slug": "ctr",
    "title": "Cut the Rope",
-   "cover": "https://lite.3kh0.net/projects/ctr/logo.png",
+   "cover": "gamehosting/3kh0/ctr/logo.png",
    "replaces": [
     "85",
     "212"
    ],
-   "add": false
+   "add": false,
+   "local": true,
+   "source": "https://github.com/3kh0/3kh0-lite/tree/main/projects/ctr"
   },
   {
    "slug": "ctr-tr",
    "title": "Cut the Rope Time Travel",
-   "cover": "https://lite.3kh0.net/projects/ctr-tr/logo.png",
+   "cover": "gamehosting/3kh0/ctr-tr/logo.png",
    "replaces": [
     "213"
    ],
-   "add": false
+   "add": false,
+   "local": true,
+   "source": "https://github.com/3kh0/3kh0-lite/tree/main/projects/ctr-tr"
   },
   {
    "slug": "death-run-3d",
    "title": "Death Run 3D",
-   "cover": "https://lite.3kh0.net/projects/death-run-3d/img/death.png",
+   "cover": "gamehosting/3kh0/death-run-3d/img/death.png",
    "replaces": [],
-   "add": true
+   "add": true,
+   "local": true,
+   "source": "https://github.com/3kh0/3kh0-lite/tree/main/projects/death-run-3d"
   },
   {
    "slug": "doodle-jump",
    "title": "Doodle Jump",
-   "cover": "https://lite.3kh0.net/projects/doodle-jump/doodle.png",
+   "cover": "gamehosting/3kh0/doodle-jump/doodle.png",
    "replaces": [
     "470"
    ],
-   "add": false
+   "add": false,
+   "local": true,
+   "source": "https://github.com/3kh0/3kh0-lite/tree/main/projects/doodle-jump"
   },
   {
    "slug": "doublewires",
    "title": "Double Wires",
-   "cover": "https://lite.3kh0.net/projects/doublewires/doublewires.png",
+   "cover": "gamehosting/3kh0/doublewires/doublewires.png",
    "replaces": [],
-   "add": true
+   "add": true,
+   "local": true,
+   "source": "https://github.com/3kh0/3kh0-lite/tree/main/projects/doublewires"
   },
   {
    "slug": "draw-the-hill",
    "title": "Draw the Hill",
-   "cover": "https://lite.3kh0.net/projects/draw-the-hill/icons/icon-512.png",
+   "cover": "gamehosting/3kh0/draw-the-hill/icons/icon-512.png",
    "replaces": [],
-   "add": true
+   "add": true,
+   "local": true,
+   "source": "https://github.com/3kh0/3kh0-lite/tree/main/projects/draw-the-hill"
   },
   {
    "slug": "ducklife1",
    "title": "Duck Life",
-   "cover": "https://lite.3kh0.net/projects/ducklife1/ducklife.png",
+   "cover": "gamehosting/3kh0/ducklife1/ducklife.png",
    "replaces": [
     "234"
    ],
-   "add": false
+   "add": false,
+   "local": true,
+   "source": "https://github.com/3kh0/3kh0-lite/tree/main/projects/ducklife1"
   },
   {
    "slug": "ducklife2",
    "title": "Duck Life 2",
-   "cover": "https://lite.3kh0.net/projects/ducklife2/ducklife2.png",
+   "cover": "gamehosting/3kh0/ducklife2/ducklife2.png",
    "replaces": [
     "235"
    ],
-   "add": false
+   "add": false,
+   "local": true,
+   "source": "https://github.com/3kh0/3kh0-lite/tree/main/projects/ducklife2"
   },
   {
    "slug": "ducklife3",
    "title": "Duck Life 3",
-   "cover": "https://lite.3kh0.net/projects/ducklife3/duck.png",
+   "cover": "gamehosting/3kh0/ducklife3/duck.png",
    "replaces": [
     "236"
    ],
-   "add": false
+   "add": false,
+   "local": true,
+   "source": "https://github.com/3kh0/3kh0-lite/tree/main/projects/ducklife3"
   },
   {
    "slug": "edgenotfound",
    "title": "Edge Not Found",
-   "cover": "https://lite.3kh0.net/projects/edgenotfound/edge.png",
+   "cover": "gamehosting/3kh0/edgenotfound/edge.png",
    "replaces": [],
-   "add": true
+   "add": true,
+   "local": true,
+   "source": "https://github.com/3kh0/3kh0-lite/tree/main/projects/edgenotfound"
   },
   {
    "slug": "elasticman",
    "title": "Elastic Man",
-   "cover": "https://lite.3kh0.net/projects/elasticman/elasticman.jpg",
+   "cover": "gamehosting/3kh0/elasticman/elasticman.jpg",
    "replaces": [
     "197"
    ],
-   "add": false
+   "add": false,
+   "local": true,
+   "source": "https://github.com/3kh0/3kh0-lite/tree/main/projects/elasticman"
   },
   {
    "slug": "endlesswar3",
    "title": "Endless War 3",
-   "cover": "https://lite.3kh0.net/projects/endlesswar3/endlesswar3.png",
+   "cover": "gamehosting/3kh0/endlesswar3/endlesswar3.png",
    "replaces": [],
-   "add": true
+   "add": true,
+   "local": true,
+   "source": "https://github.com/3kh0/3kh0-lite/tree/main/projects/endlesswar3"
   },
   {
    "slug": "evil-glitch",
    "title": "Evil Glitch",
-   "cover": "https://lite.3kh0.net/projects/evil-glitch/evil.png",
+   "cover": "gamehosting/3kh0/evil-glitch/evil.png",
    "replaces": [],
-   "add": true
+   "add": true,
+   "local": true,
+   "source": "https://github.com/3kh0/3kh0-lite/tree/main/projects/evil-glitch"
   },
   {
    "slug": "exo",
    "title": "Exo",
-   "cover": "https://lite.3kh0.net/projects/exo/img/small.jpg",
+   "cover": "gamehosting/3kh0/exo/img/small.jpg",
    "replaces": [],
-   "add": true
+   "add": true,
+   "local": true,
+   "source": "https://github.com/3kh0/3kh0-lite/tree/main/projects/exo"
   },
   {
    "slug": "factoryballs",
    "title": "Factory Balls Forever",
-   "cover": "https://lite.3kh0.net/projects/factoryballs/images/splash.png",
+   "cover": "gamehosting/3kh0/factoryballs/images/splash.png",
    "replaces": [],
-   "add": true
+   "add": true,
+   "local": true,
+   "source": "https://github.com/3kh0/3kh0-lite/tree/main/projects/factoryballs"
   },
   {
    "slug": "fake-virus",
    "title": "Fake Virus",
-   "cover": "https://lite.3kh0.net/projects/fake-virus/icon.png",
+   "cover": "gamehosting/3kh0/fake-virus/icon.png",
    "replaces": [],
-   "add": true
+   "add": true,
+   "local": true,
+   "source": "https://github.com/3kh0/3kh0-lite/tree/main/projects/fake-virus"
   },
   {
    "slug": "flappy-bird",
    "title": "Flappy Bird",
-   "cover": "https://lite.3kh0.net/projects/flappy-bird/assets/thumb.png",
+   "cover": "gamehosting/3kh0/flappy-bird/assets/thumb.png",
    "replaces": [
     "129"
    ],
-   "add": false
+   "add": false,
+   "local": true,
+   "source": "https://github.com/3kh0/3kh0-lite/tree/main/projects/flappy-bird"
   },
   {
    "slug": "flashtetris",
    "title": "Flash Tetris",
-   "cover": "https://lite.3kh0.net/projects/flashtetris/flashtetris.png",
+   "cover": "gamehosting/3kh0/flashtetris/flashtetris.png",
    "replaces": [],
-   "add": true
+   "add": true,
+   "local": true,
+   "source": "https://github.com/3kh0/3kh0-lite/tree/main/projects/flashtetris"
   },
   {
    "slug": "game-inside",
    "title": "Game Inside a Game Inside a Game...",
-   "cover": "https://lite.3kh0.net/projects/game-inside/img/display.png",
+   "cover": "gamehosting/3kh0/game-inside/img/display.png",
    "replaces": [],
-   "add": true
+   "add": true,
+   "local": true,
+   "source": "https://github.com/3kh0/3kh0-lite/tree/main/projects/game-inside"
   },
   {
    "slug": "geodash",
    "title": "Geometry Dash (Scratch)",
-   "cover": "https://lite.3kh0.net/projects/geodash/geoscratchicon.png",
+   "cover": "gamehosting/3kh0/geodash/geoscratchicon.png",
    "replaces": [],
-   "add": true
+   "add": true,
+   "local": true,
+   "source": "https://github.com/3kh0/3kh0-lite/tree/main/projects/geodash"
   },
   {
    "slug": "getaway-shootout",
    "title": "Getaway Shootout",
-   "cover": "https://lite.3kh0.net/projects/getaway-shootout/img/images.jpg",
+   "cover": "gamehosting/3kh0/getaway-shootout/img/images.jpg",
    "replaces": [
     "338"
    ],
-   "add": false
+   "add": false,
+   "local": true,
+   "source": "https://github.com/3kh0/3kh0-lite/tree/main/projects/getaway-shootout"
   },
   {
    "slug": "gimme-the-airpod",
    "title": "Gimme the Airpod",
-   "cover": "https://lite.3kh0.net/projects/gimme-the-airpod/img/logo.png",
+   "cover": "gamehosting/3kh0/gimme-the-airpod/img/logo.png",
    "replaces": [],
-   "add": true
+   "add": true,
+   "local": true,
+   "source": "https://github.com/3kh0/3kh0-lite/tree/main/projects/gimme-the-airpod"
   },
   {
    "slug": "google-snake",
    "title": "Google Snake",
-   "cover": "https://lite.3kh0.net/projects/google-snake/img/snake.png",
+   "cover": "gamehosting/3kh0/google-snake/img/snake.png",
    "replaces": [],
-   "add": true
+   "add": true,
+   "local": true,
+   "source": "https://github.com/3kh0/3kh0-lite/tree/main/projects/google-snake"
   },
   {
    "slug": "helicopter",
    "title": "Helicopter",
-   "cover": "https://lite.3kh0.net/projects/helicopter/helicopter.png",
+   "cover": "gamehosting/3kh0/helicopter/helicopter.png",
    "replaces": [],
-   "add": true
+   "add": true,
+   "local": true,
+   "source": "https://github.com/3kh0/3kh0-lite/tree/main/projects/helicopter"
   },
   {
    "slug": "hexempire",
    "title": "Hex Empire",
-   "cover": "https://lite.3kh0.net/projects/hexempire/hexempire.jpg",
+   "cover": "gamehosting/3kh0/hexempire/hexempire.jpg",
    "replaces": [],
-   "add": true
+   "add": true,
+   "local": true,
+   "source": "https://github.com/3kh0/3kh0-lite/tree/main/projects/hexempire"
   },
   {
    "slug": "HexGL",
    "title": "HexGL",
-   "cover": "https://lite.3kh0.net/projects/HexGL/icon_256.png",
+   "cover": "gamehosting/3kh0/HexGL/icon_256.png",
    "replaces": [],
-   "add": true
+   "add": true,
+   "local": true,
+   "source": "https://github.com/3kh0/3kh0-lite/tree/main/projects/HexGL"
   },
   {
    "slug": "hextris",
    "title": "Hextris",
-   "cover": "https://lite.3kh0.net/projects/hextris/images/hextris-logo.png",
+   "cover": "gamehosting/3kh0/hextris/images/hextris-logo.png",
    "replaces": [],
-   "add": true
+   "add": true,
+   "local": true,
+   "source": "https://github.com/3kh0/3kh0-lite/tree/main/projects/hextris"
   },
   {
    "slug": "hba",
    "title": "Hover Bot Arena",
-   "cover": "https://lite.3kh0.net/projects/hba/hoverbotarena.jpg",
+   "cover": "gamehosting/3kh0/hba/hoverbotarena.jpg",
    "replaces": [],
-   "add": true
+   "add": true,
+   "local": true,
+   "source": "https://github.com/3kh0/3kh0-lite/tree/main/projects/hba"
   },
   {
    "slug": "impossiblequiz",
    "title": "Impossible Quiz",
-   "cover": "https://lite.3kh0.net/projects/impossiblequiz/impossiblequiz.png",
+   "cover": "gamehosting/3kh0/impossiblequiz/impossiblequiz.png",
    "replaces": [
     "507"
    ],
-   "add": false
+   "add": false,
+   "local": true,
+   "source": "https://github.com/3kh0/3kh0-lite/tree/main/projects/impossiblequiz"
   },
   {
    "slug": "interactivebuddy",
    "title": "Interactive Buddy",
-   "cover": "https://lite.3kh0.net/projects/interactivebuddy/interactivebuddy.jpg",
+   "cover": "gamehosting/3kh0/interactivebuddy/interactivebuddy.jpg",
    "replaces": [],
-   "add": true
+   "add": true,
+   "local": true,
+   "source": "https://github.com/3kh0/3kh0-lite/tree/main/projects/interactivebuddy"
   },
   {
    "slug": "just-one-boss",
    "title": "Just One Boss",
-   "cover": "https://lite.3kh0.net/projects/just-one-boss/pv1Gr5.png",
+   "cover": "gamehosting/3kh0/just-one-boss/pv1Gr5.png",
    "replaces": [],
-   "add": true
+   "add": true,
+   "local": true,
+   "source": "https://github.com/3kh0/3kh0-lite/tree/main/projects/just-one-boss"
   },
   {
    "slug": "kittencannon",
    "title": "Kitten Cannon",
-   "cover": "https://lite.3kh0.net/projects/kittencannon/kittencannon.png",
+   "cover": "gamehosting/3kh0/kittencannon/kittencannon.png",
    "replaces": [],
-   "add": true
+   "add": true,
+   "local": true,
+   "source": "https://github.com/3kh0/3kh0-lite/tree/main/projects/kittencannon"
   },
   {
    "slug": "krunker",
    "title": "Krunker",
-   "cover": "https://lite.3kh0.net/projects/krunker/img/krunker-io.jpg",
+   "cover": "gamehosting/3kh0/krunker/img/krunker-io.jpg",
    "replaces": [],
-   "add": true
+   "add": true,
+   "local": true,
+   "source": "https://github.com/3kh0/3kh0-lite/tree/main/projects/krunker"
   },
   {
    "slug": "learntofly",
    "title": "Learn To Fly",
-   "cover": "https://lite.3kh0.net/projects/learntofly/learntofly.png",
+   "cover": "gamehosting/3kh0/learntofly/learntofly.png",
    "replaces": [
     "340"
    ],
-   "add": false
+   "add": false,
+   "local": true,
+   "source": "https://github.com/3kh0/3kh0-lite/tree/main/projects/learntofly"
   },
   {
    "slug": "matrixrampage",
    "title": "Matrix Rampage",
-   "cover": "https://lite.3kh0.net/projects/matrixrampage/matrixrampage.jpg",
+   "cover": "gamehosting/3kh0/matrixrampage/matrixrampage.jpg",
    "replaces": [],
-   "add": true
+   "add": true,
+   "local": true,
+   "source": "https://github.com/3kh0/3kh0-lite/tree/main/projects/matrixrampage"
   },
   {
    "slug": "minecraft-classic",
    "title": "Minecraft Classic",
-   "cover": "https://lite.3kh0.net/projects/minecraft-classic/pack.png",
+   "cover": "gamehosting/3kh0/minecraft-classic/pack.png",
    "replaces": [],
-   "add": true
+   "add": true,
+   "local": true,
+   "source": "https://github.com/3kh0/3kh0-lite/tree/main/projects/minecraft-classic"
   },
   {
    "slug": "minesweeper",
    "title": "Minesweeper",
-   "cover": "https://lite.3kh0.net/projects/minesweeper/img/minesweeper.png",
+   "cover": "gamehosting/3kh0/minesweeper/img/minesweeper.png",
    "replaces": [],
-   "add": true
+   "add": true,
+   "local": true,
+   "source": "https://github.com/3kh0/3kh0-lite/tree/main/projects/minesweeper"
   },
   {
    "slug": "miniputt",
    "title": "Mini-putt",
-   "cover": "https://lite.3kh0.net/projects/miniputt/miniputt.png",
+   "cover": "gamehosting/3kh0/miniputt/miniputt.png",
    "replaces": [],
-   "add": true
+   "add": true,
+   "local": true,
+   "source": "https://github.com/3kh0/3kh0-lite/tree/main/projects/miniputt"
   },
   {
    "slug": "motox3m",
    "title": "MotoX3M",
-   "cover": "https://lite.3kh0.net/projects/motox3m/splash.jpg",
+   "cover": "gamehosting/3kh0/motox3m/splash.jpg",
    "replaces": [
     "96"
    ],
-   "add": false
+   "add": false,
+   "local": true,
+   "source": "https://github.com/3kh0/3kh0-lite/tree/main/projects/motox3m"
   },
   {
    "slug": "motox3m-pool",
    "title": "MotoX3M Pool",
-   "cover": "https://lite.3kh0.net/projects/motox3m-pool/splash.jpg",
+   "cover": "gamehosting/3kh0/motox3m-pool/splash.jpg",
    "replaces": [
     "124"
    ],
-   "add": false
+   "add": false,
+   "local": true,
+   "source": "https://github.com/3kh0/3kh0-lite/tree/main/projects/motox3m-pool"
   },
   {
    "slug": "motox3m-spooky",
    "title": "MotoX3M Spooky",
-   "cover": "https://lite.3kh0.net/projects/motox3m-spooky/splash.jpeg",
+   "cover": "gamehosting/3kh0/motox3m-spooky/splash.jpeg",
    "replaces": [
     "99"
    ],
-   "add": false
+   "add": false,
+   "local": true,
+   "source": "https://github.com/3kh0/3kh0-lite/tree/main/projects/motox3m-spooky"
   },
   {
    "slug": "motox3m-winter",
    "title": "MotoX3M Winter",
-   "cover": "https://lite.3kh0.net/projects/motox3m-winter/download.jpeg",
+   "cover": "gamehosting/3kh0/motox3m-winter/download.jpeg",
    "replaces": [
     "100"
    ],
-   "add": false
+   "add": false,
+   "local": true,
+   "source": "https://github.com/3kh0/3kh0-lite/tree/main/projects/motox3m-winter"
   },
   {
    "slug": "n-gon",
    "title": "n-gon",
-   "cover": "https://lite.3kh0.net/projects/n-gon/bot.png",
+   "cover": "gamehosting/3kh0/n-gon/bot.png",
    "replaces": [
     "180"
    ],
-   "add": false
+   "add": false,
+   "local": true,
+   "source": "https://github.com/3kh0/3kh0-lite/tree/main/projects/n-gon"
   },
   {
    "slug": "ns-shaft",
    "title": "NS-Shaft",
-   "cover": "https://lite.3kh0.net/projects/ns-shaft/favicon.png",
+   "cover": "gamehosting/3kh0/ns-shaft/favicon.png",
    "replaces": [],
-   "add": true
+   "add": true,
+   "local": true,
+   "source": "https://github.com/3kh0/3kh0-lite/tree/main/projects/ns-shaft"
   },
   {
    "slug": "om-bounce",
    "title": "Om Nom Bounce",
-   "cover": "https://lite.3kh0.net/projects/om-bounce/assets/icon.jpeg",
+   "cover": "gamehosting/3kh0/om-bounce/assets/icon.jpeg",
    "replaces": [],
-   "add": true
+   "add": true,
+   "local": true,
+   "source": "https://github.com/3kh0/3kh0-lite/tree/main/projects/om-bounce"
   },
   {
    "slug": "pandemic2",
    "title": "Pandemic 2",
-   "cover": "https://lite.3kh0.net/projects/pandemic2/pandemic2.png",
+   "cover": "gamehosting/3kh0/pandemic2/pandemic2.png",
    "replaces": [],
-   "add": true
+   "add": true,
+   "local": true,
+   "source": "https://github.com/3kh0/3kh0-lite/tree/main/projects/pandemic2"
   },
   {
    "slug": "papaspizzaria",
    "title": "Papa's Pizzaria",
-   "cover": "https://lite.3kh0.net/projects/papaspizzaria/papaspizzaria.jpg",
+   "cover": "gamehosting/3kh0/papaspizzaria/papaspizzaria.jpg",
    "replaces": [
     "227"
    ],
-   "add": false
+   "add": false,
+   "local": true,
+   "source": "https://github.com/3kh0/3kh0-lite/tree/main/projects/papaspizzaria"
   },
   {
    "slug": "paperio2",
    "title": "Paper.io 2",
-   "cover": "https://lite.3kh0.net/projects/paperio2/images/icon512.png",
+   "cover": "gamehosting/3kh0/paperio2/images/icon512.png",
    "replaces": [
     "102"
    ],
-   "add": false
+   "add": false,
+   "local": true,
+   "source": "https://github.com/3kh0/3kh0-lite/tree/main/projects/paperio2"
   },
   {
    "slug": "papery-planes",
    "title": "Papery Planes",
-   "cover": "https://lite.3kh0.net/projects/papery-planes/splash.jpg",
+   "cover": "gamehosting/3kh0/papery-planes/splash.jpg",
    "replaces": [],
-   "add": true
+   "add": true,
+   "local": true,
+   "source": "https://github.com/3kh0/3kh0-lite/tree/main/projects/papery-planes"
   },
   {
    "slug": "polybranch",
    "title": "PolyBranch",
-   "cover": "https://lite.3kh0.net/projects/polybranch/img/pic1.png",
+   "cover": "gamehosting/3kh0/polybranch/img/pic1.png",
    "replaces": [],
-   "add": true
+   "add": true,
+   "local": true,
+   "source": "https://github.com/3kh0/3kh0-lite/tree/main/projects/polybranch"
   },
   {
    "slug": "portalflash",
    "title": "Portal (Flash)",
-   "cover": "https://lite.3kh0.net/projects/portalflash/portaltheflashversion.jpg",
+   "cover": "gamehosting/3kh0/portalflash/portaltheflashversion.jpg",
    "replaces": [],
-   "add": true
+   "add": true,
+   "local": true,
+   "source": "https://github.com/3kh0/3kh0-lite/tree/main/projects/portalflash"
   },
   {
    "slug": "push-the-square",
    "title": "Push The Square",
-   "cover": "https://lite.3kh0.net/projects/push-the-square/img/splash.png",
+   "cover": "gamehosting/3kh0/push-the-square/img/splash.png",
    "replaces": [],
-   "add": true
+   "add": true,
+   "local": true,
+   "source": "https://github.com/3kh0/3kh0-lite/tree/main/projects/push-the-square"
   },
   {
    "slug": "push-your-luck",
    "title": "Push Your Luck",
-   "cover": "https://lite.3kh0.net/projects/push-your-luck/assets/img/push.png",
+   "cover": "gamehosting/3kh0/push-your-luck/assets/img/push.png",
    "replaces": [],
-   "add": true
+   "add": true,
+   "local": true,
+   "source": "https://github.com/3kh0/3kh0-lite/tree/main/projects/push-your-luck"
   },
   {
    "slug": "retro-bowl",
    "title": "Retro Bowl",
-   "cover": "https://lite.3kh0.net/projects/retro-bowl/img/icon.jpg",
+   "cover": "gamehosting/3kh0/retro-bowl/img/icon.jpg",
    "replaces": [],
-   "add": true
+   "add": true,
+   "local": true,
+   "source": "https://github.com/3kh0/3kh0-lite/tree/main/projects/retro-bowl"
   },
   {
    "slug": "rooftop-snipers",
    "title": "Rooftop Snipers",
-   "cover": "https://lite.3kh0.net/projects/rooftop-snipers/img/preview.png",
+   "cover": "gamehosting/3kh0/rooftop-snipers/img/preview.png",
    "replaces": [
     "283"
    ],
-   "add": false
+   "add": false,
+   "local": true,
+   "source": "https://github.com/3kh0/3kh0-lite/tree/main/projects/rooftop-snipers"
   },
   {
    "slug": "sand-game",
    "title": "Sand Game",
-   "cover": "https://lite.3kh0.net/projects/sand-game/sand.png",
+   "cover": "gamehosting/3kh0/sand-game/sand.png",
    "replaces": [],
-   "add": true
+   "add": true,
+   "local": true,
+   "source": "https://github.com/3kh0/3kh0-lite/tree/main/projects/sand-game"
   },
   {
    "slug": "slope",
    "title": "Slope",
-   "cover": "https://lite.3kh0.net/projects/slope/slope4.jpeg",
+   "cover": "gamehosting/3kh0/slope/slope4.jpeg",
    "replaces": [],
-   "add": true
+   "add": true,
+   "local": true,
+   "source": "https://github.com/3kh0/3kh0-lite/tree/main/projects/slope"
   },
   {
    "slug": "smashkarts",
    "title": "Smash Carts",
-   "cover": "https://lite.3kh0.net/projects/smashkarts/images/icon-512.png",
+   "cover": "gamehosting/3kh0/smashkarts/images/icon-512.png",
    "replaces": [
     "370"
    ],
-   "add": false
+   "add": false,
+   "local": true,
+   "source": "https://github.com/3kh0/3kh0-lite/tree/main/projects/smashkarts"
   },
   {
    "slug": "smokingbarrels",
    "title": "Smoking Barrels",
-   "cover": "https://lite.3kh0.net/projects/smokingbarrels/smokingbarrels.jpg",
+   "cover": "gamehosting/3kh0/smokingbarrels/smokingbarrels.jpg",
    "replaces": [],
-   "add": true
+   "add": true,
+   "local": true,
+   "source": "https://github.com/3kh0/3kh0-lite/tree/main/projects/smokingbarrels"
   },
   {
    "slug": "snowbattle",
    "title": "Snowbattle",
-   "cover": "https://lite.3kh0.net/projects/snowbattle/img/logo.png",
+   "cover": "gamehosting/3kh0/snowbattle/img/logo.png",
    "replaces": [],
-   "add": true
+   "add": true,
+   "local": true,
+   "source": "https://github.com/3kh0/3kh0-lite/tree/main/projects/snowbattle"
   },
   {
    "slug": "solitaire",
    "title": "Solitare",
-   "cover": "https://lite.3kh0.net/projects/solitaire/screen-shot.png",
+   "cover": "gamehosting/3kh0/solitaire/screen-shot.png",
    "replaces": [],
-   "add": true
+   "add": true,
+   "local": true,
+   "source": "https://github.com/3kh0/3kh0-lite/tree/main/projects/solitaire"
   },
   {
    "slug": "sort-the-court",
    "title": "Sort The Court",
-   "cover": "https://lite.3kh0.net/projects/sort-the-court/img/splash.png",
+   "cover": "gamehosting/3kh0/sort-the-court/img/splash.png",
    "replaces": [
     "346"
    ],
-   "add": false
+   "add": false,
+   "local": true,
+   "source": "https://github.com/3kh0/3kh0-lite/tree/main/projects/sort-the-court"
   },
   {
    "slug": "stack",
    "title": "Stack",
-   "cover": "https://lite.3kh0.net/projects/stack/stack.png",
+   "cover": "gamehosting/3kh0/stack/stack.png",
    "replaces": [],
-   "add": true
+   "add": true,
+   "local": true,
+   "source": "https://github.com/3kh0/3kh0-lite/tree/main/projects/stack"
   },
   {
    "slug": "stealingthediamond",
    "title": "Stealing The Diamond",
-   "cover": "https://lite.3kh0.net/projects/stealingthediamond/stealingthediamond.jpg",
+   "cover": "gamehosting/3kh0/stealingthediamond/stealingthediamond.jpg",
    "replaces": [],
-   "add": true
+   "add": true,
+   "local": true,
+   "source": "https://github.com/3kh0/3kh0-lite/tree/main/projects/stealingthediamond"
   },
   {
    "slug": "stickwar",
    "title": "Stick War",
-   "cover": "https://lite.3kh0.net/projects/stickwar/stickwar.jpg",
+   "cover": "gamehosting/3kh0/stickwar/stickwar.jpg",
    "replaces": [],
-   "add": true
+   "add": true,
+   "local": true,
+   "source": "https://github.com/3kh0/3kh0-lite/tree/main/projects/stickwar"
   },
   {
    "slug": "stormthehouse2",
    "title": "Storm The House 2",
-   "cover": "https://lite.3kh0.net/projects/stormthehouse2/stormthehouse2.jpg",
+   "cover": "gamehosting/3kh0/stormthehouse2/stormthehouse2.jpg",
    "replaces": [],
-   "add": true
+   "add": true,
+   "local": true,
+   "source": "https://github.com/3kh0/3kh0-lite/tree/main/projects/stormthehouse2"
   },
   {
    "slug": "sm64",
    "title": "Super Mario 64",
-   "cover": "https://lite.3kh0.net/projects/sm64/logo.png",
+   "cover": "gamehosting/3kh0/sm64/logo.png",
    "replaces": [
     "572"
    ],
-   "add": false
+   "add": false,
+   "local": true,
+   "source": "https://github.com/3kh0/3kh0-lite/tree/main/projects/sm64"
   },
   {
    "slug": "superhot",
    "title": "Superhot",
-   "cover": "https://lite.3kh0.net/projects/superhot/hot.jpg",
+   "cover": "gamehosting/3kh0/superhot/hot.jpg",
    "replaces": [
     "233"
    ],
-   "add": false
+   "add": false,
+   "local": true,
+   "source": "https://github.com/3kh0/3kh0-lite/tree/main/projects/superhot"
   },
   {
    "slug": "tacticalassasin2",
    "title": "Tactical Assassin 2",
-   "cover": "https://lite.3kh0.net/projects/tacticalassasin2/tacticalassassin2.png",
+   "cover": "gamehosting/3kh0/tacticalassasin2/tacticalassassin2.png",
    "replaces": [],
-   "add": true
+   "add": true,
+   "local": true,
+   "source": "https://github.com/3kh0/3kh0-lite/tree/main/projects/tacticalassasin2"
   },
   {
    "slug": "tank-trouble-2",
    "title": "Tank Trouble 2",
-   "cover": "https://lite.3kh0.net/projects/tank-trouble-2/tank.jpeg",
+   "cover": "gamehosting/3kh0/tank-trouble-2/tank.jpeg",
    "replaces": [],
-   "add": true
+   "add": true,
+   "local": true,
+   "source": "https://github.com/3kh0/3kh0-lite/tree/main/projects/tank-trouble-2"
   },
   {
    "slug": "tanuki-sunset",
    "title": "Tanuki Sunset",
-   "cover": "https://lite.3kh0.net/projects/tanuki-sunset/img/cover.png",
+   "cover": "gamehosting/3kh0/tanuki-sunset/img/cover.png",
    "replaces": [
     "305"
    ],
-   "add": false
+   "add": false,
+   "local": true,
+   "source": "https://github.com/3kh0/3kh0-lite/tree/main/projects/tanuki-sunset"
   },
   {
    "slug": "temple-run-2",
    "title": "Temple Run 2",
-   "cover": "https://lite.3kh0.net/projects/temple-run-2/img/og-icon.png",
+   "cover": "gamehosting/3kh0/temple-run-2/img/og-icon.png",
    "replaces": [],
-   "add": true
+   "add": true,
+   "local": true,
+   "source": "https://github.com/3kh0/3kh0-lite/tree/main/projects/temple-run-2"
   },
   {
    "slug": "the-final-earth",
    "title": "The Final Earth",
-   "cover": "https://lite.3kh0.net/projects/the-final-earth/images.png",
+   "cover": "gamehosting/3kh0/the-final-earth/images.png",
    "replaces": [],
-   "add": true
+   "add": true,
+   "local": true,
+   "source": "https://github.com/3kh0/3kh0-lite/tree/main/projects/the-final-earth"
   },
   {
    "slug": "theheist",
    "title": "The Heist",
-   "cover": "https://lite.3kh0.net/projects/theheist/theheist.jpg",
+   "cover": "gamehosting/3kh0/theheist/theheist.jpg",
    "replaces": [],
-   "add": true
+   "add": true,
+   "local": true,
+   "source": "https://github.com/3kh0/3kh0-lite/tree/main/projects/theheist"
   },
   {
    "slug": "there-is-no-game",
    "title": "There Is No Game",
-   "cover": "https://lite.3kh0.net/projects/there-is-no-game/logo.png",
+   "cover": "gamehosting/3kh0/there-is-no-game/logo.png",
    "replaces": [],
-   "add": true
+   "add": true,
+   "local": true,
+   "source": "https://github.com/3kh0/3kh0-lite/tree/main/projects/there-is-no-game"
   },
   {
    "slug": "thisistheonlylevel",
    "title": "This Is The Only Level",
-   "cover": "https://lite.3kh0.net/projects/thisistheonlylevel/thisistheonlylevel.png",
+   "cover": "gamehosting/3kh0/thisistheonlylevel/thisistheonlylevel.png",
    "replaces": [
     "106"
    ],
-   "add": false
+   "add": false,
+   "local": true,
+   "source": "https://github.com/3kh0/3kh0-lite/tree/main/projects/thisistheonlylevel"
   },
   {
    "slug": "tosstheturtle",
    "title": "Toss The Turtle",
-   "cover": "https://lite.3kh0.net/projects/tosstheturtle/tosstheturtle.png",
+   "cover": "gamehosting/3kh0/tosstheturtle/tosstheturtle.png",
    "replaces": [
     "110"
    ],
-   "add": false
+   "add": false,
+   "local": true,
+   "source": "https://github.com/3kh0/3kh0-lite/tree/main/projects/tosstheturtle"
   },
   {
    "slug": "tube-jumpers",
    "title": "Tube Jumpers",
-   "cover": "https://lite.3kh0.net/projects/tube-jumpers/img/shark.jpg",
+   "cover": "gamehosting/3kh0/tube-jumpers/img/shark.jpg",
    "replaces": [
     "111"
    ],
-   "add": false
+   "add": false,
+   "local": true,
+   "source": "https://github.com/3kh0/3kh0-lite/tree/main/projects/tube-jumpers"
   },
   {
    "slug": "tunnel-rush",
    "title": "Tunnel Rush",
-   "cover": "https://lite.3kh0.net/projects/tunnel-rush/img/tunnel.jpg",
+   "cover": "gamehosting/3kh0/tunnel-rush/img/tunnel.jpg",
    "replaces": [
     "206"
    ],
-   "add": false
+   "add": false,
+   "local": true,
+   "source": "https://github.com/3kh0/3kh0-lite/tree/main/projects/tunnel-rush"
   },
   {
    "slug": "tv-static",
    "title": "TV Static",
-   "cover": "https://lite.3kh0.net/projects/tv-static/static.png",
+   "cover": "gamehosting/3kh0/tv-static/static.png",
    "replaces": [],
-   "add": true
+   "add": true,
+   "local": true,
+   "source": "https://github.com/3kh0/3kh0-lite/tree/main/projects/tv-static"
   },
   {
    "slug": "vex3",
    "title": "Vex 3",
-   "cover": "https://lite.3kh0.net/projects/vex3/vex3.png",
+   "cover": "gamehosting/3kh0/vex3/vex3.png",
    "replaces": [
     "47"
    ],
-   "add": false
+   "add": false,
+   "local": true,
+   "source": "https://github.com/3kh0/3kh0-lite/tree/main/projects/vex3"
   },
   {
    "slug": "vex4",
    "title": "Vex 4",
-   "cover": "https://lite.3kh0.net/projects/vex4/vex4.png",
+   "cover": "gamehosting/3kh0/vex4/vex4.png",
    "replaces": [
     "49"
    ],
-   "add": false
+   "add": false,
+   "local": true,
+   "source": "https://github.com/3kh0/3kh0-lite/tree/main/projects/vex4"
   },
   {
    "slug": "vex5",
    "title": "Vex 5",
-   "cover": "https://lite.3kh0.net/projects/vex5/vex.jpeg",
+   "cover": "gamehosting/3kh0/vex5/vex.jpeg",
    "replaces": [
     "50"
    ],
-   "add": false
+   "add": false,
+   "local": true,
+   "source": "https://github.com/3kh0/3kh0-lite/tree/main/projects/vex5"
   },
   {
    "slug": "vex6",
    "title": "Vex 6",
-   "cover": "https://lite.3kh0.net/projects/vex6/assets/icon.jpeg",
+   "cover": "gamehosting/3kh0/vex6/assets/icon.jpeg",
    "replaces": [
     "51"
    ],
-   "add": false
+   "add": false,
+   "local": true,
+   "source": "https://github.com/3kh0/3kh0-lite/tree/main/projects/vex6"
   },
   {
    "slug": "wolf3d",
    "title": "Wolfenstein 3D",
-   "cover": "https://lite.3kh0.net/projects/wolf3d/art/wolf3d.png",
+   "cover": "gamehosting/3kh0/wolf3d/art/wolf3d.png",
    "replaces": [],
-   "add": true
+   "add": true,
+   "local": true,
+   "source": "https://github.com/3kh0/3kh0-lite/tree/main/projects/wolf3d"
   },
   {
    "slug": "wordle",
    "title": "Wordle",
-   "cover": "https://lite.3kh0.net/projects/wordle/img/logo_512x512.png",
+   "cover": "gamehosting/3kh0/wordle/img/logo_512x512.png",
    "replaces": [
     "112"
    ],
-   "add": false
+   "add": false,
+   "local": true,
+   "source": "https://github.com/3kh0/3kh0-lite/tree/main/projects/wordle"
   },
   {
    "slug": "worlds-hardest-game",
    "title": "World's Hardest Game",
-   "cover": "https://lite.3kh0.net/projects/worlds-hardest-game/images/splash.jpg",
+   "cover": "gamehosting/3kh0/worlds-hardest-game/images/splash.jpg",
    "replaces": [
     "103"
    ],
-   "add": false
+   "add": false,
+   "local": true,
+   "source": "https://github.com/3kh0/3kh0-lite/tree/main/projects/worlds-hardest-game"
   },
   {
    "slug": "worlds-hardest-game-2",
    "title": "World's Hardest Game 2",
-   "cover": "https://lite.3kh0.net/projects/worlds-hardest-game-2/the-worlds-hardest-game-2.jpg",
+   "cover": "gamehosting/3kh0/worlds-hardest-game-2/the-worlds-hardest-game-2.jpg",
    "replaces": [],
-   "add": true
+   "add": true,
+   "local": true,
+   "source": "https://github.com/3kh0/3kh0-lite/tree/main/projects/worlds-hardest-game-2"
   },
   {
    "slug": "you-are-bezos",
    "title": "You Are Jeff Bezos",
-   "cover": "https://lite.3kh0.net/projects/you-are-bezos/img/banner.png",
+   "cover": "gamehosting/3kh0/you-are-bezos/img/banner.png",
    "replaces": [],
-   "add": true
+   "add": true,
+   "local": true,
+   "source": "https://github.com/3kh0/3kh0-lite/tree/main/projects/you-are-bezos"
   }
- ]
+ ],
+ "mirrored": true
 }
