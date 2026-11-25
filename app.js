@@ -1548,8 +1548,7 @@
        An account is a named snapshot of this browser's localStorage, which is
        also where the games keep their saves because they run on this origin.
        Switching accounts swaps the snapshot in, so stars, settings and every
-       game save move together. Nothing leaves the device unless the player copies
-       the account code out by hand.
+       game save move together. Nothing leaves the device.
        ---------------------------------------------------------------- */
     const ACCT_KEY = 'wm.accounts.v1';
     const STATS_KEY = 'wm.stats';
@@ -1592,14 +1591,20 @@
         db.data[db.current] = rec;
         acctWrite(db);
     }
-    function acctCreate(name, pin) {
+    function acctCreate(name, cred) {
         const db = acctDb();
         acctSaveCurrent(db);
         // a new account starts from whatever is on screen right now
         const base = db.current && db.data[db.current] ? db.data[db.current].keys : snapshotKeys();
         const id = acctId();
         const label = String(name || '').trim().slice(0, 24) || ('Player ' + (db.list.length + 1));
-        db.list.push({ id: id, name: label, created: Date.now(), pin: pin || '' });
+        db.list.push({
+            id: id,
+            name: label,
+            created: Date.now(),
+            salt: cred && cred.salt ? cred.salt : '',
+            hash: cred && cred.hash ? cred.hash : ''
+        });
         db.data[id] = { keys: base || {} };
         db.current = id;
         acctWrite(db);
@@ -1614,6 +1619,13 @@
         db.current = id;
         acctWrite(db);
         restoreKeys(target);
+        location.reload();
+    }
+    function acctLogout() {
+        const db = acctDb();
+        acctSaveCurrent(db);
+        db.current = null;
+        acctWrite(db);
         location.reload();
     }
     function acctDelete(id) {
@@ -1662,59 +1674,91 @@
     function panelAccount() {
         const db = acctDb();
         const s = statsRead();
+        const cur = acctName(db);
         const rows = db.list.map((a) => (
-            '<div class="preview-tile"><div><div class="pv-name">' + escapeHtml(a.name) + (a.id === db.current ? ' · signed in' : '') + '</div>' +
-            '<div class="pv-meta">added ' + new Date(a.created).toLocaleDateString() + '</div></div>' +
-            (a.id === db.current
-                ? '<button class="btn danger" type="button" data-action="acct-delete" data-id="' + a.id + '">Remove</button>'
-                : '<button class="btn" type="button" data-action="acct-switch" data-id="' + a.id + '">Switch</button>') +
-            '</div>'
+            '<div class="preview-tile"><div><div class="pv-name">' + escapeHtml(a.name) + (a.id === db.current ? ' \u00b7 signed in' : '') + '</div>' +
+            '<div class="pv-meta">added ' + new Date(a.created).toLocaleDateString() + '</div></div></div>'
         )).join('') || '<span class="hint">No accounts on this device yet.</span>';
         return '' +
-            '<section><h4>On this device</h4><span class="hint">Signed in as <b>' + escapeHtml(acctName(db)) + '</b> · level ' + levelOf(s.xp) +
-                ' · ' + (s.plays || 0) + ' games played' + (s.streak ? ' · ' + s.streak + '-day streak' : '') + '</span>' +
-                '<div class="field" style="margin-top:12px"><input type="text" id="acctName" placeholder="Your name" maxlength="24"><button class="btn primary" type="button" data-action="acct-new">Sign in</button></div>' +
+            '<section><h4>Signed in</h4><span class="hint"><b>' + escapeHtml(cur) + '</b> \u00b7 level ' + levelOf(s.xp) +
+                ' \u00b7 ' + (s.plays || 0) + ' games played' + (s.streak ? ' \u00b7 ' + s.streak + '-day streak' : '') + '</span>' +
+                '<div class="field" style="margin-top:12px"><button class="btn" type="button" data-action="acct-logout">Log out</button></div>' +
             '</section>' +
-            '<section><h4>Accounts</h4><span class="hint">Each one keeps its own stars, settings and game saves.</span>' + rows + '</section>' +
-            '<section><h4>Move an account</h4><span class="hint">Saves live in this browser. Fill in the code, copy it, and load it on another computer.</span>' +
-                '<div class="field" style="margin-top:12px"><button class="btn" type="button" data-action="acct-export">Fill in the code</button><button class="btn" type="button" data-action="acct-import">Load from the code</button></div>' +
-                '<textarea id="acctCode" rows="4" spellcheck="false" placeholder="Account code" style="width:100%;margin-top:10px;padding:10px;border-radius:8px;border:1px solid var(--line);background:var(--panel-2);color:var(--ink);font:12px/1.5 var(--font-mono)"></textarea>' +
+            '<section><h4>Accounts here</h4><span class="hint">Each username keeps its own stars, settings and game saves. A password is needed to get back into one.</span>' + rows + '</section>' +
+            '<section><h4>Add another account</h4><span class="hint">This one starts from what is on screen right now.</span>' +
+                '<div class="field" style="margin-top:12px"><input type="text" id="acctName" placeholder="Username" maxlength="24" autocomplete="off"></div>' +
+                '<div class="field" style="margin-top:8px"><input type="password" id="acctPass" placeholder="Password, 4+ characters" maxlength="64" autocomplete="new-password"></div>' +
+                '<div class="field" style="margin-top:10px"><button class="btn primary" type="button" data-action="acct-new">Create and switch</button></div>' +
+                '<p class="hint" id="acctErr" style="margin-top:8px;color:#ff8080"></p>' +
             '</section>';
     }
 
+    async function acctCreateFromPanel() {
+        const nameNode = $('acctName');
+        const passNode = $('acctPass');
+        const err = $('acctErr');
+        const say = (m) => { if (err) err.textContent = m || ''; };
+        const name = nameNode ? nameNode.value.trim() : '';
+        const pass = passNode ? passNode.value : '';
+        if (!name) { say('Pick a username first.'); return; }
+        if (pass.length < 4) { say('Passwords need at least four characters.'); return; }
+        const db = acctDb();
+        if (db.list.some((a) => a.name.toLowerCase() === name.toLowerCase())) { say('That username is taken on this device.'); return; }
+        const salt = randomSalt();
+        const hash = await hashPassword(pass, salt);
+        acctCreate(name, { salt: salt, hash: hash });
+    }
 
     /* ---------------- sign-in gate ----------------
        Comes up on launch while this browser has no account. Registering takes
        whatever is already on screen (stars, settings, saves) as the account, so
-       the only thing a player has to do is pick a name. Logging in swaps a named
-       snapshot back in, guarded by its PIN when it has one.
+       the only thing a player has to do is pick a username and password. Logging
+       in checks the password and swaps that snapshot back in.
        ---------------------------------------------------------------- */
     const AUTH_TAB_KEY = 'wm.auth.tab';
 
-    function pinHash(pin) {
-        const text = 'wm:' + pin;
+    function randomSalt() {
+        if (window.crypto && crypto.getRandomValues) {
+            const bytes = new Uint8Array(12);
+            crypto.getRandomValues(bytes);
+            return Array.prototype.map.call(bytes, (b) => ('0' + b.toString(16)).slice(-2)).join('');
+        }
+        let out = '';
+        for (let i = 0; i < 24; i++) out += Math.floor(Math.random() * 16).toString(16);
+        return out;
+    }
+    function sha256(text) {
         if (window.crypto && window.crypto.subtle && window.TextEncoder) {
             return crypto.subtle.digest('SHA-256', new TextEncoder().encode(text)).then((buf) => {
                 return Array.prototype.map.call(new Uint8Array(buf), (b) => ('0' + b.toString(16)).slice(-2)).join('');
             });
         }
-        // no WebCrypto (file://): still better than keeping the PIN in the clear
+        // no WebCrypto (file://): better than keeping the password in the clear
         let h = 5381;
         for (let i = 0; i < text.length; i++) h = ((h * 33) ^ text.charCodeAt(i)) >>> 0;
         return Promise.resolve('djb2:' + h.toString(16));
+    }
+    function hashPassword(password, salt) { return sha256(salt + ':' + password); }
+    function legacyPinHash(pin) { return sha256('wm:' + pin); }
+
+    // accounts made before passwords existed kept a PIN in `pin`
+    async function passwordMatches(acct, password) {
+        if (acct.salt && acct.hash) return (await hashPassword(password, acct.salt)) === acct.hash;
+        if (acct.pin) return (await legacyPinHash(password)) === acct.pin;
+        return !password;
     }
 
     function authSay(text) {
         const node = $('authErr');
         if (node) node.textContent = text || '';
     }
-    function fillAuthAccounts() {
-        const select = $('authAccount');
-        if (!select) return;
-        const db = acctDb();
-        select.innerHTML = db.list.length
-            ? db.list.map((a) => '<option value="' + a.id + '">' + escapeHtml(a.name) + (a.pin ? ' \u00b7 PIN' : '') + '</option>').join('')
-            : '<option value="">No accounts on this device yet</option>';
+    function fillAuthHint() {
+        const node = $('authKnown');
+        if (!node) return;
+        const names = acctDb().list.map((a) => a.name);
+        node.textContent = names.length
+            ? 'On this device: ' + names.join(', ')
+            : 'No accounts on this device yet \u2014 register first.';
     }
     function authTab(which) {
         const reg = $('authRegister');
@@ -1726,18 +1770,20 @@
         });
         try { sessionStorage.setItem(AUTH_TAB_KEY, which); } catch (e) { }
         authSay('');
-        if (which === 'login') fillAuthAccounts();
+        if (which === 'login') fillAuthHint();
     }
     function showAuthGate() {
         const gate = $('authGate');
         if (!gate) return;
         if (acctDb().current) return;
-        fillAuthAccounts();
         let tab = 'register';
         try { tab = sessionStorage.getItem(AUTH_TAB_KEY) || 'register'; } catch (e) { }
         authTab(tab === 'login' ? 'login' : 'register');
         gate.classList.add('open');
-        setTimeout(() => { const n = $('authName'); if (n) n.focus(); }, 80);
+        setTimeout(() => {
+            const n = tab === 'login' ? $('authUser') : $('authName');
+            if (n) n.focus();
+        }, 80);
     }
     function closeAuthGate() {
         const gate = $('authGate');
@@ -1745,26 +1791,28 @@
     }
     async function authRegister() {
         const name = $('authName') ? $('authName').value.trim() : '';
-        const pin = $('authPin') ? $('authPin').value.trim() : '';
-        if (!name) { authSay('Give the account a name first.'); return; }
-        if (pin && pin.length < 4) { authSay('A PIN needs at least four characters.'); return; }
-        const hash = pin ? await pinHash(pin) : '';
-        acctCreate(name, hash);
+        const password = $('authPass') ? $('authPass').value : '';
+        if (!name) { authSay('Pick a username first.'); return; }
+        if (password.length < 4) { authSay('Passwords need at least four characters.'); return; }
+        const db = acctDb();
+        if (db.list.some((a) => a.name.toLowerCase() === name.toLowerCase())) {
+            authSay('That username is taken on this device.');
+            return;
+        }
+        const salt = randomSalt();
+        const hash = await hashPassword(password, salt);
+        acctCreate(name, { salt: salt, hash: hash });
         closeAuthGate();
     }
     async function authLogin() {
-        const select = $('authAccount');
-        const id = select ? select.value : '';
-        const db = acctDb();
-        const acct = db.list.filter((a) => a.id === id)[0];
-        if (!acct) { authSay('Pick an account first.'); return; }
-        if (acct.pin) {
-            const pin = $('authLoginPin') ? $('authLoginPin').value.trim() : '';
-            const hash = pin ? await pinHash(pin) : '';
-            if (hash !== acct.pin) { authSay('That PIN is not right.'); return; }
-        }
+        const name = $('authUser') ? $('authUser').value.trim() : '';
+        const password = $('authPassLogin') ? $('authPassLogin').value : '';
+        if (!name) { authSay('Type your username.'); return; }
+        const acct = acctDb().list.filter((a) => a.name.toLowerCase() === name.toLowerCase())[0];
+        if (!acct) { authSay('No account with that username on this device.'); return; }
+        if (!(await passwordMatches(acct, password))) { authSay('That password is not right.'); return; }
         closeAuthGate();
-        acctSwitch(id);
+        acctSwitch(acct.id);
     }
     function wireAuthGate() {
         const gate = $('authGate');
@@ -1780,12 +1828,10 @@
         });
         const guest = $('authGuest');
         if (guest) guest.addEventListener('click', closeAuthGate);
-        const loginPin = $('authLoginPin');
-        if (loginPin) loginPin.addEventListener('keydown', (e) => { if (e.key === 'Enter') authLogin(); });
-        const regPin = $('authPin');
-        if (regPin) regPin.addEventListener('keydown', (e) => { if (e.key === 'Enter') authRegister(); });
-        const regName = $('authName');
-        if (regName) regName.addEventListener('keydown', (e) => { if (e.key === 'Enter') authRegister(); });
+        [['authPassLogin', authLogin], ['authPass', authRegister], ['authName', authRegister], ['authUser', authLogin]].forEach((pair) => {
+            const node = $(pair[0]);
+            if (node) node.addEventListener('keydown', (e) => { if (e.key === 'Enter') pair[1](); });
+        });
     }
 
     const PANEL_RENDER = {
@@ -1989,39 +2035,11 @@
                     store(RISK_KEY, false);
                     toast('The notice will show again');
                 } else if (kind === 'acct-new') {
-                    const nameNode = $('acctName');
-                    acctCreate(nameNode ? nameNode.value : '');
-                } else if (kind === 'acct-switch') {
-                    acctSwitch(action.getAttribute('data-id'));
+                    acctCreateFromPanel();
+                } else if (kind === 'acct-logout') {
+                    acctLogout();
                 } else if (kind === 'acct-delete') {
                     acctDelete(action.getAttribute('data-id'));
-                } else if (kind === 'acct-export') {
-                    const db = acctDb();
-                    const keys = db.current && db.data[db.current] ? db.data[db.current].keys : snapshotKeys();
-                    const code = $('acctCode');
-                    if (code) {
-                        code.value = JSON.stringify({ v: 1, name: acctName(db), keys: keys || {} });
-                        code.select();
-                    }
-                    toast('Account code ready to copy');
-                } else if (kind === 'acct-import') {
-                    const code = $('acctCode');
-                    let data = null;
-                    try { data = JSON.parse(code ? code.value : ''); } catch (e) { data = null; }
-                    if (!data || !data.keys) { toast('That code could not be read'); }
-                    else {
-                        restoreKeys(data.keys);
-                        const db = acctDb();
-                        let id = db.current;
-                        if (!id) {
-                            id = acctId();
-                            db.list.push({ id: id, name: String(data.name || 'Restored').slice(0, 24), created: Date.now() });
-                            db.current = id;
-                        }
-                        db.data[id] = { keys: data.keys };
-                        acctWrite(db);
-                        location.reload();
-                    }
                 } else if (kind === 'apply-cloak') {
                     applyCloak();
                 } else if (kind === 'rebind-panic') {

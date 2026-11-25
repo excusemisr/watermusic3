@@ -378,14 +378,24 @@ mirror and shard repos, never from `lite.3kh0.net`.
 ## Sign-in gate (25 November)
 
 `#authGate` in `index.html` is a `.risk` panel that `showAuthGate()` opens on
-launch while `acctDb().current` is empty. Register takes a name and an optional
-PIN (SHA-256 of `wm:<pin>` through `crypto.subtle`, with a djb2 fallback for
-`file://`), and stores it on the new account. Log in lists the accounts on the
-device and checks the PIN when one is set; a wrong PIN keeps the gate open and
-says so. `Continue without an account` closes it until the next page load. The
-chosen tab is remembered in `sessionStorage` under `wm.auth.tab`.
+launch while `acctDb().current` is empty. Accounts are **username + password**:
 
-Accounts created before PINs existed have `pin: ''`, so they log in without one.
+- Register takes a username and a password (4+ characters, usernames are unique
+  per device, case-insensitive). The password is stored as
+  `sha256(salt + ':' + password)` with a random 12-byte salt in the account
+  record; nothing is written in the clear. `crypto.subtle` is used where it
+  exists, with a djb2 fallback on `file://`.
+- Log in takes the same two fields, finds the account by username and checks the
+  hash. A wrong password keeps the gate open and says so.
+- Accounts created before passwords existed still have a `pin`; `passwordMatches()`
+  checks the old `sha256('wm:' + pin)` hash so those still open with their PIN.
+- `Continue without an account` closes the gate until the next page load. The
+  chosen tab is remembered in `sessionStorage` (`wm.auth.tab`).
+
+Settings → Account shows who is signed in (level, plays, streak), lists the
+accounts on the device, can create another one (it adopts the current state) and
+can log out — logging out reloads straight back into the gate. There is no
+account code any more; switching always needs the password.
 
 ## Slop
 

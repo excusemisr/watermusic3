@@ -368,9 +368,9 @@
                 <li><b>948 pages, hosted here</b>gn-math&rsquo;s html repo, cloned in and served from watermusic. Each tile opens its own file, so the address bar stays on this site.</li>
                 <li><b>No 3kh0 redirects left</b>No game is handed off to 3kh0 any more. The trolling shelf &mdash; Soundboard, Fake Virus, TV Static and the rest &mdash; stays, served from our own mirrors.</li>
                 <li><b>Saves that stick</b>Games run on this site&rsquo;s own origin now, so the progress and high scores they write are actually kept.</li>
-                <li><b>Accounts</b>Settings &rarr; Account. A name gives you your own copy of the lot &mdash; stars, settings and every game save &mdash; and switching accounts switches the saves with it. An account code moves one to another computer.</li>
+                <li><b>Accounts</b>Register a username and password and you get your own copy of the lot &mdash; stars, settings and every game save &mdash; and logging back in brings the saves with it. Settings &rarr; Account lists who is signed in.</li>
                 <li><b>Levels and streaks</b>Opening a game pays XP, a first play pays more, and the account panel counts how many days in a row you have played.</li>
-                <li><b>Sign in on launch</b>A register / log in card comes up until this browser has an account. Registering takes the stars, settings and saves already on screen; after that the panel at the top of the site is where you switch, add a PIN or copy an account code.</li>
+                <li><b>Sign in on launch</b>A register / log in card comes up until this browser has an account &mdash; username and password, not a code. Registering takes the stars, settings and saves already on screen. Settings &rarr; Account can add a second account or log you out.</li>
                 <li><b>Slop off the shelf</b>Eleven filler entries are gone &mdash; the mobile-ad clones (Layers Roll, Lazy Jumper, Man Runner 2048, Pottery Master, Jelly Drift), the joke pages (Elastic Man, Google Baseball, PacMan Horror, Steal Brainrot Online, Plinko) and a duplicated Cut the Rope.</li>
             </ul>
         </div>
@@ -390,24 +390,25 @@
             </div>
             <div>
                 <div class="risk-kicker">watermusic &middot; accounts</div>
-                <h3 id="authTitle">Keep your games</h3>
+                <h3 id="authTitle">Log in to keep your games</h3>
             </div>
         </div>
         <div class="risk-body">
-            <p>An account on this device remembers your stars, your settings and <strong>every game save</strong>. Pick a name and you are in.</p>
+            <p>A username and password on this device remember your stars, your settings and <strong>every game save</strong>. They stay in this browser.</p>
             <div class="seg" id="authTabs" style="margin-bottom:6px">
                 <button type="button" data-auth-tab="register" class="on">Register</button>
                 <button type="button" data-auth-tab="login">Log in</button>
             </div>
             <div id="authRegister">
-                <div class="field" style="margin-top:10px"><input type="text" id="authName" placeholder="Pick a name" maxlength="24" autocomplete="off"></div>
-                <div class="field" style="margin-top:8px"><input type="password" id="authPin" placeholder="PIN, 4+ characters (optional)" maxlength="24" autocomplete="off"></div>
+                <div class="field" style="margin-top:10px"><input type="text" id="authName" placeholder="Username" maxlength="24" autocomplete="username"></div>
+                <div class="field" style="margin-top:8px"><input type="password" id="authPass" placeholder="Password, 4+ characters" maxlength="64" autocomplete="new-password"></div>
                 <div class="field" style="margin-top:12px"><button class="btn primary" type="button" data-action="auth-register">Create account</button></div>
             </div>
             <div id="authLogin" hidden>
-                <div class="field" style="margin-top:10px"><select id="authAccount"></select></div>
-                <div class="field" style="margin-top:8px"><input type="password" id="authLoginPin" placeholder="PIN if this account has one" maxlength="24" autocomplete="off"></div>
-                <div class="field" style="margin-top:12px"><button class="btn primary" type="button" data-action="auth-login">Log in</button></div>
+                <div class="field" style="margin-top:10px"><input type="text" id="authUser" placeholder="Username" maxlength="24" autocomplete="username"></div>
+                <div class="field" style="margin-top:8px"><input type="password" id="authPassLogin" placeholder="Password" maxlength="64" autocomplete="current-password"></div>
+                <p class="hint" id="authKnown" style="margin-top:8px"></p>
+                <div class="field" style="margin-top:8px"><button class="btn primary" type="button" data-action="auth-login">Log in</button></div>
             </div>
             <p class="hint" id="authErr" style="margin-top:10px;color:#ff8080"></p>
         </div>
@@ -420,7 +421,7 @@
 
 <div class="toast-wrap" id="toastWrap"></div>
 
-<script src="./app.js?v=26" defer></script>
+<script src="./app.js?v=27" defer></script>
 <script src="./player.js?v=1" defer></script>
     <script src="./concept.js?v=9" defer></script>
 <script>
