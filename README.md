@@ -405,7 +405,8 @@ can log out. There is no account code; switching always needs the password.
 The skin block at the end of `concept.css` is the current design, layered over
 the earlier component styles so nothing is lost:
 
-- **Sidebar.** A 236px floating glass panel at 18px from each edge, brand and
+- **Sidebar.** A 236px floating glass panel that hugs its content (top-left, no
+  stretched empty column), brand and
   labelled nav rows (Games, Starred, Recent, Proxy, Settings at the bottom) with
   an accent-tinted row for the current view. Under 1024px the same element
   becomes a floating bottom dock with icon-over-label tabs, and everything stays

@@ -659,6 +659,10 @@
         const status = $('gridStatus');
         const total = filtered.length;
         $('allCount').textContent = total;
+        // the starred view is a filter, not a separate page — say so, or the
+        // heading reads "All games 1" and looks broken
+        $('viewTitle').textContent = state.starred ? 'Starred' : 'All games';
+        $('categoryNav').hidden = !!state.starred;
         if (!games.length) { status.innerHTML = ''; return; }
         if (!total) {
             status.innerHTML = '';
