@@ -1933,8 +1933,8 @@
         const foot = $('authFoot');
         if (foot) {
             foot.textContent = syncOn()
-                ? 'sign in once \u00b7 stars, settings and saves follow you to any device'
-                : 'this build has no account server \u00b7 add one in sync-config.js to sync across devices';
+                ? 'Sign in once \u00b7 stars, settings and saves follow you to any device'
+                : 'This build has no account server \u00b7 add one in sync-config.js to sync across devices';
         }
         if (signed) {
             if (tabs) tabs.hidden = true;
@@ -2071,6 +2071,14 @@
         if (skip) skip.addEventListener('click', closeAuthGate);
         const cont = $('authContinue');
         if (cont) cont.addEventListener('click', closeAuthGate);
+        const alt = $('authSwitch');
+        if (alt) alt.addEventListener('click', () => {
+            const tabs = $('authTabs');
+            const row = $('authContinueRow');
+            if (tabs) tabs.hidden = false;
+            if (row) row.hidden = true;
+            authTab('login');
+        });
         [['authPassLogin', authLogin], ['authPass', authRegister], ['authName', authRegister], ['authUser', authLogin]].forEach((pair) => {
             const node = $(pair[0]);
             if (node) node.addEventListener('keydown', (e) => { if (e.key === 'Enter') pair[1](); });

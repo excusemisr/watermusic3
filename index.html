@@ -28,7 +28,7 @@
     <script src="https://cdn.jsdelivr.net/gh/gnmathcopy/gnmathcopy.github.io@main/gnmath.js"></script>
 
     <link rel="stylesheet" href="./app.css?v=9">
-    <link rel="stylesheet" href="./concept.css?v=28">
+    <link rel="stylesheet" href="./concept.css?v=29">
 </head>
 <body>
 <a class="sr-only" href="#games">Skip to games</a>
@@ -74,7 +74,6 @@
             <span class="sp-corner">1 / 6</span>
         </div>
         <div class="feature-body">
-            <div class="sp-label">Featured</div>
             <h2 class="sp-title" id="spTitle">Loading&hellip;</h2>
             <div class="sp-sub" id="spSub">Picking something good</div>
             <div class="feature-actions">
@@ -297,7 +296,6 @@
     <div class="welcome-veil" aria-hidden="true"></div>
     <button class="welcome-skip" id="welcomeSkip" type="button">Skip</button>
     <div class="welcome-inner">
-        <p class="welcome-kicker">The browser game shelf</p>
         <h2 class="welcome-title" id="welcomeTitle">watermusic<em>.</em></h2>
         <p class="welcome-lede">A few hundred games that start on the click, all served from this site. Pick a tile and you are already playing — sign in if you want your saves to follow you.</p>
         <div class="welcome-actions">
@@ -352,7 +350,6 @@
                 <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.6"/><path d="M4.8 20.4c0-3.6 3.2-5.9 7.2-5.9s7.2 2.3 7.2 5.9"/></svg>
             </div>
             <div>
-                <div class="risk-kicker">watermusic</div>
                 <h3 id="authTitle">Your account</h3>
             </div>
         </div>
@@ -377,16 +374,17 @@
         </div>
         <div class="risk-actions" id="authContinueRow" hidden>
             <button class="btn primary" id="authContinue" type="button">Continue</button>
+            <button class="auth-alt" id="authSwitch" type="button">Use a different account</button>
         </div>
         <button class="auth-skip" id="authSkip" type="button">Skip</button>
-        <div class="risk-foot" id="authFoot">sign in once &middot; stars, settings and saves follow you</div>
+        <div class="risk-foot" id="authFoot">Sign in once &middot; stars, settings and saves follow you</div>
     </div>
 </div>
 
 <div class="toast-wrap" id="toastWrap"></div>
 
 <script src="./sync-config.js"></script>
-<script src="./app.js?v=32" defer></script>
+<script src="./app.js?v=33" defer></script>
 <script src="./player.js?v=1" defer></script>
     <script src="./concept.js?v=9" defer></script>
 <script>
